@@ -5,65 +5,72 @@ block content
     .container  
       h1 Đăng ký
       nav.breadcrumb
-        a(href="index.html") Trang chủ
+        a(href="/home") Trang chủ
         span ›
         span Đăng ký
   section.auth-wrap
     .auth-box(style="max-width:620px;")
       div(style="text-align:center;margin-bottom:28px;")
         div(style="font-size:2rem;font-weight:900;color:var(--primary);")
-          span OH!
+          span MANHQUYNH!
           span(style="font-weight:300;") Decor.
         p(style="font-size:0.9rem;color:var(--text-light);margin-top:8px;") Tạo tài khoản của bạn để mua sắm dễ dàng hơn.
       form#registerForm
         div(style="display:grid;grid-template-columns:1fr 1fr;gap:16px;")
           .form-group
-            label(for="regFirst") Họ
-            input#regFirst.form-control(
+            label(for="firstname") Họ
+            input#firstname.form-control(
               required="" 
               placeholder="Nguyễn" 
               type="text"
               )
           .form-group
-            label(for="regLast") Tên
-            input#regLast.form-control(
+            label(for="lastname") Tên
+            input#lastname.form-control(
               required="" 
               placeholder="Văn A" 
               type="text"
               )
         .form-group
-          label(for="regEmail") Email
-          input#regEmail.form-control(
+          label(for="email") Email
+          input#email.form-control(
             required="" 
             placeholder="example@email.com" 
             type="email"
             )
         .form-group
-          label(for="regPhone") Số điện thoại
-          input#regPhone.form-control(
+          label(for="phone") Số điện thoại
+          input#phone.form-control(
             placeholder="0901 191 616" 
             type="tel"
             )
         .form-group
-          label(for="regPass") Mật khẩu
+          label(for="password") Mật khẩu
           div(style="position:relative;")
-            input#regPass.form-control(
+            input#password.form-control(
               required="" 
               placeholder="Tối thiểu 8 ký tự" 
               type="password"
               )
             button(
               style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:0.8rem;font-weight:700;color:var(--accent-dark);" 
-              data-show-pass="regPass" 
+              data-show-pass="password" 
               type="button"
               ) Hiện
         .form-group
-          label(for="regPassConfirm") Xác nhận mật khẩu
-          input#regPassConfirm.form-control(
-            required="" 
-            placeholder="Nhập lại mật khẩu" 
-            type="password"
-            )
+          label(for="confirmPassword") Xác nhận mật khẩu
+          div(style="position:relative;")
+            input#confirmPassword.form-control(
+              required="" 
+              placeholder="Nhập lại mật khẩu" 
+              type="password"
+              )
+            button(
+              style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:0.8rem;font-weight:700;color:var(--accent-dark);" 
+              data-show-pass="confirmPassword" 
+              type="button"
+              ) Hiện
+            
         div(style="margin-bottom:20px;")
           label(
             style="display:flex;align-items:flex-start;gap:10px;font-size:0.85rem;cursor:pointer;line-height:1.5;"
@@ -91,8 +98,8 @@ block content
         style="text-align:center;margin-top:24px;padding-top:20px;border-top:1px solid var(--border);"
         )
         p(style="font-size:0.88rem;color:var(--text-light);")
-          | Đã có tài khoản?
+          |  Đã có tài khoản?
           a(
             style="color:var(--primary);font-weight:700;" 
             href="/account/login"
-            ) Đăng nhập
+            )  Đăng nhập

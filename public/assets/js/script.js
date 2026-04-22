@@ -705,14 +705,60 @@ function selectSize(btn) {
     document.getElementById('sizeLabel').textContent = btn.dataset.label;
 }
 
-// Tabs
-function switchTab(id, btn) {
-    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab-nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('tab-' + id).classList.add('active');
-    btn.classList.add('active');
-}
 
+// OTP input tự động nhảy ô
+document.querySelectorAll('.otp-digit').forEach((input, index, inputs) => {
+    input.addEventListener('input', function () {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value && index < inputs.length - 1) {
+            inputs[index + 1].focus();
+        }
+    });
+    input.addEventListener('keydown', function (e) {
+        if (e.key === 'Backspace' && !this.value && index > 0) {
+            inputs[index - 1].focus();
+        }
+    });
+    input.addEventListener('paste', function (e) {
+        e.preventDefault();
+        const paste = (e.clipboardData || window.clipboardData).getData('text');
+        const digits = paste.replace(/[^0-9]/g, '').split('').slice(0, 6);
+        digits.forEach((digit, i) => {
+            if (inputs[i]) inputs[i].value = digit;
+        });
+        if (digits.length > 0) inputs[Math.min(digits.length, 5)].focus();
+    });
+});
+
+
+// Password strength (frontend only - hiển thị)
+document.getElementById('password')?.addEventListener('input', function () {
+    const pwd = this.value;
+    const requirements = {
+        reqLength: pwd.length >= 8,
+        reqUpper: /[A-Z]/.test(pwd),
+        reqLower: /[a-z]/.test(pwd),
+        reqNumber: /[0-9]/.test(pwd),
+        reqSpecial: /[!@#$%^&*]/.test(pwd)
+    };
+    Object.keys(requirements).forEach(id => {
+        const el = document.getElementById(id);
+        el.classList.toggle('valid', requirements[id]);
+        el.classList.toggle('invalid', !requirements[id]);
+    });
+    const validCount = Object.values(requirements).filter(v => v).length;
+    const bar = document.getElementById('strengthBar');
+    bar.className = 'password-strength-bar ' + (validCount <= 2 ? 'weak' : validCount <= 4 ? 'medium' : 'strong');
+});
+// Alert time
+const alertTime = document.querySelector("[alert-time]");
+if (alertTime) {
+    let time = alertTime.getAttribute("alert-time");
+    time = time ? parseInt(time) : 4000;
+    setTimeout(() => {
+        alertTime.remove(); // Xóa phần tử khỏi giao diện
+    }, time);
+}
 // Login Form
 const loginForm = document.querySelector("#loginForm")
 if (loginForm) {
@@ -762,7 +808,7 @@ if (loginForm) {
                 rememberPassword
             }
             console.log(dataFinal);
-            fetch("account/login", {
+            fetch("/account/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -771,11 +817,11 @@ if (loginForm) {
             })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.code = "success") {
+                    if (data.code === "success") {
                         window.location.href = "/home"
                     }
-                    if (data.code = "error") {
-                        alert(data.message)
+                    if (data.code === "error") {
+                        window.location.reload()
                     }
                 })
                 .catch(error => {
@@ -783,4 +829,296 @@ if (loginForm) {
                 });
         })
 
+}
+// Register Form
+const registerForm = document.querySelector("#registerForm")
+if (registerForm) {
+    const validation = new JustValidate("#registerForm");
+    validation
+        .addField('#firstname', [{
+            rule: 'required',
+            errorMessage: 'Vui lòng nhập tên của bạn!',
+        },
+        {
+            validator: (value) => value.length >= 2,
+            errorMessage: 'Tên phải chứa ít nhất 2 ký tự!',
+        },
+        ])
+        .addField('#lastname', [{
+            rule: 'required',
+            errorMessage: 'Vui lòng nhập họ của bạn!',
+        },
+        {
+            validator: (value) => value.length >= 2,
+            errorMessage: 'Họ phải chứa ít nhất 2 ký tự!',
+        },
+        ])
+        .addField('#email', [{
+            rule: 'required',
+            errorMessage: 'Vui lòng nhập email của bạn!',
+        },
+        {
+            rule: 'email',
+            errorMessage: 'Email không đúng định dạng!',
+        },
+        ])
+        .addField('#phone', [{
+            rule: 'required',
+            errorMessage: 'Vui lòng nhập số điện thoại của bạn!',
+        },
+        {
+            validator: (value) => value.length >= 10,
+            errorMessage: 'Số điện thoại phải chứa ít nhất 10 ký tự!',
+        },
+        {
+            validator: (value) => value.length <= 11,
+            errorMessage: 'Số điện thoại phải chứa tối đa 11 ký tự!',
+        },
+        {
+            validator: (value) => /^0[0-9]{9}$/.test(value),
+            errorMessage: 'Số điện thoại không đúng định dạng!',
+        },
+        ])
+        .addField('#password', [{
+            rule: 'required',
+            errorMessage: 'Vui lòng nhập mật khẩu của bạn!',
+        },
+        {
+            validator: (value) => value.length >= 8,
+            errorMessage: 'Mật khẩu phải chứa ít nhất 8 ký tự!',
+        },
+        {
+            validator: (value) => /[A-Z]/.test(value),
+            errorMessage: 'Mật khẩu phải chứa ít nhất một chữ cái in hoa!',
+        },
+        {
+            validator: (value) => /[a-z]/.test(value),
+            errorMessage: 'Mật khẩu phải chứa ít nhất một chữ cái thường!',
+        },
+        {
+            validator: (value) => /\d/.test(value),
+            errorMessage: 'Mật khẩu phải chứa ít nhất một chữ số!',
+        },
+        {
+            validator: (value) => /[@$!%*?&]/.test(value),
+            errorMessage: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt!',
+        },
+        ])
+        .addField('#confirmPassword', [{
+            rule: 'required',
+            errorMessage: 'Vui lòng nhập lại mật khẩu của bạn!',
+        },
+        {
+            validator: (value) => value === document.querySelector("#password").value,
+            errorMessage: 'Mật khẩu không khớp!',
+        },
+        ])
+        .addField('input[type="checkbox"]', [{
+            rule: 'required',
+            errorMessage: 'Bạn phải đồng ý với điều khoản và điều kiện!',
+        }])
+        .onSuccess((event) => {
+            const firstName = event.target.firstname.value;
+            const lastName = event.target.lastname.value;
+            const email = event.target.email.value;
+            const phone = event.target.phone.value;
+            const password = event.target.password.value;
+            const confirmPassword = event.target.confirmPassword.value;
+            const dataFinal = {
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                phone: phone,
+                password: password,
+                confirmPassword: confirmPassword
+            }
+            console.log(dataFinal);
+            fetch("/account/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(dataFinal),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code == "success") {
+                        window.location.href = "/account/login"
+                    }
+                    if (data.code == "error") {
+
+                        window.location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        })
+
+}
+// forgot password form
+const forgotPasswordForm = document.querySelector("#forgotPasswordForm")
+if (forgotPasswordForm) {
+    const validation = new JustValidate("#forgotPasswordForm");
+    validation
+        .addField('#email', [{
+            rule: 'required',
+            errorMessage: 'Vui lòng nhập email của bạn!',
+        },
+        {
+            rule: 'email',
+            errorMessage: 'Email không đúng định dạng!',
+        },
+        ])
+        .onSuccess((event) => {
+            const email = event.target.email.value;
+            const dataFinal = {
+                email: email,
+            }
+            console.log(dataFinal);
+            fetch("/account/forgot-password", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(dataFinal),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code == "success") {
+                        window.location.href = `/account/otp-password?email=${email}`
+                    }
+                    if (data.code == "error") {
+
+                        window.location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        })
+
+}
+const otpPasswordForm = document.querySelector("#otpPasswordForm");
+
+if (otpPasswordForm) {
+    const validation = new JustValidate("#otpPasswordForm");
+
+    const countdownBlock = document.querySelector("#otp-countdown");
+    const countdownEl = document.querySelector("#countdown-time");
+
+    const otpInputs = document.querySelectorAll(".otp-digit");
+    const otpHidden = document.querySelector("#otp");
+
+    /* ================== COUNTDOWN ================== */
+    if (countdownBlock && countdownEl) {
+        let timeLeft = 300;
+
+        const interval = setInterval(() => {
+            timeLeft--;
+
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = String(timeLeft % 60).padStart(2, "0");
+            countdownEl.textContent = `${minutes}:${seconds}`;
+
+            if (timeLeft <= 10) {
+                countdownBlock.classList.add("warning");
+            }
+
+            if (timeLeft <= 0) {
+                clearInterval(interval);
+                countdownEl.textContent = "Hết hạn";
+                countdownBlock.classList.remove("warning");
+                otpPasswordForm.querySelector(".btn-gold").disabled = true;
+            }
+        }, 1000);
+    }
+
+    /* ================== HANDLE OTP ================== */
+
+    function updateOTP() {
+        let otp = "";
+        otpInputs.forEach(i => otp += i.value);
+        otpHidden.value = otp;
+
+        validation.revalidateField('#otp');
+    }
+
+    otpInputs.forEach((input, index) => {
+        // chỉ cho nhập số + 1 ký tự
+        input.addEventListener("input", () => {
+            input.value = input.value.replace(/\D/g, "").slice(-1);
+
+            if (input.value && index < otpInputs.length - 1) {
+                otpInputs[index + 1].focus();
+            }
+
+            updateOTP();
+        });
+
+        // backspace quay lại ô trước
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Backspace" && !input.value && index > 0) {
+                otpInputs[index - 1].focus();
+            }
+        });
+    });
+
+    // paste OTP
+    otpInputs[0].addEventListener("paste", (e) => {
+        e.preventDefault();
+
+        const paste = e.clipboardData
+            .getData("text")
+            .replace(/\D/g, "")
+            .slice(0, 6);
+
+        otpInputs.forEach((input, i) => {
+            input.value = paste[i] || "";
+        });
+
+        updateOTP();
+    });
+
+    // focus ô đầu
+    otpInputs[0].focus();
+
+    /* ================== VALIDATION ================== */
+
+    validation
+        .addField('#otp', [
+            {
+                rule: 'required',
+                errorMessage: 'Vui lòng nhập mã OTP!'
+            },
+            {
+                validator: (value) => /^\d{6}$/.test(value),
+                errorMessage: 'OTP phải đủ 6 chữ số!'
+            }
+        ])
+        .onSuccess((event) => {
+            event.preventDefault();
+
+            const otp = otpHidden.value;
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get("email");
+
+            fetch("/account/otp-password", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ otp, email }),
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.code === "success") {
+                        window.location.href = "/account/resetpass";
+                    }
+                    if (data.code === "error") {
+                        window.location.reload();
+                    }
+                })
+                .catch(err => console.error(err));
+        });
 }

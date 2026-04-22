@@ -30,6 +30,14 @@ html(lang="vi")
       rel="stylesheet"
       )
   body
+    - if (messages.success)
+      div(class="alert alert-success" alert-time="3000")
+        span #{messages.success}
+
+    - if (messages.error)
+      div(class="alert alert-error" alert-time="3000")
+        span #{messages.error}
+
     include ../partials/header.pug
 
     block content

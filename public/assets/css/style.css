@@ -4128,3 +4128,376 @@ ul {
     color: var(--text-mid);
     line-height: 1.7;
 }
+
+.otp-timer {
+    font-size: 0.85rem;
+    color: var(--accent-dark);
+    font-weight: 600;
+    text-align: center;
+    margin-top: 8px;
+}
+
+.otp-timer.expired {
+    color: #dc3545;
+}
+
+.otp-timer span {
+    font-weight: 700;
+}
+
+.resend-link {
+    color: var(--primary);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.resend-link.disabled {
+    color: var(--text-light);
+    cursor: not-allowed;
+    text-decoration: none;
+}
+
+.step-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.step-item.active {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.step-item.completed {
+    color: #28a745;
+}
+
+.step-number {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.step-item.active .step-number {
+    background: var(--primary);
+    color: white;
+}
+
+.step-item.completed .step-number {
+    background: #28a745;
+    color: white;
+}
+
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+}
+
+.otp-inputs {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 24px 0;
+}
+
+.otp-inputs input {
+    width: 50px;
+    height: 56px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    border: 2px solid #28a745;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.3s;
+
+}
+
+.otp-inputs input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(234, 191, 132, 0.3);
+    background: rgba(17, 214, 168, 0.219);
+    scale: 1.3;
+}
+
+.otp-inputs input.valid {
+    border-color: #28a745;
+}
+
+.password-strength {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+}
+
+.password-strength-bar {
+    height: 100%;
+    width: 0;
+    transition: all 0.3s;
+}
+
+.password-strength-bar.weak {
+    width: 33%;
+    background: #dc3545;
+}
+
+.password-strength-bar.medium {
+    width: 66%;
+    background: #ffc107;
+}
+
+.password-strength-bar.strong {
+    width: 100%;
+    background: #28a745;
+}
+
+.password-requirements {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: 8px;
+}
+
+.password-requirements li {
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.password-requirements li.valid {
+    color: #28a745;
+}
+
+.password-requirements li.invalid {
+    color: #dc3545;
+}
+
+.success-animation {
+    text-align: center;
+    padding: 32px 0;
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #28a745;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    animation: scaleIn 0.5s ease;
+}
+
+@keyframes scaleIn {
+    0% {
+        transform: scale(0);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.success-icon svg {
+    width: 40px;
+    height: 40px;
+    stroke: white;
+    stroke-width: 3;
+}
+
+/* Alert */
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.85) translateY(-10px);
+    }
+
+    60% {
+        transform: scale(1.04) translateY(2px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes sweepOut {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+        max-height: 80px;
+        margin-bottom: 12px;
+    }
+
+    60% {
+        opacity: 0;
+        transform: translateX(40px);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(60px);
+        max-height: 0;
+        margin-bottom: 0;
+        padding: 0;
+    }
+}
+
+@keyframes progress {
+    from {
+        width: 100%;
+    }
+
+    to {
+        width: 0%;
+    }
+}
+
+.alert {
+    position: fixed;
+    top: 120px;
+    right: 50px;
+    z-index: 9999;
+
+    min-width: 280px;
+    max-width: 340px;
+    padding: 13px 16px 13px 52px;
+    border-radius: 12px;
+
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+
+    animation: popIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Progress bar */
+.alert::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    border-radius: 0 0 0 12px;
+    animation: progress 3s linear forwards;
+}
+
+/* SUCCESS */
+.alert-success {
+    background: #166534;
+    color: #6ee7a0;
+    border: 1px solid #1a4a2e;
+}
+
+.alert-success::before {
+    content: "✓";
+    background: #166534;
+    color: #86efac;
+}
+
+.alert-success::after {
+    background: #22c55e;
+}
+
+/* ERROR */
+.alert-error {
+    background: #7f1d1d;
+    color: #fca5a5;
+    border: 1px solid #4a1a1a;
+}
+
+.alert-error::before {
+    content: "✕";
+    background: #7f1d1d;
+    color: #fca5a5;
+}
+
+.alert-error::after {
+    background: #ef4444;
+}
+
+/* ICON (dùng element riêng, không dùng ::before nữa) */
+.alert-icon {
+    position: absolute;
+    left: 16px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* * Khung hiển thị OTP countdown */
+#otp-countdown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: #f79504;
+    background-color: #e6f0ff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin: 10px auto 0 auto;
+    width: fit-content;
+}
+
+/* Style riêng cho phần thời gian */
+#countdown-timer {
+    font-weight: 700;
+    margin-left: 5px;
+    color: #ff3b30;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* Hiệu ứng nhấp nháy khi còn < 1 phút */
+#otp-countdown.warning #countdown-timer {
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    50%,
+    100% {
+        opacity: 1;
+    }
+
+    25%,
+    75% {
+        opacity: 0;
+    }
+}

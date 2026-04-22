@@ -1,0 +1,86 @@
+extend ../layouts/default.pug
+
+block content
+  .page-hero(style="padding:40px 0;")
+    .container
+      h1 Quên mật khẩu
+      nav.breadcrumb
+        a(href="/home") Trang chủ
+        span ›
+        span Quên mật khẩu
+  section.auth-wrap
+    .auth-box
+      // Step Indicator
+    .step-indicator
+      #step1Indicator.step-item(class= step === 1 ? 'active' : '')
+        .step-number 1
+        span Xác minh
+
+      #step2Indicator.step-item(class= step === 2 ? 'active' : '')
+        .step-number 2
+        span Nhập OTP
+
+      #step3Indicator.step-item(class= step === 3 ? 'active' : '')
+        .step-number 3
+        span Đặt lại mật khẩu
+      #step3.form-step.active
+        div(style="text-align:center;margin-bottom:32px;")
+          div(style="font-size:2rem;font-weight:900;color:var(--primary);")
+            span OH!
+            span(style="font-weight:300;") Decor.
+          p(style="font-size:0.9rem;color:var(--text-light);margin-top:8px;") Nhập mật khẩu mới
+        form#resetForm
+          .form-group
+            label(for="newPassword") Mật khẩu mới
+            div(style="position:relative;")
+              input#newPassword.form-control(
+                required="" 
+                placeholder="Nhập mật khẩu mới" 
+                type="password"
+                )
+              button(
+                style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:0.8rem;font-weight:700;color:var(--accent-dark);" 
+                data-show-pass="newPassword" 
+                type="button"
+                ) Hiện
+            .password-strength
+              #strengthBar.password-strength-bar
+            ul#passwordRequirements.password-requirements
+              li#reqLength • Ít nhất 8 ký tự
+              li#reqUpper • Chữ cái viết hoa (A-Z)
+              li#reqLower • Chữ cái viết thường (a-z)
+              li#reqNumber • Số (0-9)
+              li#reqSpecial • Ký tự đặc biệt (!@#$%^&*)
+          .form-group
+            label(for="confirmPassword") Xác nhận mật khẩu
+            div(style="position:relative;")
+              input#confirmPassword.form-control(
+                required="" 
+                placeholder="Nhập lại mật khẩu mới" 
+                type="password"
+                )
+              button(
+                style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:0.8rem;font-weight:700;color:var(--accent-dark);" 
+                data-show-pass="confirmPassword" 
+                type="button"
+                ) Hiện
+          button.btn.btn-gold(
+            style="width:100%;justify-content:center;padding:16px;" 
+            type="submit"
+            ) Đặt lại mật khẩu
+      // Success
+      #stepSuccess.form-step
+        .success-animation
+          .success-icon
+            svg(
+              stroke="currentColor" 
+              fill="none" 
+              viewBox="0 0 24 24"
+              )
+              path(d="M20 6L9 17l-5-5")
+          h3(style="color:var(--text-dark);margin-bottom:8px;") Đặt lại mật khẩu thành công!
+          p(style="color:var(--text-light);margin-bottom:24px;") Bạn có thể đăng nhập bằng mật khẩu mới
+          a.btn.btn-gold(
+            style="display:inline-flex;justify-content:center;padding:14px 32px;" 
+            href="/account/login"
+            ) Đăng nhập ngay
