@@ -1,0 +1,166 @@
+extends ../layouts/default.pug
+
+block content
+  .page-hero
+    .container
+      h1 Liên hệ
+      p Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn
+      nav.breadcrumb
+        a(href="/home") Trang chủ
+        span ›
+        span Liên hệ
+  // Info cards
+  section.section
+    .container
+      div(style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:60px;")
+        div(
+          style="background:var(--primary);padding:36px 28px;border-radius:var(--radius-xl);text-align:center;color:white;"
+          )
+          div(
+            style="width:56px;height:56px;background:rgba(234,191,132,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--accent);"
+            )
+            svg(
+              stroke-width="2" 
+              stroke="currentColor" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              height="24" 
+              width="24"
+              )
+              path(d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z")
+              circle(
+                r="3" 
+                cy="10" 
+                cx="12"
+                )
+          h3(style="font-size:1rem;font-weight:700;margin-bottom:8px;color:var(--accent);") Địa chỉ
+          p(style="font-size:0.88rem;color:rgba(255,255,255,0.7);line-height:1.7;")
+            | 218 Lĩnh Nam, Hoàng Mai, Hà Nội
+        div(
+          style="background:var(--primary);padding:36px 28px;border-radius:var(--radius-xl);text-align:center;color:white;"
+          )
+          div(
+            style="width:56px;height:56px;background:rgba(234,191,132,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--accent);"
+            )
+            svg(
+              stroke-width="2" 
+              stroke="currentColor" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              height="24" 
+              width="24"
+              )
+              path(
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 9.81a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.54a16 16 0 0 0 6 6l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16.92z"
+                )
+          h3(style="font-size:1rem;font-weight:700;margin-bottom:8px;color:var(--accent);") Điện thoại
+          p(style="font-size:0.88rem;color:rgba(255,255,255,0.7);line-height:1.7;")
+            | Hotline: 
+            a(
+              style="color:var(--accent);" 
+              href="tel:0373382805"
+              ) 0373382805
+            br
+            | Hỗ trợ: 8:00 – 22:00 hằng ngày
+        div(
+          style="background:var(--primary);padding:36px 28px;border-radius:var(--radius-xl);text-align:center;color:white;"
+          )
+          div(
+            style="width:56px;height:56px;background:rgba(234,191,132,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--accent);"
+            )
+            svg(
+              stroke-width="2" 
+              stroke="currentColor" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              height="24" 
+              width="24"
+              )
+              path(d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z")
+              polyline(points="22,6 12,13 2,6")
+          h3(style="font-size:1rem;font-weight:700;margin-bottom:8px;color:var(--accent);") Email
+          p(style="font-size:0.88rem;color:rgba(255,255,255,0.7);line-height:1.7;")
+            a(
+              style="color:var(--accent);" 
+              href=""
+              ) vmquynhdhti17a3@sv.uneti.edu.vn
+            br
+            | Phản hồi trong vòng 24h
+      .contact-grid
+        // Map
+        div
+          .contact-map(
+            style="min-height:400px;border-radius:var(--radius-xl);overflow:hidden;background:var(--light-bg);display:flex;align-items:center;justify-content:center;"
+            )
+            iframe(
+              referrerpolicy="no-referrer-when-downgrade" 
+              loading="lazy" 
+              allowfullscreen="" 
+              style="border:0;" 
+              height="400" 
+              width="100%" 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.308390416755!2d105.87592079999999!3d20.9802717!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ad8325fe9061%3A0x17cc9e09d9270e15!2sUneti%20L%C4%A9nh%20Nam!5e0!3m2!1svi!2s!4v1776109805663!5m2!1svi!2s"
+              )
+        // Contact form
+        .contact-card(style="border-radius:var(--radius-xl);")
+          h2(style="font-size:1.5rem;font-weight:800;color:var(--primary);margin-bottom:8px;") Gửi tin nhắn
+          p(style="font-size:0.9rem;color:var(--text-light);margin-bottom:28px;")
+            | Điền thông tin bên dưới và chúng tôi
+            |   sẽ liên hệ lại sớm nhất có thể.
+          form#contactForm(style="display:grid;gap:18px;")
+            div(style="display:grid;grid-template-columns:1fr 1fr;gap:16px;")
+              .form-group(style="margin:0;")
+                label(for="ctName") Họ và tên *
+                input#ctName.form-control(
+                  required="" 
+                  placeholder="Nguyễn Văn A" 
+                  type="text"
+                  )
+              .form-group(style="margin:0;")
+                label(for="ctPhone") Số điện thoại *
+                input#ctPhone.form-control(
+                  required="" 
+                  placeholder="0373382805" 
+                  type="tel"
+                  )
+            .form-group(style="margin:0;")
+              label(for="ctEmail") Email
+              input#ctEmail.form-control(
+                placeholder="example@email.com" 
+                type="email"
+                )
+            .form-group(style="margin:0;")
+              label(for="ctSubject") Chủ đề
+              select#ctSubject.form-control(style="cursor:pointer;")
+                option Tư vấn sản phẩm
+                option Thiết kế nội thất
+                option Báo giá dự án
+                option Khác
+            .form-group(style="margin:0;")
+              label(for="ctMsg") Nội dung tin nhắn *
+              textarea#ctMsg.form-control(
+                style="resize:vertical;min-height:120px;" 
+                required="" 
+                placeholder="Mô tả nhu cầu của bạn..." 
+                rows="5"
+                )
+            button.btn.btn-gold(
+              style="justify-content:center;padding:16px;font-size:1rem;" 
+              type="submit"
+              )
+              svg(
+                stroke-width="2" 
+                stroke="currentColor" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                height="18" 
+                width="18"
+                )
+                line(
+                  y2="13" 
+                  x2="11" 
+                  y1="2" 
+                  x1="22"
+                  )
+                polygon(points="22 2 15 22 11 13 2 9 22 2")
+              | Gửi tin nhắn

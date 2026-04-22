@@ -1,0 +1,11 @@
+const accountController = require("../../controller/client/account.controller")
+const router = require("express").Router()
+router.get("/login", accountController.login)
+router.get("/register", accountController.register)
+router.get("/setting", accountController.setting)
+router.get("/setting/information", accountController.information)
+router.get("/setting/reset-password", accountController.resetPass)
+router.get("/setting/notification", accountController.notification)
+router.get("/setting/orders-history", accountController.ordersHistory)
+router.post("/login", accountController.loginPost)
+module.exports = router

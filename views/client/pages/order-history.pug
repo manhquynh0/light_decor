@@ -1,0 +1,134 @@
+extend ../layouts/default.pug
+
+block content 
+  .page-hero(style="padding:40px 0;")
+    .container
+      h1 Lịch sử đơn hàng
+      nav.breadcrumb
+        a(href="/") Trang chủ
+        span ›
+        a(href="/account/setting") Tài khoản
+        span ›
+        span Lịch sử đơn hàng
+  section.section
+    .container
+      // Filters & Sorting
+      div(style="display:flex;gap:16px;margin-bottom:32px;flex-wrap:wrap;align-items:center;")
+        div(style="display:flex;gap:8px;")
+          select.form-control(style="width:200px;cursor:pointer;")
+            option(value="") Tất cả trạng thái
+            option(value="processing") Đang xử lý
+            option(value="shipped") Đã gửi hàng
+            option(value="delivered") Đã giao hàng
+            option(value="cancelled") Đã hủy
+        div(style="display:flex;gap:8px;margin-left:auto;")
+          input.form-control(
+            style="width:220px;padding:12px 16px;" 
+            placeholder="Tìm theo số đơn hàng..." 
+            type="text"
+            )
+          button.btn.btn-outline-dark(style="padding:12px 20px;") Tìm kiếm
+      // Orders List
+      div(style="display:grid;gap:24px;")
+        // Order 1: Delivered
+        div(
+          style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden;"
+          )
+          div(
+            style="display:grid;grid-template-columns:1fr auto;gap:20px;padding:24px;align-items:start;border-bottom:1px solid var(--border);background:var(--off-white);"
+            )
+            div
+              div(style="display:grid;grid-template-columns:1fr 1fr;gap:20px;")
+                div
+                  p(
+                    style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;color:var(--text-light);margin-bottom:4px;"
+                    ) Số đơn hàng
+                  p(style="font-size:1rem;font-weight:800;color:var(--primary);") OH-2024-001245
+                div
+                  p(
+                    style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;color:var(--text-light);margin-bottom:4px;"
+                    ) Ngày đặt hàng
+                  p(style="font-size:1rem;font-weight:600;color:var(--text-dark);") 15/04/2024
+                div
+                  p(
+                    style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;color:var(--text-light);margin-bottom:4px;"
+                    ) Tổng tiền
+                  p(style="font-size:1.1rem;font-weight:800;color:var(--primary);") 69.150.000 ₫
+                div
+                  p(
+                    style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;color:var(--text-light);margin-bottom:4px;"
+                    ) Trạng thái
+                  span(
+                    style="display:inline-block;padding:6px 12px;background:#e8f5e9;color:#2e7d32;border-radius:999px;font-size:0.8rem;font-weight:700;"
+                    ) ✓ Đã giao hàng
+            a.btn.btn-outline-dark.btn-sm(
+              style="padding:10px 16px;white-space:nowrap;" 
+              href="#order-detail-1"
+              ) Xem chi tiết
+          div(style="padding:24px;")
+            div(style="display:flex;gap:16px;align-items:center;margin-bottom:16px;")
+              img(
+                alt="Sofa" 
+                style="width:64px;height:64px;border-radius:10px;object-fit:cover;flex-shrink:0;" 
+                src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/mau-ghe-sofa-vang-hien-dai-boc-da-han-quoc-sf360_thumb_350.jpg"
+                )
+              div(style="flex:1;")
+                p(style="font-size:0.9rem;font-weight:700;margin-bottom:4px;") Ghế sofa văng da Hàn Quốc
+                p(style="font-size:0.8rem;color:var(--text-light);") Màu: Vàng × 1
+              p(style="font-size:0.9rem;font-weight:700;color:var(--primary);text-align:right;") 34.000.000 ₫
+            div(style="display:flex;gap:16px;align-items:center;")
+              img(
+                alt="Sofa Mỹ" 
+                style="width:64px;height:64px;border-radius:10px;object-fit:cover;flex-shrink:0;" 
+                src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/sf618011-123-1666x1250_1_thumb_350.jpg"
+                )
+              div(style="flex:1;")
+                p(style="font-size:0.9rem;font-weight:700;margin-bottom:4px;") Sofa Phong Cách Mỹ SF007-123
+                p(style="font-size:0.8rem;color:var(--text-light);") Màu: Beige × 1
+              p(style="font-size:0.9rem;font-weight:700;color:var(--primary);text-align:right;") 35.000.000 ₫
+            div(
+              style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);display:flex;gap:12px;"
+              )
+              button.btn.btn-outline-dark.btn-sm(style="padding:10px 16px;") Mua lại
+              button.btn.btn-outline-dark.btn-sm(style="padding:10px 16px;") Để lại đánh giá
+      // Pagination
+      div(style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:48px;")
+        button.btn.btn-outline-dark.btn-sm(
+          style="padding:10px 12px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;"
+          ) ←
+        button.btn.btn-sm(
+          style="padding:10px 12px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:var(--primary);color:white;border-radius:8px;font-weight:700;"
+          ) 1
+        button.btn.btn-outline-dark.btn-sm(
+          style="padding:10px 12px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;"
+          ) 2
+        button.btn.btn-outline-dark.btn-sm(
+          style="padding:10px 12px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;"
+          ) 3
+        button.btn.btn-outline-dark.btn-sm(
+          style="padding:10px 12px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;"
+          ) →
+  // Help Section
+  section.section(style="background:var(--off-white);")
+    .container
+      div(style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;")
+        div
+          h2.section-title Cần hỗ trợ?
+          p(style="color:var(--text-light);margin-top:12px;line-height:1.8;font-size:0.95rem;")
+            | Nếu bạn có bất kỳ câu hỏi nào về đơn hàng của mình, chúng tôi ở đây để giúp. Liên hệ với chúng tôi qua hotline hoặc email bất kỳ lúc nào.
+          div(style="display:flex;gap:12px;margin-top:24px;")
+            button.btn.btn-gold(style="padding:14px 28px;") ☎️ Gọi cho chúng tôi
+            button.btn.btn-outline-dark(style="padding:14px 28px;") 💬 Chat trực tuyến
+        div(style="display:grid;gap:20px;")
+          div(
+            style="background:white;padding:24px;border-radius:var(--radius-xl);border:1px solid var(--border);"
+            )
+            h3(style="font-weight:800;margin-bottom:8px;color:var(--primary);") Hotline
+            p(style="font-size:1.1rem;font-weight:700;color:var(--accent-dark);")
+              a(href="tel:0901191616") 0901 191 616
+          div(
+            style="background:white;padding:24px;border-radius:var(--radius-xl);border:1px solid var(--border);"
+            )
+            h3(style="font-weight:800;margin-bottom:8px;color:var(--primary);") Email
+            p(style="font-size:1rem;font-weight:600;color:var(--text-mid);")
+              a(href="mailto:support@ohdecor.vn") support@ohdecor.vn

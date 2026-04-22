@@ -1,0 +1,339 @@
+extends ../layouts/default.pug
+
+block content
+  .page-hero
+    .container
+      h1 Sản phẩm
+      p Bộ sưu tập nội thất cao cấp được chọn lọc kỹ càng
+      nav.breadcrumb
+        a(href="index.html") Trang chủ
+        span ›
+        span Sản phẩm
+  section.section
+    .container
+      // Category chips
+      .filter-group(style="margin-bottom:32px;display:flex;gap:10px;flex-wrap:wrap;")
+        button.filter-chip.active Tất cả
+        button.filter-chip SOFA
+        button.filter-chip GHẾ
+        button.filter-chip BÀN
+        button.filter-chip GIƯỜNG
+        button.filter-chip ĐÈN
+        button.filter-chip TỦ
+        button.filter-chip CÂY
+      .shop-layout
+        // Filter sidebar
+        aside#filterPanel.filter-panel
+          div(style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;")
+            h3(style="margin:0;") Bộ lọc
+            button#filterToggle(style="font-size:0.8rem;color:var(--text-light);") ✕ Đóng
+          .filter-group
+            h3 Khoảng giá
+            label(
+              style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:0.88rem;cursor:pointer;"
+              )
+              input(
+                checked="" 
+                name="price" 
+                type="radio"
+                )
+              | Dưới 10 triệu
+            label(
+              style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:0.88rem;cursor:pointer;"
+              )
+              input(
+                name="price" 
+                type="radio"
+                )
+              | 10 – 25 triệu
+            label(
+              style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:0.88rem;cursor:pointer;"
+              )
+              input(
+                name="price" 
+                type="radio"
+                )
+              | 25 – 50 triệu
+            label(style="display:flex;align-items:center;gap:8px;font-size:0.88rem;cursor:pointer;")
+              input(
+                name="price" 
+                type="radio"
+                )
+              | Trên 50 triệu
+          .filter-group
+            h3 Chất liệu
+            label(
+              style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:0.88rem;cursor:pointer;"
+              )
+              input(type="checkbox")
+              | Da thật
+            label(
+              style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:0.88rem;cursor:pointer;"
+              )
+              input(type="checkbox")
+              | Vải
+            label(
+              style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:0.88rem;cursor:pointer;"
+              )
+              input(type="checkbox")
+              | Gỗ tự nhiên
+            label(style="display:flex;align-items:center;gap:8px;font-size:0.88rem;cursor:pointer;")
+              input(type="checkbox")
+              | Kim loại
+          .filter-group
+            h3 Phong cách
+            label(
+              style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:0.88rem;cursor:pointer;"
+              )
+              input(type="checkbox")
+              | Hiện đại
+            label(
+              style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:0.88rem;cursor:pointer;"
+              )
+              input(type="checkbox")
+              | Tối giản
+            label(
+              style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:0.88rem;cursor:pointer;"
+              )
+              input(type="checkbox")
+              | Sang trọng
+            label(style="display:flex;align-items:center;gap:8px;font-size:0.88rem;cursor:pointer;")
+              input(type="checkbox")
+              | Cổ điển
+          button.btn.btn-gold(style="width:100%;justify-content:center;") Áp dụng bộ lọc
+        // Product grid
+        div
+          .shop-header
+            span(style="font-size:0.88rem;color:var(--text-light);")
+              | Hiển thị
+              strong 12
+              | sản phẩm
+            div(style="display:flex;align-items:center;gap:12px;")
+              button#filterToggleMobile.btn.btn-outline-dark.btn-sm ⊞ Bộ lọc
+              select(
+                style="padding:9px 14px;border:2px solid var(--border);border-radius:999px;font:inherit;font-size:0.85rem;outline:none;color:var(--text-mid);"
+                )
+                option Mới nhất
+                option Giá thấp → cao
+                option Giá cao → thấp
+                option Nổi bật
+          .products-list-grid
+            article.prod-card
+              a.prod-img-wrap(href="#")
+                img(
+                  alt="Ghế sofa văng" 
+                  src="https://i.pinimg.com/736x/d8/bd/ae/d8bdae22912c0a4040e4f3d336cb645a.jpg"
+                  )
+                span.prod-badge -6%
+                .prod-overlay
+                  button.quick-add Thêm giỏ hàng
+              .prod-body
+                span(
+                  style="font-size:0.72rem;font-weight:700;color:var(--accent-dark);text-transform:uppercase;letter-spacing:.06em;"
+                  ) SOFA
+                h3.prod-name
+                  a(href="#") Ghế sofa văng da Hàn Quốc hiện đại thanh lịch
+                .prod-price
+                  span.price-old 36.000.000 ₫
+                  span.price-new 34.000.000 ₫
+                .prod-stars ★★★★★
+            article.prod-card
+              a.prod-img-wrap(href="#")
+                img(
+                  alt="Sofa Mỹ" 
+                  src="https://i.pinimg.com/736x/d8/bd/ae/d8bdae22912c0a4040e4f3d336cb645a.jpg"
+                  )
+                span.prod-badge -22%
+                .prod-overlay
+                  button.quick-add Thêm giỏ hàng
+              .prod-body
+                span(
+                  style="font-size:0.72rem;font-weight:700;color:var(--accent-dark);text-transform:uppercase;letter-spacing:.06em;"
+                  ) SOFA
+                h3.prod-name
+                  a(href="#") Sofa Phong Cách Mỹ SF007-123
+                .prod-price
+                  span.price-old 45.000.000 ₫
+                  span.price-new 35.000.000 ₫
+                .prod-stars ★★★★★
+            article.prod-card
+              a.prod-img-wrap(href="#")
+                img(
+                  alt="Sofa" 
+                  src="https://i.pinimg.com/736x/d8/bd/ae/d8bdae22912c0a4040e4f3d336cb645a.jpg"
+                  )
+                span.prod-badge -7%
+                .prod-overlay
+                  button.quick-add Thêm giỏ hàng
+              .prod-body
+                span(
+                  style="font-size:0.72rem;font-weight:700;color:var(--accent-dark);text-transform:uppercase;letter-spacing:.06em;"
+                  ) SOFA
+                h3.prod-name
+                  a(href="#") Sofa Phong Cách Mỹ SF618015-123
+                .prod-price
+                  span.price-old 6.000.000 ₫
+                  span.price-new 5.600.000 ₫
+                .prod-stars ★★★★☆
+            article.prod-card
+              a.prod-img-wrap(href="#")
+                img(
+                  alt="Sofa góc" 
+                  src="https://i.pinimg.com/736x/d8/bd/ae/d8bdae22912c0a4040e4f3d336cb645a.jpg"
+                  )
+                span.prod-badge -20%
+                .prod-overlay
+                  button.quick-add Thêm giỏ hàng
+              .prod-body
+                span(
+                  style="font-size:0.72rem;font-weight:700;color:var(--accent-dark);text-transform:uppercase;letter-spacing:.06em;"
+                  ) SOFA
+                h3.prod-name
+                  a(href="#") Sofa góc L HNS142 – Thiết kế đơn giản, hiện đại
+                .prod-price
+                  span.price-old 3.750.000 ₫
+                  span.price-new 3.000.000 ₫
+                .prod-stars ★★★★★
+            article.prod-card
+              a.prod-img-wrap(href="#")
+                img(
+                  alt="Ghế" 
+                  src="https://i.pinimg.com/736x/d8/bd/ae/d8bdae22912c0a4040e4f3d336cb645a.jpg"
+                  )
+                .prod-overlay
+                  button.quick-add Thêm giỏ hàng
+              .prod-body
+                span(
+                  style="font-size:0.72rem;font-weight:700;color:var(--accent-dark);text-transform:uppercase;letter-spacing:.06em;"
+                  ) GHẾ
+                h3.prod-name
+                  a(href="#") Ghế Accent hiện đại tối giản
+                .prod-price
+                  span.price-new 4.500.000 ₫
+                .prod-stars ★★★★☆
+            article.prod-card
+              a.prod-img-wrap(href="#")
+                img(
+                  alt="Bàn" 
+                  src="https://i.pinimg.com/736x/d8/bd/ae/d8bdae22912c0a4040e4f3d336cb645a.jpg"
+                  )
+                .prod-overlay
+                  button.quick-add Thêm giỏ hàng
+              .prod-body
+                span(
+                  style="font-size:0.72rem;font-weight:700;color:var(--accent-dark);text-transform:uppercase;letter-spacing:.06em;"
+                  ) BÀN
+                h3.prod-name
+                  a(href="#") Bàn ăn gỗ tự nhiên 6 người
+                .prod-price
+                  span.price-new 12.000.000 ₫
+                .prod-stars ★★★★★
+            article.prod-card
+              a.prod-img-wrap(href="#")
+                img(
+                  alt="Đèn" 
+                  src="https://i.pinimg.com/736x/d8/bd/ae/d8bdae22912c0a4040e4f3d336cb645a.jpg"
+                  )
+                .prod-overlay
+                  button.quick-add Thêm giỏ hàng
+              .prod-body
+                span(
+                  style="font-size:0.72rem;font-weight:700;color:var(--accent-dark);text-transform:uppercase;letter-spacing:.06em;"
+                  ) ĐÈN
+                h3.prod-name
+                  a(href="#") Đèn trang trí cầu thang đẹp
+                .prod-price
+                  span.price-new 2.400.000 ₫
+                .prod-stars ★★★★☆
+            article.prod-card
+              a.prod-img-wrap(href="#")
+                img(
+                  alt="Giường" 
+                  src="https://cdn3729.cdn-template-4s.com/thumbs/danh-muc/download_2_thumb_350.webp"
+                  )
+                .prod-overlay
+                  button.quick-add Thêm giỏ hàng
+              .prod-body
+                span(
+                  style="font-size:0.72rem;font-weight:700;color:var(--accent-dark);text-transform:uppercase;letter-spacing:.06em;"
+                  ) GIƯỜNG
+                h3.prod-name
+                  a(href="#") Giường ngủ phong cách Bắc Âu
+                .prod-price
+                  span.price-new 8.800.000 ₫
+                .prod-stars ★★★★★
+            article.prod-card
+              a.prod-img-wrap(href="#")
+                img(
+                  alt="Tủ" 
+                  src="https://cdn3729.cdn-template-4s.com/thumbs/danh-muc/cate_3_thumb_350.webp"
+                  )
+                .prod-overlay
+                  button.quick-add Thêm giỏ hàng
+              .prod-body
+                span(
+                  style="font-size:0.72rem;font-weight:700;color:var(--accent-dark);text-transform:uppercase;letter-spacing:.06em;"
+                  ) TỦ
+                h3.prod-name
+                  a(href="#") Tủ quần áo cánh trượt 3 buồng
+                .prod-price
+                  span.price-new 15.500.000 ₫
+                .prod-stars ★★★★☆
+            article.prod-card
+              a.prod-img-wrap(href="#")
+                img(
+                  alt="Cây xanh" 
+                  src="https://cdn3729.cdn-template-4s.com/thumbs/danh-muc/cate_7_thumb_350.webp"
+                  )
+                .prod-overlay
+                  button.quick-add Thêm giỏ hàng
+              .prod-body
+                span(
+                  style="font-size:0.72rem;font-weight:700;color:var(--accent-dark);text-transform:uppercase;letter-spacing:.06em;"
+                  ) CÂY
+                h3.prod-name
+                  a(href="#") Cây xanh trang trí phòng khách
+                .prod-price
+                  span.price-new 850.000 ₫
+                .prod-stars ★★★★★
+            article.prod-card
+              a.prod-img-wrap(href="#")
+                img(
+                  alt="Sofa" 
+                  src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/mau-ghe-sofa-vang-hien-dai-boc-da-han-quoc-sf360_thumb_350.jpg"
+                  )
+                span.prod-badge -15%
+                .prod-overlay
+                  button.quick-add Thêm giỏ hàng
+              .prod-body
+                span(
+                  style="font-size:0.72rem;font-weight:700;color:var(--accent-dark);text-transform:uppercase;letter-spacing:.06em;"
+                  ) SOFA
+                h3.prod-name
+                  a(href="#") Sofa vải cao cấp phong cách Ý
+                .prod-price
+                  span.price-old 28.000.000 ₫
+                  span.price-new 23.800.000 ₫
+                .prod-stars ★★★★★
+            article.prod-card
+              a.prod-img-wrap(href="#")
+                img(
+                  alt="Sofa" 
+                  src="https://cdn3729.cdn-template-4s.com/thumbs/danh-muc/download_4_thumb_350.webp"
+                  )
+                .prod-overlay
+                  button.quick-add Thêm giỏ hàng
+              .prod-body
+                span(
+                  style="font-size:0.72rem;font-weight:700;color:var(--accent-dark);text-transform:uppercase;letter-spacing:.06em;"
+                  ) SOFA
+                h3.prod-name
+                  a(href="#") Sofa đơn thiết kế sang trọng
+                .prod-price
+                  span.price-new 9.200.000 ₫
+                .prod-stars ★★★★☆
+          .pagination
+            button.page-btn.active 1
+            button.page-btn 2
+            button.page-btn 3
+            button.page-btn ›

@@ -1,0 +1,135 @@
+
+header#site-header.site-header
+  .header-top-bar
+    .container.header-top-inner
+      span
+        | Hotline : 
+        a(href="") 0373382805
+      span Miễn phí vận chuyển cho đơn hàng từ 5 triệu
+      span
+        | Email : 
+        a vmquynh.dhti17a3@sv.uneti.edu.vn
+  .container.header-main-inner
+    button#hamburger.hamburger(aria-label="Mở menu")
+      span
+      span
+      span
+    a.logo(href="/home")
+      span.logo-oh
+        | MANHQUYNH
+        span.logo-decor Decor.
+    nav#site-nav.site-nav
+      a.nav-link.active(href="/home") Trang chủ
+      a.nav-link(href="/about") Về chúng tôi
+      a.nav-link(href="/products") Sản phẩm
+      a.nav-link(href="/news") Tin tức
+      a.nav-link(href="/contact") Liên hệ
+    .header-actions
+      button#searchToggle.icon-action.search-toggle(aria-label="Tìm kiếm")
+        svg(
+          stroke-width="2" 
+          stroke="currentColor" 
+          fill="none" 
+          viewBox="0 0 24 24" 
+          height="20" 
+          width="20"
+          )
+          circle(
+            r="8" 
+            cy="11" 
+            cx="11"
+            )
+          line(
+            y2="16.65" 
+            x2="16.65" 
+            y1="21" 
+            x1="21"
+            )
+      // User Info (shown when logged in)
+    #headerUserInfo.header-user-info(style="display:none;")
+      #headerUserAvatar.header-user-avatar(
+        style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);display:flex;align-items:center;justify-content:center;"
+        )
+        span#headerUserInitials(style="font-size:0.75rem;font-weight:900;color:var(--accent);") NQ
+      .header-user-details(style="display:flex;flex-direction:column;gap:2px;")
+        span#headerUserName(style="font-size:0.75rem;font-weight:800;color:var(--text-dark);line-height:1.2;") Nguyễn Quỳnh
+        span#headerUserRole(
+          style="font-size:0.65rem;font-weight:700;color:var(--accent-dark);text-transform:uppercase;letter-spacing:0.03em;"
+          ) Quản trị viên
+    // Login button (shown when not logged in)
+    a#headerLoginBtn.icon-action(
+      aria-label="Đăng nhập" 
+      href="/account/login"
+      )
+      svg(
+        stroke-width="2" 
+        stroke="currentColor" 
+        fill="none" 
+        viewBox="0 0 24 24" 
+        height="20" 
+        width="20"
+        )
+        path(d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2")
+        circle(
+          r="4" 
+          cy="7" 
+          cx="12"
+          )
+    a.icon-action.cart-icon(
+      aria-label="Giỏ hàng" 
+      href="/cart"
+      )
+      svg(
+        stroke-width="2" 
+        stroke="currentColor" 
+        fill="none" 
+        viewBox="0 0 24 24" 
+        height="20" 
+        width="20"
+        )
+        path(d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z")
+        line(
+          y2="6" 
+          x2="21" 
+          y1="6" 
+          x1="3"
+          )
+        path(d="M16 10a4 4 0 0 1-8 0")
+      span#cartCount.cart-count 0
+    // Search overlay
+    #searchOverlay.search-overlay
+      .container.search-overlay-inner
+        form.search-form-overlay(action="#")
+          input#searchInput(
+            autocomplete="off" 
+            placeholder="Nhập từ khóa tìm kiếm..." 
+            type="search"
+            )
+          button(
+            aria-label="Tìm" 
+            type="submit"
+            )
+            svg(
+              stroke-width="2" 
+              stroke="currentColor" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              height="22" 
+              width="22"
+              )
+              circle(
+                r="8" 
+                cy="11" 
+                cx="11"
+                )
+              line(
+                y2="16.65" 
+                x2="16.65" 
+                y1="21" 
+                x1="21"
+                )
+          button#closeSearch.close-search(
+            aria-label="Đóng" 
+            type="button"
+            ) ✕
+    #mobileOverlay.mobile-overlay

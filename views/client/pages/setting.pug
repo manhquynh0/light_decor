@@ -1,0 +1,398 @@
+extends ../layouts/default.pug
+
+block content
+  .page-hero(style="padding:36px 0;")
+    .container
+      h1 Cài đặt tài khoản
+      nav.breadcrumb
+        a(href="index.html") Trang chủ
+        span ›
+        span Cài đặt
+
+  .settings-page
+    .container
+      .settings-layout
+        // SIDEBAR
+        aside.settings-sidebar
+          // User Card
+          .user-card
+            .user-avatar-wrap
+              img#userAvatarImg.user-avatar-img(
+                style="display:none;"
+                alt="Avatar"
+                src=""
+              )
+              #avatarInitials.avatar-initials NT
+              input#avatarUpload.avatar-upload-input(
+                accept="image/*"
+                type="file"
+              )
+              button.avatar-edit-btn(
+                onclick="document.getElementById('avatarUpload').click()"
+                title="Đổi ảnh đại diện"
+              )
+                svg(
+                  stroke-width="2.5"
+                  stroke="white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  height="12"
+                  width="12"
+                )
+                  path(d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7")
+                  path(d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z")
+            #sidebar-name.user-card-name Nguyễn Thành
+            .user-card-email admin@ohdecor.vn
+            span.user-role-badge.role-admin
+              svg(
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                height="10"
+                width="10"
+              )
+                path(d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z")
+              | Quản trị viên
+
+          // Nav
+          nav#settingsNav.settings-nav
+            .settings-nav-group
+              .settings-nav-label Tài khoản
+              button#nav-profile.settings-nav-item( onclick="window.location.href='/account/setting/information'")
+                svg(
+                  stroke-width="2"
+                  stroke="currentColor"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  height="16"
+                  width="16"
+                )
+                  path(d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2")
+                  circle(r="4" cy="7" cx="12")
+                | Thông tin cá nhân
+              button#nav-security.settings-nav-item(onclick="window.location.href='/account/setting/reset-password'")
+                svg(
+                  stroke-width="2"
+                  stroke="currentColor"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  height="16"
+                  width="16"
+                )
+                  rect(ry="2" rx="2" height="11" width="18" y="11" x="3")
+                  path(d="M7 11V7a5 5 0 0 1 10 0v4")
+                | Bảo mật & Mật khẩu
+              button#nav-notifications.settings-nav-item(onclick="window.location.href='/account/setting/notification'")
+                svg(
+                  stroke-width="2"
+                  stroke="currentColor"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  height="16"
+                  width="16"
+                )
+                  path(d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9")
+                  path(d="M13.73 21a2 2 0 0 1-3.46 0")
+                | Thông báo
+              button#nav-orders-history.settings-nav-item(onclick="window.location.href='/account/setting/orders-history'")
+                svg(
+                  stroke-width="2"
+                  stroke="currentColor"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  height="16"
+                  width="16"
+                )
+                  path(d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9")
+                  path(d="M13.73 21a2 2 0 0 1-3.46 0")
+                | Lịch Sử Đơn hàng
+
+            #adminNavGroup.settings-nav-group
+              .settings-nav-label Quản trị
+              button#nav-admin.settings-nav-item(onclick="window.location.href='/admin/dashboard'")
+                svg(
+                  stroke-width="2"
+                  stroke="currentColor"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  height="16"
+                  width="16"
+                )
+                  rect(height="7" width="7" y="3" x="3")
+                  rect(height="7" width="7" y="3" x="14")
+                  rect(height="7" width="7" y="14" x="14")
+                  rect(height="7" width="7" y="14" x="3")
+                | Bảng quản trị
+                span.admin-tab-badge(style="margin-left:auto;") ADMIN
+
+            .settings-nav-group
+              button#nav-logout.settings-nav-item.nav-item-danger(data-panel="logout")
+                svg(
+                  stroke-width="2"
+                  stroke="currentColor"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  height="16"
+                  width="16"
+                )
+                  path(d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4")
+                  polyline(points="16 17 21 12 16 7")
+                  line(y2="12" x2="9" y1="12" x1="21")
+                | Đăng xuất
+
+        // MAIN PANELS
+        #settingsPanels.settings-panels
+          block main
+
+      //-       // Order history card
+      //-       .settings-card
+      //-         .settings-card-header
+      //-           div
+      //-             h2 Lịch sử đơn hàng của tôi
+      //-             p 5 đơn hàng gần nhất
+      //-           a.btn.btn-gold-outline.btn-sm(href="cart.html") Xem tất cả
+      //-         .settings-card-body(style="padding:0;")
+      //-           table.data-table
+      //-             thead
+      //-               tr
+      //-                 th Mã đơn
+      //-                 th Ngày đặt
+      //-                 th Sản phẩm
+      //-                 th Tổng tiền
+      //-                 th Trạng thái
+      //-             tbody
+      //-               tr
+      //-                 td.td-bold #ORD-2024-001
+      //-                 td 12/04/2024
+      //-                 td Ghế sofa Nordic 3 chỗ
+      //-                 td.td-bold 28.500.000 ₫
+      //-                 td
+      //-                   span.status-badge.status-delivered Đã giao
+
+      //-     // ===== SECURITY PANEL =====
+      //-     #panel-security.settings-panel
+      //-       .settings-card
+      //-         .settings-card-header
+      //-           div
+      //-             h2 Đổi mật khẩu
+      //-             p Sử dụng mật khẩu mạnh để bảo vệ tài khoản
+      //-         .settings-card-body
+      //-           form#passwordForm
+      //-             .form-group
+      //-               label(for="currentPass") Mật khẩu hiện tại
+      //-               div(style="position:relative;")
+      //-                 input#currentPass.form-control(
+      //-                   required=""
+      //-                   placeholder="Nhập mật khẩu hiện tại"
+      //-                   type="password"
+      //-                 )
+      //-                 button(
+      //-                   style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:0.8rem;font-weight:700;color:var(--accent-dark);"
+      //-                   data-show-pass="currentPass"
+      //-                   type="button"
+      //-                 ) Hiện
+      //-             .form-group
+      //-               label(for="newPass") Mật khẩu mới
+      //-               div(style="position:relative;")
+      //-                 input#newPass.form-control(
+      //-                   required=""
+      //-                   placeholder="Tối thiểu 8 ký tự"
+      //-                   type="password"
+      //-                 )
+      //-                 button(
+      //-                   style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:0.8rem;font-weight:700;color:var(--accent-dark);"
+      //-                   data-show-pass="newPass"
+      //-                   type="button"
+      //-                 ) Hiện
+      //-               #passStrength.password-strength(style="display:none;")
+      //-                 .strength-bar
+      //-                   #strengthFill.strength-fill
+      //-                 span#strengthText.strength-text Nhập mật khẩu...
+      //-             .form-group
+      //-               label(for="confirmPass") Xác nhận mật khẩu mới
+      //-               div(style="position:relative;")
+      //-                 input#confirmPass.form-control(
+      //-                   required=""
+      //-                   placeholder="Nhập lại mật khẩu mới"
+      //-                   type="password"
+      //-                 )
+      //-                 button(
+      //-                   style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:0.8rem;font-weight:700;color:var(--accent-dark);"
+      //-                   data-show-pass="confirmPass"
+      //-                   type="button"
+      //-                 ) Hiện
+      //-             .form-actions
+      //-               button.btn.btn-gold(type="submit")
+      //-                 svg(
+      //-                   stroke-width="2.5"
+      //-                   stroke="currentColor"
+      //-                   fill="none"
+      //-                   viewBox="0 0 24 24"
+      //-                   height="16"
+      //-                   width="16"
+      //-                 )
+      //-                   rect(rx="2" height="11" width="18" y="11" x="3")
+      //-                   path(d="M7 11V7a5 5 0 0 1 10 0v4")
+      //-                 | Cập nhật mật khẩu
+      //-               span#passSaveOk.save-indicator ✓ Mật khẩu đã được cập nhật!
+
+      //-       .settings-card
+      //-         .settings-card-header
+      //-           div
+      //-             h2 Phiên đăng nhập
+      //-             p Quản lý các thiết bị đang đăng nhập vào tài khoản
+      //-         .settings-card-body
+      //-           .toggle-list
+      //-             .toggle-item
+      //-               .toggle-info
+      //-                 h4 💻 Windows – Chrome (Thiết bị hiện tại)
+      //-                 p TP. Hồ Chí Minh • Đang hoạt động
+      //-               span.status-badge.status-active Hiện tại
+      //-             .toggle-item
+      //-               .toggle-info
+      //-                 h4 📱 iOS – Safari
+      //-                 p TP. Hồ Chí Minh • 2 giờ trước
+      //-               button.btn-danger(style="font-size:0.75rem;padding:6px 14px;") Đăng xuất
+      //-             .toggle-item
+      //-               .toggle-info
+      //-                 h4 💻 macOS – Firefox
+      //-                 p Hà Nội • 3 ngày trước
+      //-               button.btn-danger(style="font-size:0.75rem;padding:6px 14px;") Đăng xuất
+
+      //-       .settings-card.danger-zone
+      //-         .settings-card-header
+      //-           div
+      //-             h2 ⚠ Vùng nguy hiểm
+      //-             p Các hành động không thể hoàn tác
+      //-         .settings-card-body
+      //-           div(style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;")
+      //-             div
+      //-               strong(style="font-size:0.9rem;color:var(--text-dark);") Xóa tài khoản vĩnh viễn
+      //-               p(style="font-size:0.82rem;color:var(--text-light);margin-top:4px;") Tất cả dữ liệu sẽ bị xóa và không thể khôi phục.
+      //-             button.btn-danger(onclick="openModal('deleteAccountModal')") Xóa tài khoản
+
+      //-     // ===== NOTIFICATIONS PANEL =====
+      //-     #panel-notifications.settings-panel
+      //-       .settings-card
+      //-         .settings-card-header
+      //-           div
+      //-             h2 Thông báo Email
+      //-             p Chọn những gì bạn muốn nhận qua email
+      //-         .settings-card-body
+      //-           .toggle-list
+      //-             .toggle-item
+      //-               .toggle-info
+      //-                 h4 Cập nhật đơn hàng
+      //-                 p Nhận thông báo khi trạng thái đơn hàng thay đổi
+      //-               label.toggle-switch
+      //-                 input(
+      //-                   checked=""
+      //-                   type="checkbox"
+      //-                 )
+      //-                 span.toggle-track
+      //-             .toggle-item
+      //-               .toggle-info
+      //-                 h4 Khuyến mãi & Ưu đãi
+      //-                 p Nhận thông tin về sale và chương trình khuyến mại
+      //-               label.toggle-switch
+      //-                 input(
+      //-                   checked=""
+      //-                   type="checkbox"
+      //-                 )
+      //-                 span.toggle-track
+      //-             .toggle-item
+      //-               .toggle-info
+      //-                 h4 Sản phẩm mới
+      //-                 p Thông báo khi có sản phẩm mới được thêm vào bộ sưu tập
+      //-               label.toggle-switch
+      //-                 input(type="checkbox")
+      //-                 span.toggle-track
+      //-             .toggle-item
+      //-               .toggle-info
+      //-                 h4 Bản tin hàng tuần
+      //-                 p Tóm tắt xu hướng nội thất và ý tưởng thiết kế
+      //-               label.toggle-switch
+      //-                 input(
+      //-                   checked=""
+      //-                   type="checkbox"
+      //-                 )
+      //-                 span.toggle-track
+
+      //-       .settings-card
+      //-         .settings-card-header
+      //-           div
+      //-             h2 Thông báo trong ứng dụng
+      //-             p Kiểm soát thông báo hiển thị trực tiếp trên website
+      //-         .settings-card-body
+      //-           .toggle-list
+      //-             .toggle-item
+      //-               .toggle-info
+      //-                 h4 Tin nhắn từ hỗ trợ
+      //-                 p Nhận thông báo khi team hỗ trợ phản hồi
+      //-               label.toggle-switch
+      //-                 input(
+      //-                   checked=""
+      //-                   type="checkbox"
+      //-                 )
+      //-                 span.toggle-track
+      //-             .toggle-item
+      //-               .toggle-info
+      //-                 h4 Giỏ hàng bị bỏ quên
+      //-                 p Nhắc nhở khi có sản phẩm trong giỏ hàng chưa thanh toán
+      //-               label.toggle-switch
+      //-                 input(
+      //-                   checked=""
+      //-                   type="checkbox"
+      //-                 )
+      //-                 span.toggle-track
+      //-             .toggle-item
+      //-               .toggle-info
+      //-                 h4 Đánh giá sản phẩm
+      //-                 p Nhắc nhở đánh giá sau khi nhận hàng
+      //-               label.toggle-switch
+      //-                 input(type="checkbox")
+      //-                 span.toggle-track
+      //-           .form-actions(style="margin-top:24px;")
+      //-             button.btn.btn-gold(onclick="showSaveIndicator('notifSaveOk')")
+      //-               svg(
+      //-                 stroke-width="2.5"
+      //-                 stroke="currentColor"
+      //-                 fill="none"
+      //-                 viewBox="0 0 24 24"
+      //-                 height="16"
+      //-                 width="16"
+      //-               )
+      //-                 path(d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z")
+      //-                 polyline(points="17 21 17 13 7 13 7 21")
+      //-                 polyline(points="7 3 7 8 15 8")
+      //-               | Lưu cài đặt
+      //-             span#notifSaveOk.save-indicator ✓ Đã lưu!
+
+      //- // Delete Account Confirm Modal
+      //- #deleteAccountModal.modal-backdrop
+      //-   .modal-box(style="text-align:center;")
+      //-     div(style="width:64px;height:64px;background:rgba(232,64,64,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.8rem;") ⚠️
+      //-     h3(style="font-size:1.1rem;font-weight:800;color:#e84040;margin-bottom:8px;") Xóa tài khoản vĩnh viễn?
+      //-     p(style="font-size:0.85rem;color:var(--text-light);margin-bottom:24px;")
+      //-       | Hành động này không thể hoàn tác. Tất cả dữ liệu, lịch sử mua hàng và thông tin tài khoản sẽ bị xóa vĩnh viễn.
+      //-     .form-group(style="text-align:left;")
+      //-       label
+      //-         | Nhập email để xác nhận:
+      //-         strong admin@ohdecor.vn
+      //-       input.form-control(
+      //-         placeholder="admin@ohdecor.vn"
+      //-         type="email"
+      //-       )
+      //-     div(style="display:flex;gap:12px;justify-content:center;")
+      //-       button.btn-danger(style="padding:12px 24px;border-radius:999px;font-size:0.9rem;") Xóa tài khoản
+      //-       button.btn.btn-outline-dark.btn-sm(onclick="closeModal('deleteAccountModal')") Hủy
+
+      //- button#backToTop.back-to-top
+      //-   svg(
+      //-     stroke-width="2.5"
+      //-     stroke="currentColor"
+      //-     fill="none"
+      //-     viewBox="0 0 24 24"
+      //-     height="18"
+      //-     width="18"
+      //-   )
+      //-     polyline(points="18 15 12 9 6 15")

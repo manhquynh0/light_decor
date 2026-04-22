@@ -1,0 +1,283 @@
+extend ../layouts/default
+block main
+  // SUB: PRODUCTS
+  #sub-products.admin-sub-panel
+  .table-toolbar
+    .toolbar-search
+      svg(
+        stroke-width="2"
+        stroke="currentColor"
+        fill="none"
+        viewBox="0 0 24 24"
+        height="14"
+        width="14"
+      )
+        circle(r="8" cy="11" cx="11")
+        line(y2="16.65" x2="16.65" y1="21" x1="21")
+      input(
+        placeholder="Tìm sản phẩm..."
+        type="text"
+      )
+    .toolbar-actions
+      select.btn-admin.btn-admin-outline
+        option(value="all") Tất cả
+        option(value="active") Đang bán
+        option(value="hidden") Ẩn
+        option(value="out") Hết hàng
+      button.btn-admin.btn-admin-primary(onclick="openModal('addProductModal')")
+        svg(
+          stroke-width="2.5"
+          stroke="currentColor"
+          fill="none"
+          viewBox="0 0 24 24"
+          height="13"
+          width="13"
+        )
+          line(y2="19" x2="12" y1="5" x1="12")
+          line(y2="12" x2="19" y1="12" x1="5")
+        | Thêm sản phẩm
+  .data-table-wrap(style="border-radius:0;border:none;border-top:1px solid var(--border);")
+    table.data-table
+      thead
+        tr
+          th Sản phẩm
+          th Danh mục
+          th Giá
+          th Tồn kho
+          th Trạng thái
+          th Thao tác
+      tbody
+        tr
+          td
+            .td-name
+              div(
+                style="width:44px;height:44px;border-radius:8px;background:var(--light-bg);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;"
+              ) 🛋
+              span.td-bold Sofa góc L Velvet Teal
+          td Sofa & Ghế
+          td.td-bold 56.800.000 ₫
+          td 12
+          td
+            span.status-badge.status-active Đang bán
+          td
+            .action-btns
+              button.action-btn.action-btn-edit(onclick="openEditProductModal()") ✏
+              button.action-btn.action-btn-delete 🗑
+  .table-pagination
+    span Hiển thị 1–5 / 486 sản phẩm
+    .pagination-btns
+      button.page-num.active 1
+      button.page-num 2
+      button.page-num 3
+
+  // Add Product Modal
+  #addProductModal.modal-backdrop
+    .modal-box
+      .modal-header
+        h3 Thêm sản phẩm
+        button.modal-close(onclick="closeModal('addProductModal')") ✕
+      form
+        .form-group
+          label Tên sản phẩm
+          input.form-control(
+            placeholder="Vd: Sofa góc L Velvet Teal"
+            type="text"
+          )
+        .form-row(style="margin-bottom:20px;")
+          .form-group(style="margin:0;")
+            label Danh mục
+            select.form-control
+              option Sofa & Ghế
+              option Bàn Ăn
+              option Phòng Ngủ
+              option Đèn & Ánh sáng
+              option Phụ kiện
+          .form-group(style="margin:0;")
+            label Giá bán (₫)
+            input.form-control(
+              placeholder="0"
+              type="number"
+            )
+        .form-row(style="margin-bottom:20px;")
+          .form-group(style="margin:0;")
+            label Tồn kho
+            input.form-control(
+              placeholder="0"
+              type="number"
+            )
+          .form-group(style="margin:0;")
+            label Giá gốc (₫)
+            input.form-control(
+              placeholder="Để trống nếu không giảm giá"
+              type="number"
+            )
+        .form-group
+          label Ảnh sản phẩm
+          div(style="display:flex;flex-direction:column;gap:12px;")
+            #productImagePreview(style="display:flex;gap:8px;flex-wrap:wrap;")
+            div(
+              onclick="document.getElementById('productImageUpload').click()"
+              style="width:80px;height:80px;border:2px dashed var(--border);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--light-bg);"
+            )
+              svg(
+                stroke-width="2"
+                stroke="var(--text-light)"
+                fill="none"
+                viewBox="0 0 24 24"
+                height="24"
+                width="24"
+              )
+                line(y2="19" x2="12" y1="5" x1="12")
+                line(y2="12" x2="19" y1="12" x1="5")
+            input#productImageUpload.avatar-upload-input(
+              onchange="previewProductImages(event)"
+              multiple=""
+              accept="image/*"
+              type="file"
+            )
+            button.btn.btn-outline-dark.btn-sm(
+              onclick="document.getElementById('productImageUpload').click()"
+              style="width:fit-content;"
+              type="button"
+            )
+              svg(
+                stroke-width="2"
+                stroke="currentColor"
+                fill="none"
+                viewBox="0 0 24 24"
+                height="14"
+                width="14"
+              )
+                path(d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4")
+                polyline(points="17 8 12 3 7 8")
+                line(y2="15" x2="12" y1="3" x1="12")
+              | Chọn ảnh
+            p(style="font-size:0.75rem;color:var(--text-light);") Chọn nhiều ảnh để làm gallery. Ảnh đầu tiên sẽ là ảnh chính.
+        .form-group
+          label Mô tả
+          textarea.form-control(
+            placeholder="Mô tả sản phẩm..."
+            rows="3"
+          )
+        .form-group
+          label Trạng thái
+          select.form-control
+            option Đang bán
+            option Ẩn
+            option Hết hàng
+            option Chờ duyệt
+        div(style="display:flex;gap:12px;")
+          button.btn.btn-gold(
+            style="flex:1;justify-content:center;"
+            type="submit"
+          ) Lưu sản phẩm
+          button.btn.btn-outline-dark(
+            onclick="closeModal('addProductModal')"
+            type="button"
+          ) Hủy
+  
+  #editProductModal.modal-backdrop
+    .modal-box
+      .modal-header
+        h3 Chỉnh sửa sản phẩm
+        button.modal-close(onclick="closeModal('editProductModal')") ✕
+
+      form
+        // Tên sản phẩm
+        .form-group
+          label Tên sản phẩm
+          input.form-control(
+            placeholder="Vd: Sofa góc L Velvet Teal"
+            type="text"
+          )
+
+        
+        .form-row(style="margin-bottom:20px;")
+          .form-group(style="margin:0;")
+            label Danh mục
+            select.form-control
+              option Sofa & Ghế
+              option Bàn Ăn
+              option Phòng Ngủ
+              option Đèn & Ánh sáng
+              option Phụ kiện
+
+          .form-group(style="margin:0;")
+            label Giá bán (₫)
+            input.form-control(
+              placeholder="0"
+              type="number"
+            )
+
+        // Tồn kho + Giá gốc
+        .form-row(style="margin-bottom:20px;")
+          .form-group(style="margin:0;")
+            label Tồn kho
+            input.form-control(
+              placeholder="0"
+              type="number"
+            )
+
+          .form-group(style="margin:0;")
+            label Giá gốc (₫)
+            input.form-control(
+              placeholder="Để trống nếu không giảm giá"
+              type="number"
+            )
+
+        // Ảnh sản phẩm
+        .form-group
+          label Ảnh sản phẩm
+          div(style="display:flex;flex-direction:column;gap:12px;")
+            #editProductImagePreview(style="display:flex;gap:8px;flex-wrap:wrap;")
+
+            div(
+              onclick="document.getElementById('editProductImageUpload').click()"
+              style="width:80px;height:80px;border:2px dashed var(--border);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--light-bg);"
+            )
+              | +
+
+            input#editProductImageUpload(
+              type="file"
+              multiple
+              accept="image/*"
+            )
+
+            button.btn.btn-outline-dark.btn-sm(
+              onclick="document.getElementById('editProductImageUpload').click()"
+              type="button"
+              style="width:fit-content;"
+            )
+              | Chọn ảnh
+
+            p(style="font-size:0.75rem;color:var(--text-light);")
+              | Chọn nhiều ảnh để làm gallery. Ảnh đầu tiên sẽ là ảnh chính.
+
+        // Mô tả
+        .form-group
+          label Mô tả
+          textarea.form-control(
+            placeholder="Mô tả sản phẩm..."
+            rows="3"
+          )
+
+        // Trạng thái
+        .form-group
+          label Trạng thái
+          select.form-control
+            option Đang bán
+            option Ẩn
+            option Hết hàng
+            option Chờ duyệt
+
+        // Button
+        div(style="display:flex;gap:12px;")
+          button.btn.btn-gold(
+            style="flex:1;justify-content:center;"
+            type="submit"
+          ) Lưu thay đổi
+
+          button.btn.btn-outline-dark(
+            type="button"
+            onclick="closeModal('editProductModal')"
+          ) Hủy

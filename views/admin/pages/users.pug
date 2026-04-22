@@ -1,0 +1,189 @@
+extend ../layouts/default
+block main
+  // SUB: USERS
+  #sub-users.admin-sub-panel
+  .table-toolbar
+    .toolbar-search
+      svg(
+        stroke-width="2"
+        stroke="currentColor"
+        fill="none"
+        viewBox="0 0 24 24"
+        height="14"
+        width="14"
+      )
+        circle(r="8" cy="11" cx="11")
+        line(y2="16.65" x2="16.65" y1="21" x1="21")
+      input(
+        placeholder="Tìm người dùng..."
+        type="text"
+      )
+    .toolbar-actions
+      .toolbar-actions
+        select.btn-admin.btn-admin-outline
+          option(value="all") Tất cả
+          option(value="active") Đang bán
+          option(value="hidden") Ẩn
+          option(value="out") Hết hàng
+      button.btn-admin.btn-admin-primary(onclick="openModal('addUserModal')")
+        svg(
+          stroke-width="2.5"
+          stroke="currentColor"
+          fill="none"
+          viewBox="0 0 24 24"
+          height="13"
+          width="13"
+        )
+          line(y2="19" x2="12" y1="5" x1="12")
+          line(y2="12" x2="19" y1="12" x1="5")
+        | Thêm người dùng
+  .data-table-wrap(style="border-radius:0;border:none;border-top:1px solid var(--border);")
+    table.data-table
+      thead
+        tr
+          th Người dùng
+          th Email
+          th Ngày tham gia
+          th Đơn hàng
+          th Trạng thái
+          th Vai trò
+          th Thao tác
+      tbody
+        tr
+          td
+            .td-name
+              .td-avatar NT
+              span.td-bold Nguyễn Thành
+          td admin@ohdecor.vn
+          td 01/01/2023
+          td —
+          td
+            span.status-badge.status-active Hoạt động
+          td
+            select.role-select
+              option(selected="") Admin
+              option Editor
+              option Customer
+          td
+            .action-btns
+              button.action-btn.action-btn-edit(onclick="openEditUserModal('Trần Linh', 'tranlinh@gmail.com', 'Customer', 'Hoạt động')") ✏
+              button.action-btn.action-btn-delete 🗑
+  .table-pagination
+    span Hiển thị 1–5 / 3.421 người dùng
+    .pagination-btns
+      button.page-num.active 1
+      button.page-num 2
+      button.page-num 3
+
+  // Add User Modal
+  #addUserModal.modal-backdrop
+    .modal-box
+      .modal-header
+        h3 Thêm người dùng mới
+        button.modal-close(onclick="closeModal('addUserModal')") ✕
+      form
+        .form-row(style="margin-bottom:20px;")
+          .form-group(style="margin:0;")
+            label Họ
+            input.form-control(
+              placeholder="Nguyễn"
+              type="text"
+            )
+          .form-group(style="margin:0;")
+            label Tên
+            input.form-control(
+              placeholder="Văn A"
+              type="text"
+            )
+        .form-group
+          label Email
+          input.form-control(
+            placeholder="email@example.com"
+            type="email"
+          )
+        .form-group
+          label Mật khẩu tạm thời
+          input.form-control(
+            placeholder="Tối thiểu 8 ký tự"
+            type="password"
+          )
+        .form-row(style="margin-bottom:20px;")
+          .form-group(style="margin:0;")
+            label Vai trò
+            select.form-control
+              option Customer
+              option Editor
+              option Admin
+          .form-group(style="margin:0;")
+            label Trạng thái
+            select.form-control
+              option Hoạt động
+              option Bị khóa
+        div(style="display:flex;gap:12px;")
+          button.btn.btn-gold(
+            style="flex:1;justify-content:center;"
+            type="submit"
+          ) Tạo tài khoản
+          button.btn.btn-outline-dark(
+            onclick="closeModal('addUserModal')"
+            type="button"
+          ) Hủy
+  #editUserModal.modal-backdrop
+    .modal-box
+      .modal-header
+        h3 Chỉnh sửa người dùng
+        button.modal-close(onclick="closeModal('editUserModal')") ✕
+
+      form
+        .form-row(style="margin-bottom:20px;")
+          .form-group(style="margin:0;")
+            label Họ
+            input.form-control(
+              placeholder="Nguyễn"
+              type="text"
+            )
+          .form-group(style="margin:0;")
+            label Tên
+            input.form-control(
+              placeholder="Văn A"
+              type="text"
+            )
+
+        .form-group
+          label Email
+          input.form-control(
+            placeholder="email@example.com"
+            type="email"
+          )
+
+        .form-group
+          label Mật khẩu mới
+          input.form-control(
+            placeholder="Để trống nếu không đổi"
+            type="password"
+          )
+
+        .form-row(style="margin-bottom:20px;")
+          .form-group(style="margin:0;")
+            label Vai trò
+            select.form-control
+              option Customer
+              option Editor
+              option Admin
+
+          .form-group(style="margin:0;")
+            label Trạng thái
+            select.form-control
+              option Hoạt động
+              option Bị khóa
+
+        div(style="display:flex;gap:12px;")
+          button.btn.btn-gold(
+            style="flex:1;justify-content:center;"
+            type="submit"
+          ) Lưu thay đổi
+
+          button.btn.btn-outline-dark(
+            type="button"
+            onclick="closeModal('editUserModal')"
+          ) Hủy

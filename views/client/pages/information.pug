@@ -1,0 +1,71 @@
+extends ./setting.pug
+block main
+  #panel-profile.settings-panel.active
+    .settings-card
+      .settings-card-header
+        div
+          h2 Thông tin cá nhân
+          p Cập nhật thông tin hiển thị trên tài khoản của bạn
+      .settings-card-body
+        form#profileForm
+          .form-row(style="margin-bottom:20px;")
+            .form-group(style="margin:0;")
+              label(for="firstName") Họ
+              input#firstName.form-control(
+                value="Nguyễn"
+                type="text"
+              )
+            .form-group(style="margin:0;")
+              label(for="lastName") Tên
+              input#lastName.form-control(
+                value="Thành"
+                type="text"
+              )
+          .form-group
+            label(for="profileEmail") Email
+            input#profileEmail.form-control(
+              value="admin@ohdecor.vn"
+              type="email"
+            )
+          .form-group
+            label(for="profilePhone") Số điện thoại
+            input#profilePhone.form-control(
+              placeholder="+84 xxx xxx xxx"
+              value="0901 191 616"
+              type="tel"
+            )
+          .form-group
+            label(for="profileBio") Giới thiệu ngắn
+            textarea#profileBio.form-control(
+              placeholder="Viết vài dòng giới thiệu về bạn..."
+              rows="3"
+            ) Quản trị viên hệ thống OH!Decor. Chuyên gia nội thất cao cấp với 8 năm kinh nghiệm.
+          .form-row(style="margin-bottom:20px;")
+            .form-group(style="margin:0;")
+              label(for="profileCity") Thành phố
+              select#profileCity.form-control
+                option Hà Nội
+                option(selected="") TP. Hồ Chí Minh
+                option Đà Nẵng
+                option Cần Thơ
+            .form-group(style="margin:0;")
+              label(for="profileGender") Giới tính
+              select#profileGender.form-control
+                option(selected="") Nam
+                option Nữ
+                option Khác
+          .form-actions
+            button#saveProfileBtn.btn.btn-gold(type="submit")
+              svg(
+                stroke-width="2.5"
+                stroke="currentColor"
+                fill="none"
+                viewBox="0 0 24 24"
+                height="16"
+                width="16"
+              )
+                path(d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z")
+                polyline(points="17 21 17 13 7 13 7 21")
+                polyline(points="7 3 7 8 15 8")
+              | Lưu thay đổi
+            span#profileSaveOk.save-indicator ✓ Đã lưu thành công!

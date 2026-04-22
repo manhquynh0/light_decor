@@ -1,0 +1,121 @@
+extends ../layouts/default.pug
+
+block content
+  .page-hero(style="padding:40px 0;")
+    .container
+      h1 Giỏ hàng
+      nav.breadcrumb
+        a(href="/home") Trang chủ
+        span ›
+        span Giỏ hàng
+
+  section.section
+    .container
+      .cart-layout
+        // Cart items
+        div
+          .cart-items-wrap
+            .cart-row.cart-row-header
+              span Sản phẩm
+              span(style="text-align:center;") Số lượng
+              span(style="text-align:center;") Đơn giá
+              span(style="text-align:right;") Thành tiền
+              span
+
+            .cart-row(data-price="34000000")
+              div(style="display:flex;align-items:center;gap:16px;")
+                img.cart-prod-img(src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/mau-ghe-sofa-vang-hien-dai-boc-da-han-quoc-sf360_thumb_350.jpg" alt="Sofa")
+                div
+                  strong(style="display:block;font-size:0.92rem;margin-bottom:4px;") Ghế sofa văng da Hàn Quốc
+                  span(style="font-size:0.8rem;color:var(--text-light);") Màu: Vàng / Chất liệu: Da
+
+              .cart-qty(style="justify-content:center;")
+                button −
+                span.qty-val 1
+                button +
+
+              div(style="text-align:center;font-size:0.92rem;font-weight:700;color:var(--primary);") 34.000.000 ₫
+              .line-total(style="text-align:right;font-size:0.92rem;font-weight:800;color:var(--primary);") 34.000.000 ₫
+              button(title="Xóa" style="color:var(--text-light);font-size:1.1rem;padding:4px 8px;") ✕
+
+            .cart-row(data-price="35000000")
+              div(style="display:flex;align-items:center;gap:16px;")
+                img.cart-prod-img(src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/sf618011-123-1666x1250_1_thumb_350.jpg" alt="Sofa Mỹ")
+                div
+                  strong(style="display:block;font-size:0.92rem;margin-bottom:4px;") Sofa Phong Cách Mỹ SF007-123
+                  span(style="font-size:0.8rem;color:var(--text-light);") Màu: Beige / Kích thước: 3 chỗ
+
+              .cart-qty(style="justify-content:center;")
+                button −
+                span.qty-val 1
+                button +
+
+              div(style="text-align:center;font-size:0.92rem;font-weight:700;color:var(--primary);") 35.000.000 ₫
+              .line-total(style="text-align:right;font-size:0.92rem;font-weight:800;color:var(--primary);") 35.000.000 ₫
+              button(title="Xóa" style="color:var(--text-light);font-size:1.1rem;padding:4px 8px;") ✕
+
+          div(style="margin-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;")
+            div(style="display:flex;gap:10px;")
+              input.form-control(type="text" placeholder="Nhập mã giảm giá" style="width:220px;padding:12px 16px;")
+              button.btn.btn-outline-dark(style="padding:12px 20px;") Áp dụng
+
+            a.btn.btn-outline-dark(href="/products") ← Tiếp tục mua sắm
+
+        // Cart summary
+        .cart-summary-panel
+          h3(style="font-size:1.1rem;font-weight:800;margin-bottom:20px;color:var(--primary);") Tóm tắt đơn hàng
+
+          .summary-line
+            span Tạm tính
+            strong.subtotal-val 69.000.000 ₫
+
+          .summary-line
+            span Phí vận chuyển
+            strong 150.000 ₫
+
+          .summary-line
+            span Giảm giá
+            strong(style="color:#e84040;") – 0 ₫
+
+          .summary-line.total
+            span Tổng cộng
+            strong.total-val 69.150.000 ₫
+
+          a.btn.btn-gold(href="/cart/payment" style="width:100%;justify-content:center;margin-top:20px;padding:16px;font-size:1rem;") Thanh toán ngay →
+
+          div(style="margin-top:16px;text-align:center;")
+            p(style="font-size:0.78rem;color:var(--text-light);display:flex;align-items:center;justify-content:center;gap:6px;")
+              svg(stroke="currentColor" stroke-width="2" fill="none" viewBox="0 0 24 24" width="14" height="14")
+                rect(x="3" y="11" width="18" height="11" rx="2" ry="2")
+                path(d="M7 11V7a5 5 0 0 1 10 0v4")
+              | Thanh toán an toàn & bảo mật
+
+          div(style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);")
+            p(style="font-size:0.8rem;font-weight:700;color:var(--text-mid);margin-bottom:10px;") Chúng tôi chấp nhận:
+            div(style="display:flex;gap:8px;flex-wrap:wrap;")
+              span.payment-badge VISA
+              span.payment-badge MasterCard
+              span.payment-badge COD
+              span.payment-badge MoMo
+              span.payment-badge ZaloPay
+
+  // You may also like
+  section.section(style="background:var(--off-white);")
+    .container
+      .section-head
+        div
+          p.section-eyebrow Gợi ý
+          h2.section-title Có thể bạn thích
+
+      .products-grid
+        article.prod-card
+          a.prod-img-wrap(href="/products")
+            img(src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/sf005-123-1666x1250_thumb_350.jpg" alt="Sofa")
+            .prod-overlay
+              button.quick-add Thêm giỏ hàng
+          .prod-body
+            h3.prod-name
+              a(href="/products") Sofa Phong Cách Mỹ SF618015
+            .prod-price
+              span.price-old 6.000.000 ₫
+              span.price-new 5.600.000 ₫

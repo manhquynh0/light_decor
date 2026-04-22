@@ -1,0 +1,95 @@
+extends ./setting.pug
+
+block main
+  #panel-notification.settings-panel.active
+
+    .settings-card
+      .settings-card-header
+        div
+          h2 Thông báo Email
+          p Chọn những gì bạn muốn nhận qua email
+
+      .settings-card-body
+        .toggle-list
+
+          .toggle-item
+            .toggle-info
+              h4 Cập nhật đơn hàng
+              p Nhận thông báo khi trạng thái đơn hàng thay đổi
+            label.toggle-switch
+              input(type="checkbox" checked)
+              span.toggle-track
+
+          .toggle-item
+            .toggle-info
+              h4 Khuyến mãi & Ưu đãi
+              p Nhận thông tin về sale và chương trình khuyến mại
+            label.toggle-switch
+              input(type="checkbox" checked)
+              span.toggle-track
+
+          .toggle-item
+            .toggle-info
+              h4 Sản phẩm mới
+              p Thông báo khi có sản phẩm mới được thêm vào bộ sưu tập
+            label.toggle-switch
+              input(type="checkbox")
+              span.toggle-track
+
+          .toggle-item
+            .toggle-info
+              h4 Bản tin hàng tuần
+              p Tóm tắt xu hướng nội thất và ý tưởng thiết kế
+            label.toggle-switch
+              input(type="checkbox" checked)
+              span.toggle-track
+
+    .settings-card
+      .settings-card-header
+        div
+          h2 Thông báo trong ứng dụng
+          p Kiểm soát thông báo hiển thị trực tiếp trên website
+
+      .settings-card-body
+        .toggle-list
+
+          .toggle-item
+            .toggle-info
+              h4 Tin nhắn từ hỗ trợ
+              p Nhận thông báo khi team hỗ trợ phản hồi
+            label.toggle-switch
+              input(type="checkbox" checked)
+              span.toggle-track
+
+          .toggle-item
+            .toggle-info
+              h4 Giỏ hàng bị bỏ quên
+              p Nhắc nhở khi có sản phẩm trong giỏ hàng chưa thanh toán
+            label.toggle-switch
+              input(type="checkbox" checked)
+              span.toggle-track
+
+          .toggle-item
+            .toggle-info
+              h4 Đánh giá sản phẩm
+              p Nhắc nhở đánh giá sau khi nhận hàng
+            label.toggle-switch
+              input(type="checkbox")
+              span.toggle-track
+
+        .form-actions(style="margin-top:24px;")
+          button.btn.btn-gold(onclick="showSaveIndicator('notifSaveOk')")
+            svg(
+              stroke-width="2.5"
+              stroke="currentColor"
+              fill="none"
+              viewBox="0 0 24 24"
+              height="16"
+              width="16"
+            )
+              path(d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z")
+              polyline(points="17 21 17 13 7 13 7 21")
+              polyline(points="7 3 7 8 15 8")
+            | Lưu cài đặt
+
+          span#notifSaveOk.save-indicator ✓ Đã lưu!

@@ -1,0 +1,149 @@
+extend ../layouts/default
+
+block main
+  #panel-admin.settings-panel
+
+  .admin-stats-grid
+    .admin-stat-card
+      .stat-icon.green
+        svg(
+          stroke-width="2"
+          stroke="currentColor"
+          fill="none"
+          viewBox="0 0 24 24"
+          height="22"
+          width="22"
+        )
+          path(d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z")
+          line(y2="6" x2="21" y1="6" x1="3")
+          path(d="M16 10a4 4 0 0 1-8 0")
+      .stat-info
+        .stat-val 1,284
+        .stat-label Tổng đơn hàng
+        span.stat-change.up ↑ 12% tháng này
+    .admin-stat-card
+      .stat-icon.gold
+        svg(
+          stroke-width="2"
+          stroke="currentColor"
+          fill="none"
+          viewBox="0 0 24 24"
+          height="22"
+          width="22"
+        )
+          line(y2="23" x2="12" y1="1" x1="12")
+          path(d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6")
+      .stat-info
+        .stat-val 4.8 tỷ
+        .stat-label Doanh thu tháng
+        span.stat-change.up ↑ 8.4% so với T3
+
+    .admin-stat-card
+      .stat-icon.blue
+        svg(
+          stroke-width="2"
+          stroke="currentColor"
+          fill="none"
+          viewBox="0 0 24 24"
+          height="22"
+          width="22"
+        )
+          path(d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2")
+          circle(r="4" cy="7" cx="12")
+      .stat-info
+        .stat-val 3,421
+        .stat-label Người dùng
+        span.stat-change.up ↑ 24 mới hôm nay
+
+    .admin-stat-card
+      .stat-icon.red
+        svg(
+          stroke-width="2"
+          stroke="currentColor"
+          fill="none"
+          viewBox="0 0 24 24"
+          height="22"
+          width="22"
+        )
+          path(d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z")
+      .stat-info
+        .stat-val 486
+        .stat-label Sản phẩm
+        span.stat-change.down ↓ 3 hết hàng
+
+  .chart-area
+    .chart-head
+      h3 Doanh thu 6 tháng gần nhất
+      .chart-legend
+        span.legend-dot.revenue Doanh thu
+        span.legend-dot.orders Đơn hàng
+    #miniChart.mini-chart
+    #chartLabels.chart-labels
+
+  .settings-card
+    .settings-card-body(style="padding: 28px 28px 0;")
+      #adminTabs.admin-tabs
+        button.admin-tab.active(data-sub="orders" onclick="window.location.href='/admin/orders'")
+          svg(
+            stroke-width="2"
+            stroke="currentColor"
+            fill="none"
+            viewBox="0 0 24 24"
+            height="14"
+            width="14"
+          )
+            path(d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z")
+            line(y2="6" x2="21" y1="6" x1="3")
+          | Đơn hàng
+          span.admin-tab-badge 28
+        button.admin-tab(data-sub="products" onclick="window.location.href='/admin/products'")
+          svg(
+            stroke-width="2"
+            stroke="currentColor"
+            fill="none"
+            viewBox="0 0 24 24"
+            height="14"
+            width="14"
+          )
+            path(d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z")
+          | Sản phẩm
+        button.admin-tab(data-sub="users" onclick="window.location.href='/admin/users'")
+          svg(
+            stroke-width="2"
+            stroke="currentColor"
+            fill="none"
+            viewBox="0 0 24 24"
+            height="14"
+            width="14"
+          )
+            path(d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2")
+            circle(r="4" cy="7" cx="9")
+            path(d="M23 21v-2a4 4 0 0 0-3-3.87")
+            path(d="M16 3.13a4 4 0 0 1 0 7.75")
+          | Người dùng
+          span.admin-tab-badge 2
+        button.admin-tab(data-sub="roles" onclick="window.location.href='/admin/roles'")
+          svg(
+            stroke-width="2"
+            stroke="currentColor"
+            fill="none"
+            viewBox="0 0 24 24"
+            height="14"
+            width="14"
+          )
+            path(d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z")
+          | Phân quyền
+        button.admin-tab(data-sub="categories" onclick="window.location.href='/admin/categories'")
+          svg(
+            stroke-width="2"
+            stroke="currentColor"
+            fill="none"
+            viewBox="0 0 24 24"
+            height="14"
+            width="14"
+          )
+            rect(height="7" width="7" y="3" x="3")
+            rect(height="7" width="7" y="3" x="14")
+            rect(height="7" width="7" y="14" x="14")
+            rect(height="7" width="7" y="14" x="3")
+          | Danh mục

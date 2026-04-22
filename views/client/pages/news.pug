@@ -1,0 +1,155 @@
+extends ../layouts/default.pug
+
+block content
+  .page-hero
+    .container
+      h1 Tin tức & Cảm hứng
+      p Xu hướng nội thất, mẹo thiết kế và câu chuyện không gian sống
+      nav.breadcrumb
+        a(href="index.html") Trang chủ
+        span ›
+        span Tin tức
+
+  section.section
+    .container
+      // Category filter
+      .filter-group(style="margin-bottom:40px;display:flex;gap:10px;flex-wrap:wrap;")
+        button.filter-chip.active Tất cả
+        button.filter-chip Xu hướng
+        button.filter-chip Phong cách sống
+        button.filter-chip Vật liệu
+        button.filter-chip Dự án
+        button.filter-chip Mẹo hay
+
+      // Featured article
+      .blog-featured(style="margin-bottom:40px;")
+        .blog-img-wrap(style="aspect-ratio:16/10;")
+          img(src="https://i.pinimg.com/736x/d8/bd/ae/d8bdae22912c0a4040e4f3d336cb645a.jpg" alt="Design Talk" style="width:100%;height:100%;object-fit:cover;")
+        
+        .blog-body
+          span.news-cat(style="position:static;margin-bottom:16px;display:inline-flex;align-self:flex-start;") Xu hướng
+          
+          .news-meta
+            span 30/10/2024
+            span 208 lượt xem
+          
+          h2(style="font-size:1.6rem;font-weight:800;margin:12px 0;line-height:1.3;")
+            a(href="#" style="color:var(--primary);") Design Talk – Chuyện trò về những xu hướng nội thất đang làm mưa làm gió
+          
+          p(style="color:var(--text-light);line-height:1.8;margin-bottom:20px;")
+            | Xu hướng chính là những gì được nhiều người quan tâm đến trong một khoảng thời gian nhất định...
+          
+          a.btn.btn-gold(href="#") Đọc tiếp →
+
+      // Blog grid
+      .blog-grid
+
+        article.news-card
+          a.news-img-link(href="#")
+            img(src="https://i.pinimg.com/736x/d8/bd/ae/d8bdae22912c0a4040e4f3d336cb645a.jpg" alt="Lagom")
+          span.news-cat Phong cách sống
+          
+          .news-body
+            .news-meta
+              span 30/10/2024
+              span 195 lượt xem
+            
+            h3
+              a(href="#") Mang làn gió Lagom đến không gian sống của bạn
+            
+            p Lagom, một thuật ngữ không còn quá xa lạ...
+            
+            a.news-read-more(href="#") Đọc thêm →
+
+        article.news-card
+          a.news-img-link(href="#")
+            img(src="https://i.pinimg.com/736x/d8/bd/ae/d8bdae22912c0a4040e4f3d336cb645a.jpg" alt="Gỗ sồi")
+          span.news-cat Vật liệu
+          
+          .news-body
+            .news-meta
+              span 30/10/2024
+              span 196 lượt xem
+            
+            h3
+              a(href="#") Nội thất gỗ sồi – sự giao thoa của vẻ đẹp và chất lượng
+            
+            p Ngày nay, xu hướng tìm về với vẻ đẹp đơn giản...
+            
+            a.news-read-more(href="#") Đọc thêm →
+
+        article.news-card
+          a.news-img-link(href="#")
+            img(src="https://i.pinimg.com/736x/d8/bd/ae/d8bdae22912c0a4040e4f3d336cb645a.jpg" alt="Cây decor")
+          span.news-cat Mẹo hay
+          
+          .news-body
+            .news-meta
+              span 28/10/2024
+              span 176 lượt xem
+            
+            h3
+              a(href="#") Ý tưởng trang trí cây giả decor trong nội thất xu hướng hot
+            
+            p Cây giả được làm từ vật liệu cao cấp...
+            
+            a.news-read-more(href="#") Đọc thêm →
+
+        article.news-card
+          a.news-img-link(href="#")
+            img(src="https://i.pinimg.com/736x/d8/bd/ae/d8bdae22912c0a4040e4f3d336cb645a.jpg" alt="Đèn trang trí")
+          span.news-cat Mẹo hay
+          
+          .news-body
+            .news-meta
+              span 25/10/2024
+              span 142 lượt xem
+            
+            h3
+              a(href="#") 4 nguyên tắc lựa chọn đèn trang trí bạn nên biết
+            
+            p Đèn không chỉ là nguồn sáng...
+            
+            a.news-read-more(href="#") Đọc thêm →
+
+        article.news-card
+          a.news-img-link(href="#")
+            img(src="https://i.pinimg.com/736x/d8/bd/ae/d8bdae22912c0a4040e4f3d336cb645a.jpg" alt="Sofa nhỏ")
+          span.news-cat Tư vấn
+          
+          .news-body
+            .news-meta
+              span 22/10/2024
+              span 189 lượt xem
+            
+            h3
+              a(href="#") Bí quyết chọn sofa cho phòng khách nhỏ
+            
+            p Phòng khách nhỏ không còn là rào cản...
+            
+            a.news-read-more(href="#") Đọc thêm →
+
+        article.news-card
+          a.news-img-link(href="#")
+            img(src="https://i.pinimg.com/736x/d8/bd/ae/d8bdae22912c0a4040e4f3d336cb645a.jpg" alt="Japandi")
+          span.news-cat Xu hướng
+          
+          .news-body
+            .news-meta
+              span 20/10/2024
+              span 224 lượt xem
+            
+            h3
+              a(href="#") Phong cách Japandi – sự kết hợp hoàn hảo
+            
+            p
+              | Japandi là sự kết hợp giữa phong cách tối giản...
+            
+            a.news-read-more(href="#") Đọc thêm →
+
+      // Pagination
+      .pagination
+        button.page-btn.active 1
+        button.page-btn 2
+        button.page-btn 3
+        button.page-btn ›
