@@ -507,7 +507,7 @@ function confirmLogout() {
     const btn = document.getElementById('logoutConfirmBtn');
     btn.textContent = 'Đang đăng xuất...';
     btn.disabled = true;
-    setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+    setTimeout(() => { window.location.href = '/account/login'; }, 1500);
 }
 
 // ========== ORDER STATUS VISUAL ==========
@@ -1113,7 +1113,59 @@ if (otpPasswordForm) {
                 .then(res => res.json())
                 .then(data => {
                     if (data.code === "success") {
-                        window.location.href = "/account/resetpass";
+                        window.location.href = `/account/resetpass?email=${email}`;
+                    }
+                    if (data.code === "error") {
+                        window.location.reload();
+                    }
+                })
+                .catch(err => console.error(err));
+        });
+}
+//Reset password
+const resetPasswordForm = document.querySelector("#resetPasswordForm");
+if (resetPasswordForm) {
+    const validation = new JustValidate("#resetPasswordForm");
+    validation
+        .addField('#newPassword', [
+            {
+                rule: 'required',
+                errorMessage: 'Vui lòng nhập mật khẩu mới!',
+            },
+            {
+                rule: 'password',
+                errorMessage: 'Mật khẩu không đúng định dạng!',
+            },
+        ])
+        .addField('#confirmPassword', [
+            {
+                rule: 'required',
+                errorMessage: 'Vui lòng nhập lại mật khẩu mới!',
+            },
+            {
+                validator: (value) => value === document.querySelector("#newPassword").value,
+                errorMessage: 'Mật khẩu không khớp!',
+            },
+        ])
+        .onSuccess((event) => {
+            event.preventDefault();
+
+            const newPassword = event.target.newPassword.value;
+            const confirmPassword = event.target.confirmPassword.value;
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get("email");
+
+            fetch(`/account/resetpass/${email}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ newPassword, email }),
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.code === "success") {
+                        window.location.href = "/account/login";
                     }
                     if (data.code === "error") {
                         window.location.reload();

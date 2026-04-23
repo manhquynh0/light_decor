@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs")
+const jwt = require("jsonwebtoken")
 const generateHelper = require("../../helpers/generate.helper")
 const mailHelper = require("../../helpers/mail.helper")
 const Account = require("../../models/account.model")
@@ -9,32 +10,54 @@ module.exports.login = async (req, res) => {
     })
 }
 module.exports.loginPost = async (req, res) => {
-    const {
-        email,
-        password,
-        rememberPasseword
-    } = req.body
-    const exitAccount = await Account.findOne({
-        email: email
-    })
-    if (!exitAccount) {
-        req.flash("error", "Không tìm thấy Email")
-        res.json({
-            code: "error"
+    try {
+        const {
+            email,
+            password,
+            rememberPasseword
+        } = req.body
+        const exitAccount = await Account.findOne({
+            email: email
         })
-    }
-    const isValidPass = bcrypt.compareSync(password, exitAccount.password); // check mật khẩu
-    if (!isValidPass) {
-        req.flash("error", "Sai mật khẩu")
-        res.json({
-            code: "error"
+        if (!exitAccount) {
+            req.flash("error", "Không tìm thấy Email")
+            res.json({
+                code: "error"
+            })
+        }
+        const isValidPass = bcrypt.compareSync(password, exitAccount.password); // check mật khẩu
+        if (!isValidPass) {
+            req.flash("error", "Sai mật khẩu")
+            res.json({
+                code: "error"
+            })
+            return
+        }
+        const token = jwt.sign({
+            id: exitAccount.id, // gán id vào token
+            email: exitAccount.email // gán email vào token
+        }, process.env.JWT_SECRET, { // gán JWT_SECRET vào token
+            expiresIn: rememberPasseword ? "7d" : "1d" // gán thời gian hết hạn của token
         })
-    }
-    req.flash("success", "Đăng nhập thành công")
-    res.json({
-        code: "success",
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            maxAge: rememberPasseword ? 7 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000
+        })
+        console.log(req.cookies)
+        req.flash("success", "Đăng nhập thành công")
+        return res.json({
+            code: "success",
 
-    })
+        })
+    }
+    catch (error) {
+        console.log(error)
+        req.flash("error", "Đăng nhập thất bại")
+        res.json({
+            code: "error",
+        })
+    }
 }
 module.exports.register = async (req, res) => {
     res.render("client/pages/register", {
@@ -173,6 +196,20 @@ module.exports.otpPasswordPost = async (req, res) => {
         })
         return
     }
+    const account = await Account.findOne({
+        email: email
+    })
+    const token = jwt.sign({
+        id: account.id,
+        email: account.email
+    }, process.env.JWT_SECRET, {
+        expiresIn: "1d"
+    })
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        maxAge: 24 * 60 * 60 * 1000
+    })
     req.flash("success", "Mã OTP hợp lệ")
     res.json({
         code: "success",
@@ -182,5 +219,19 @@ module.exports.resetPass = async (req, res) => {
     res.render("client/pages/resetpass", {
         title: "Dat lai mat khau",
         step: 3
+    })
+}
+module.exports.resetPassPost = async (req, res) => {
+    const { newPassword, email } = req.body
+    const salt = await bcrypt.genSaltSync(10);
+    const hashPassword = await bcrypt.hashSync(newPassword, salt);
+    await Account.updateOne({
+        email: email
+    }, {
+        password: hashPassword
+    })
+    req.flash("success", "Đã đặt lại mật khẩu thành công")
+    res.json({
+        code: "success",
     })
 }

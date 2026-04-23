@@ -11,25 +11,25 @@ block content
   section.auth-wrap
     .auth-box
       // Step Indicator
-    .step-indicator
-      #step1Indicator.step-item(class= step === 1 ? 'active' : '')
-        .step-number 1
-        span Xác minh
+      .step-indicator
+        #step1Indicator.step-item(class= step === 1 ? 'active' : '')
+          .step-number 1
+          span Xác minh
 
-      #step2Indicator.step-item(class= step === 2 ? 'active' : '')
-        .step-number 2
+        #step2Indicator.step-item(class= step === 2 ? 'active' : '')
+          .step-number 2
         span Nhập OTP
 
-      #step3Indicator.step-item(class= step === 3 ? 'active' : '')
-        .step-number 3
-        span Đặt lại mật khẩu
+        #step3Indicator.step-item(class= step === 3 ? 'active' : '')
+          .step-number 3
+          span Đặt lại mật khẩu
       #step3.form-step.active
         div(style="text-align:center;margin-bottom:32px;")
           div(style="font-size:2rem;font-weight:900;color:var(--primary);")
-            span OH!
+            span MANHQUYNH!
             span(style="font-weight:300;") Decor.
           p(style="font-size:0.9rem;color:var(--text-light);margin-top:8px;") Nhập mật khẩu mới
-        form#resetForm
+        form#resetPasswordForm
           .form-group
             label(for="newPassword") Mật khẩu mới
             div(style="position:relative;")
