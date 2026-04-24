@@ -144,6 +144,74 @@ ul {
     font-size: 0.82rem;
 }
 
+/* ========== GOOGLE LOGIN CUSTOM BUTTON ========== */
+.google-login-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--primary);
+    border-radius: 999px;
+    padding: 12px;
+    background: transparent;
+    min-height: 50px;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+/* .google-login-wrapper:hover {
+    background: var(--primary);
+} */
+
+/* Hide Google's default button wrapper and styling */
+.google-login-wrapper #g_id_onload {
+    display: none;
+}
+
+.google-login-wrapper .g_id_signin {
+    width: 100%;
+}
+
+/* Reset Google button styling */
+.google-login-wrapper .g_id_signin>div {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.google-login-wrapper button {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    font-weight: 700 !important;
+    font-size: 0.9rem !important;
+    color: var(--primary) !important;
+    min-height: auto !important;
+    height: auto !important;
+}
+
+.google-login-wrapper:hover button {
+    color: var(--white) !important;
+}
+
+.google-login-wrapper button span {
+    display: none !important;
+}
+
+.google-login-wrapper button::before {
+    content: 'Google';
+    color: inherit;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
 /* ========== SECTION COMMON ========== */
 .section {
     padding: 80px 0;

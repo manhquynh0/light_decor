@@ -1,6 +1,6 @@
-extend ../layouts/default.pug
+extends ./setting.pug
 
-block content 
+block main
   .page-hero(style="padding:40px 0;")
     .container
       h1 Lịch sử đơn hàng
@@ -43,7 +43,7 @@ block content
                   p(
                     style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;color:var(--text-light);margin-bottom:4px;"
                     ) Số đơn hàng
-                  p(style="font-size:1rem;font-weight:800;color:var(--primary);") OH-2024-001245
+                  p(style="font-size:1rem;font-weight:800;color:var(--primary);") MANHQUYNH-2024-001245
                 div
                   p(
                     style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;color:var(--text-light);margin-bottom:4px;"
@@ -63,7 +63,7 @@ block content
                     ) ✓ Đã giao hàng
             a.btn.btn-outline-dark.btn-sm(
               style="padding:10px 16px;white-space:nowrap;" 
-              href="#order-detail-1"
+              href="/account/order-details"
               ) Xem chi tiết
           div(style="padding:24px;")
             div(style="display:flex;gap:16px;align-items:center;margin-bottom:16px;")
@@ -125,10 +125,10 @@ block content
             )
             h3(style="font-weight:800;margin-bottom:8px;color:var(--primary);") Hotline
             p(style="font-size:1.1rem;font-weight:700;color:var(--accent-dark);")
-              a(href="tel:0901191616") 0901 191 616
+              a(href="tel:0901191616") 0373382805
           div(
             style="background:white;padding:24px;border-radius:var(--radius-xl);border:1px solid var(--border);"
             )
             h3(style="font-weight:800;margin-bottom:8px;color:var(--primary);") Email
             p(style="font-size:1rem;font-weight:600;color:var(--text-mid);")
-              a(href="mailto:support@ohdecor.vn") support@ohdecor.vn
+              a(href="mailto:support@MANHQUYNHdecor.vn") vmquynh.dhti17a3@sv.uneti.edu.vn

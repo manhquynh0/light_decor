@@ -25,7 +25,7 @@ block main
         option(value="active") Đang bán
         option(value="hidden") Ẩn
         option(value="out") Hết hàng
-    button.btn-admin.btn-admin-primary(onclick="openModal('addCategoryModal')")
+    button.btn-admin.btn-admin-primary(onclick="openModal('addCategoryModal','/admin/categories/add')")
       svg(
         stroke-width="2.5"
         stroke="currentColor"
@@ -42,18 +42,23 @@ block main
       thead
         tr
           th Tên danh mục
-          th Slug
+          th Mô tả
           th Số SP
           th Trạng thái
+          th Người Tạo
+          th Người Cập Nhật
           th Thao tác
+
       tbody
         tr
           td.td-bold 🛋 Sofa & Ghế
           td
-            code(style="font-size:0.78rem;background:var(--light-bg);padding:2px 8px;border-radius:4px;") sofa-ghe
+            code(style="font-size:0.78rem;background:var(--light-bg);padding:2px 8px;border-radius:4px;") Mô tả
           td 148
           td
             span.status-badge.status-active Hiển thị
+          td Nguyễn Văn A
+          td Nguyễn Văn B
           td
             .action-btns
               button.action-btn.action-btn-edit(onclick="openEditCategoryModal('Bàn Ăn & Phòng Bếp', 'ban-an', 'Hiển thị')") ✏
@@ -63,7 +68,7 @@ block main
   #addCategoryModal.modal-backdrop
     .modal-box
       .modal-header
-        h3 Thêm / Sửa danh mục
+        h3 Thêm danh mục
         button.modal-close(onclick="closeModal('addCategoryModal')") ✕
       form
         .form-group
@@ -73,17 +78,11 @@ block main
             type="text"
           )
         .form-group
-          label Slug (URL)
-          input.form-control(
-            placeholder="sofa-ghe"
-            type="text"
-          )
-        .form-group
           label Ảnh sản phẩm
           div(style="display:flex;flex-direction:column;gap:12px;")
-            #productImagePreview(style="display:flex;gap:8px;flex-wrap:wrap;")
+            #categoryImagePreview(style="display:flex;gap:8px;flex-wrap:wrap;")
             div(
-              onclick="document.getElementById('productImageUpload').click()"
+              onclick="document.getElementById('categoryImageUpload').click()"
               style="width:80px;height:80px;border:2px dashed var(--border);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--light-bg);"
             )
               svg(
@@ -96,14 +95,14 @@ block main
               )
                 line(y2="19" x2="12" y1="5" x1="12")
                 line(y2="12" x2="19" y1="12" x1="5")
-            input#productImageUpload.avatar-upload-input(
-              onchange="previewProductImages(event)"
+            input#categoryImageUpload.avatar-upload-input(
+              onchange="previewCategoryImages(event)"
               multiple=""
               accept="image/*"
               type="file"
             )
             button.btn.btn-outline-dark.btn-sm(
-              onclick="document.getElementById('productImageUpload').click()"
+              onclick="document.getElementById('categoryImageUpload').click()"
               style="width:fit-content;"
               type="button"
             )
@@ -129,8 +128,8 @@ block main
         .form-group
           label Trạng thái
           select.form-control
-            option Hiển thị
-            option Ẩn
+            option Đang hoạt động
+            option Tạm dừng
         div(style="display:flex;gap:12px;")
           button.btn.btn-gold(
             style="flex:1;justify-content:center;"
@@ -154,41 +153,48 @@ block main
             placeholder="Vd: Sofa & Ghế"
             type="text"
           )
-
         .form-group
-          label Slug (URL)
-          input#editCategorySlug.form-control(
-            placeholder="sofa-ghe"
-            type="text"
-          )
-
-        // Ảnh danh mục
-        .form-group
-          label Ảnh danh mục
+          label Ảnh sản phẩm
           div(style="display:flex;flex-direction:column;gap:12px;")
-
-            #editCategoryImagePreview(
-              style="display:flex;gap:8px;flex-wrap:wrap;"
+            #editCategoryImagePreview(style="display:flex;gap:8px;flex-wrap:wrap;")
+            div(
+              onclick="document.getElementById('editCategoryImageUpload').click()"
+              style="width:80px;height:80px;border:2px dashed var(--border);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--light-bg);"
             )
-
-            input#editCategoryImageUpload(
-              type="file"
-              multiple
-              accept="image/*"
-              style="display:none;"
+              svg(
+                stroke-width="2"
+                stroke="var(--text-light)"
+                fill="none"
+                viewBox="0 0 24 24"
+                height="24"
+                width="24"
+              )
+                line(y2="19" x2="12" y1="5" x1="12")
+                line(y2="12" x2="19" y1="12" x1="5")
+            input#editCategoryImageUpload.avatar-upload-input(
               onchange="previewEditCategoryImages(event)"
+              multiple=""
+              accept="image/*"
+              type="file"
             )
-
             button.btn.btn-outline-dark.btn-sm(
               onclick="document.getElementById('editCategoryImageUpload').click()"
-              type="button"
               style="width:fit-content;"
+              type="button"
             )
+              svg(
+                stroke-width="2"
+                stroke="currentColor"
+                fill="none"
+                viewBox="0 0 24 24"
+                height="14"
+                width="14"
+              )
+                path(d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4")
+                polyline(points="17 8 12 3 7 8")
+                line(y2="15" x2="12" y1="3" x1="12")
               | Chọn ảnh
-
-            p(style="font-size:0.75rem;color:var(--text-light);")
-              | Ảnh đầu tiên sẽ là ảnh chính.
-
+            p(style="font-size:0.75rem;color:var(--text-light);") Chọn nhiều ảnh để làm gallery. Ảnh đầu tiên sẽ là ảnh chính.
         .form-group
           label Mô tả
           textarea#editCategoryDesc.form-control(
@@ -199,8 +205,8 @@ block main
         .form-group
           label Trạng thái
           select#editCategoryStatus.form-control
-            option Hiển thị
-            option Ẩn
+            option Hoạt động
+            option Ngừng hoạt động
 
         div(style="display:flex;gap:12px;")
           button.btn.btn-gold(

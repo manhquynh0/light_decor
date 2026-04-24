@@ -24,7 +24,7 @@ block main
         option(value="active") Đang bán
         option(value="hidden") Ẩn
         option(value="out") Hết hàng
-      button.btn-admin.btn-admin-primary(onclick="openModal('addProductModal')")
+      button.btn-admin.btn-admin-primary(onclick="openModal('addProductModal', '/admin/products/add')")
         svg(
           stroke-width="2.5"
           stroke="currentColor"
@@ -241,6 +241,7 @@ block main
               type="file"
               multiple
               accept="image/*"
+              onchange="previewEditProductImages(event)"
             )
 
             button.btn.btn-outline-dark.btn-sm(

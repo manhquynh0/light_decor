@@ -4,6 +4,8 @@ const generateHelper = require("../../helpers/generate.helper")
 const mailHelper = require("../../helpers/mail.helper")
 const Account = require("../../models/account.model")
 const ForgotPassword = require("../../models/forgot-password.model")
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 module.exports.login = async (req, res) => {
     res.render("client/pages/login", {
         title: "Dang nhap"
@@ -40,9 +42,9 @@ module.exports.loginPost = async (req, res) => {
             expiresIn: rememberPasseword ? "7d" : "1d" // gán thời gian hết hạn của token
         })
         res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            maxAge: rememberPasseword ? 7 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000
+            maxAge: rememberPassword ? (30 * 24 * 60 * 60 * 1000) : (24 * 60 * 60 * 1000), // luu duoi dang milisenconds
+            httpOnly: true,// cookie chi co the truy cap boi may chu web
+            sameSite: "strict"
         })
         console.log(req.cookies)
         req.flash("success", "Đăng nhập thành công")
@@ -59,6 +61,60 @@ module.exports.loginPost = async (req, res) => {
         })
     }
 }
+module.exports.loginGoogle = async (req, res) => {
+    try {
+        const { token } = req.body;
+
+        // verify token từ Google
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+
+        const payload = ticket.getPayload();
+
+        // tìm user theo email
+        let user = await Account.findOne({
+            email: payload.email
+        });
+
+        // nếu chưa có thì tạo mới
+        if (!user) {
+            user = await Account.create({
+                fullName: payload.name,
+                email: payload.email,
+                password: "", // Google login không cần password
+            });
+        }
+
+        // tạo JWT giống login thường
+        const jwtToken = jwt.sign(
+            {
+                id: user.id,
+                email: user.email
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        );
+
+        // lưu cookie
+        res.cookie("token", jwtToken, {
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            httpOnly: true,
+            sameSite: "strict"
+        });
+        req.flash("success", "Đăng nhập thành công")
+        return res.json({
+            code: "success",
+        });
+
+    } catch (err) {
+        req.flash("error", "Đăng nhập thất bại")
+        return res.json({
+            code: "error",
+        });
+    }
+};
 module.exports.register = async (req, res) => {
     res.render("client/pages/register", {
         title: "Dang ky"
@@ -108,6 +164,11 @@ module.exports.setting = async (req, res) => {
     res.render("client/pages/setting", {
         title: "Cai dat tai khoan"
     })
+}
+
+module.exports.logout = async (req, res) => {
+    res.clearCookie('token');
+    res.redirect('/account/login');
 }
 
 module.exports.information = async (req, res) => {

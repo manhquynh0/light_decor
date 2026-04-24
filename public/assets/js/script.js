@@ -434,19 +434,41 @@ document.querySelectorAll('.admin-tab[data-sub]').forEach(tab => {
     });
 });
 
+
 // ========== MODALS ==========
-function openModal(id) {
-    document.getElementById(id)?.classList.add('open');
+let previousUrl = window.location.pathname;
+function openModal(id, url = null) {
+    const modal = document.getElementById(id);
+
+    // 👉 lưu URL hiện tại trước khi đổi
+    previousUrl = window.location.pathname;
+
+    modal?.classList.add('open');
+
+    if (url) { // nếu có url
+        history.pushState({ modal: id }, '', url); // đổi đường dẫn trên thanh địa chỉ trình duyệt nhưng không reload lại trang
+        //  url là đường dẫn của modal
+    }
 }
+
 function closeModal(id) {
-    document.getElementById(id)?.classList.remove('open');
+    const modal = document.getElementById(id);
+    modal?.classList.remove('open');
+
+    // 👉 quay lại URL trước đó
+    history.pushState({}, '', previousUrl);
+
 }
+
+// click ra ngoài để đóng
 document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
     backdrop.addEventListener('click', e => {
-        if (e.target === backdrop) backdrop.classList.remove('open');
+        if (e.target === backdrop) {
+            backdrop.classList.remove('open');
+            history.pushState({}, '', previousUrl);
+        }
     });
 });
-
 // ========== FORMS ==========
 document.getElementById('profileForm')?.addEventListener('submit', e => {
     e.preventDefault();
@@ -507,7 +529,7 @@ function confirmLogout() {
     const btn = document.getElementById('logoutConfirmBtn');
     btn.textContent = 'Đang đăng xuất...';
     btn.disabled = true;
-    setTimeout(() => { window.location.href = '/account/login'; }, 1500);
+    setTimeout(() => { window.location.href = '/account/logout'; }, 1500);
 }
 
 // ========== ORDER STATUS VISUAL ==========
@@ -612,6 +634,84 @@ function previewProductImages(event) {
           `;
             preview.appendChild(div);
             productImages.push(e.target.result);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+// ========== EDIT PRODUCT IMAGE PREVIEW ==========
+let editProductImages = [];
+function previewEditProductImages(event) {
+    const files = event.target.files;
+    const preview = document.getElementById('editProductImagePreview');
+
+    // Clear existing preview
+    preview.innerHTML = '';
+
+    Array.from(files).forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const div = document.createElement('div');
+            div.style.cssText = 'position:relative;width:80px;height:80px;border-radius:var(--radius-md);overflow:hidden;flex-shrink:0;';
+            div.innerHTML = `
+            <img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;" />
+            <button type="button" onclick="this.parentElement.remove();editProductImages.splice(${editProductImages.length},1);" style="position:absolute;top:2px;right:2px;width:20px;height:20px;background:rgba(0,0,0,0.6);border:none;border-radius:50%;color:white;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;">×</button>
+            ${index === 0 ? '<span style="position:absolute;bottom:0;left:0;right:0;background:var(--accent);color:var(--primary-dark);font-size:0.65rem;font-weight:700;padding:2px;text-align:center;">Chính</span>' : ''}
+          `;
+            preview.appendChild(div);
+            editProductImages.push(e.target.result);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+// ========== CATEGORY IMAGE PREVIEW ==========
+let categoryImages = [];
+function previewCategoryImages(event) {
+    const files = event.target.files;
+    const preview = document.getElementById('categoryImagePreview');
+
+    // Clear existing preview
+    preview.innerHTML = '';
+
+    Array.from(files).forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const div = document.createElement('div');
+            div.style.cssText = 'position:relative;width:80px;height:80px;border-radius:var(--radius-md);overflow:hidden;flex-shrink:0;';
+            div.innerHTML = `
+            <img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;" />
+            <button type="button" onclick="this.parentElement.remove();categoryImages.splice(${categoryImages.length},1);" style="position:absolute;top:2px;right:2px;width:20px;height:20px;background:rgba(0,0,0,0.6);border:none;border-radius:50%;color:white;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;">×</button>
+            ${index === 0 ? '<span style="position:absolute;bottom:0;left:0;right:0;background:var(--accent);color:var(--primary-dark);font-size:0.65rem;font-weight:700;padding:2px;text-align:center;">Chính</span>' : ''}
+          `;
+            preview.appendChild(div);
+            categoryImages.push(e.target.result);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+// ========== EDIT CATEGORY IMAGE PREVIEW ==========
+let editCategoryImages = [];
+function previewEditCategoryImages(event) {
+    const files = event.target.files;
+    const preview = document.getElementById('editCategoryImagePreview');
+
+    // Clear existing preview
+    preview.innerHTML = '';
+
+    Array.from(files).forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const div = document.createElement('div');
+            div.style.cssText = 'position:relative;width:80px;height:80px;border-radius:var(--radius-md);overflow:hidden;flex-shrink:0;';
+            div.innerHTML = `
+            <img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;" />
+            <button type="button" onclick="this.parentElement.remove();editCategoryImages.splice(${editCategoryImages.length},1);" style="position:absolute;top:2px;right:2px;width:20px;height:20px;background:rgba(0,0,0,0.6);border:none;border-radius:50%;color:white;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;">×</button>
+            ${index === 0 ? '<span style="position:absolute;bottom:0;left:0;right:0;background:var(--accent);color:var(--primary-dark);font-size:0.65rem;font-weight:700;padding:2px;text-align:center;">Chính</span>' : ''}
+          `;
+            preview.appendChild(div);
+            editCategoryImages.push(e.target.result);
         };
         reader.readAsDataURL(file);
     });
@@ -1173,4 +1273,37 @@ if (resetPasswordForm) {
                 })
                 .catch(err => console.error(err));
         });
+}
+// ===== Google Login =====
+const googleLogin = document.querySelector(".google-login-wrapper");
+
+if (googleLogin) {
+    window.handleCredentialResponse = (response) => {
+        const dataFinal = {
+            token: response.credential
+        }
+
+        fetch(`/account/login-google`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify(dataFinal)
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.code == "error") {
+                    window.location.reload();
+                }
+
+                if (data.code == "success") {
+                    window.location.href = `/home`;
+                }
+            })
+            .catch(err => {
+                console.error("Lỗi Google Login:", err);
+            });
+    };
+
 }
