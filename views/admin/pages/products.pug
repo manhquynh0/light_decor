@@ -113,46 +113,13 @@ block main
             )
         .form-group
           label Ảnh sản phẩm
-          div(style="display:flex;flex-direction:column;gap:12px;")
-            #productImagePreview(style="display:flex;gap:8px;flex-wrap:wrap;")
-            div(
-              onclick="document.getElementById('productImageUpload').click()"
-              style="width:80px;height:80px;border:2px dashed var(--border);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--light-bg);"
-            )
-              svg(
-                stroke-width="2"
-                stroke="var(--text-light)"
-                fill="none"
-                viewBox="0 0 24 24"
-                height="24"
-                width="24"
-              )
-                line(y2="19" x2="12" y1="5" x1="12")
-                line(y2="12" x2="19" y1="12" x1="5")
-            input#productImageUpload.avatar-upload-input(
-              onchange="previewProductImages(event)"
-              multiple=""
-              accept="image/*"
-              type="file"
-            )
-            button.btn.btn-outline-dark.btn-sm(
-              onclick="document.getElementById('productImageUpload').click()"
-              style="width:fit-content;"
-              type="button"
-            )
-              svg(
-                stroke-width="2"
-                stroke="currentColor"
-                fill="none"
-                viewBox="0 0 24 24"
-                height="14"
-                width="14"
-              )
-                path(d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4")
-                polyline(points="17 8 12 3 7 8")
-                line(y2="15" x2="12" y1="3" x1="12")
-              | Chọn ảnh
-            p(style="font-size:0.75rem;color:var(--text-light);") Chọn nhiều ảnh để làm gallery. Ảnh đầu tiên sẽ là ảnh chính.
+          input(
+            accept="image/*"
+            type="file"
+            filepond-image-multi
+            name="images"
+            multiple
+          )
         .form-group
           label Mô tả
           textarea.form-control(
@@ -228,31 +195,13 @@ block main
         // Ảnh sản phẩm
         .form-group
           label Ảnh sản phẩm
-          div(style="display:flex;flex-direction:column;gap:12px;")
-            #editProductImagePreview(style="display:flex;gap:8px;flex-wrap:wrap;")
-
-            div(
-              onclick="document.getElementById('editProductImageUpload').click()"
-              style="width:80px;height:80px;border:2px dashed var(--border);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--light-bg);"
-            )
-              | +
-
-            input#editProductImageUpload(
-              type="file"
-              multiple
-              accept="image/*"
-              onchange="previewEditProductImages(event)"
-            )
-
-            button.btn.btn-outline-dark.btn-sm(
-              onclick="document.getElementById('editProductImageUpload').click()"
-              type="button"
-              style="width:fit-content;"
-            )
-              | Chọn ảnh
-
-            p(style="font-size:0.75rem;color:var(--text-light);")
-              | Chọn nhiều ảnh để làm gallery. Ảnh đầu tiên sẽ là ảnh chính.
+          input(
+            accept="image/*"
+            type="file"
+            filepond-image-multi
+            name="editImages"
+            multiple
+          )
 
         // Mô tả
         .form-group

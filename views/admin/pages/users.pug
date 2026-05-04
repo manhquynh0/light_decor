@@ -119,6 +119,14 @@ block main
             select.form-control
               option Hoạt động
               option Bị khóa
+        .form-group
+          label Ảnh đại diện
+          input(
+            accept="image/*"
+            type="file"
+            filepond-image
+            name="avatar"
+          )
         div(style="display:flex;gap:12px;")
           button.btn.btn-gold(
             style="flex:1;justify-content:center;"
@@ -176,6 +184,15 @@ block main
             select.form-control
               option Hoạt động
               option Bị khóa
+
+        .form-group
+          label Ảnh đại diện
+          input(
+            accept="image/*"
+            type="file"
+            filepond-image
+            name="editAvatar"
+          )
 
         div(style="display:flex;gap:12px;")
           button.btn.btn-gold(

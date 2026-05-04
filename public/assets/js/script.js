@@ -1,6 +1,4 @@
-/* ============================================
-   OH!DECOR – MAIN JAVASCRIPT
-   ============================================ */
+
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -613,109 +611,7 @@ if (savedAvatar) {
     initials.style.display = 'none';
 }
 
-// ========== PRODUCT IMAGE PREVIEW ==========
-let productImages = [];
-function previewProductImages(event) {
-    const files = event.target.files;
-    const preview = document.getElementById('productImagePreview');
 
-    // Clear existing preview except the add button
-    preview.innerHTML = '';
-
-    Array.from(files).forEach((file, index) => {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const div = document.createElement('div');
-            div.style.cssText = 'position:relative;width:80px;height:80px;border-radius:var(--radius-md);overflow:hidden;flex-shrink:0;';
-            div.innerHTML = `
-            <img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;" />
-            <button type="button" onclick="this.parentElement.remove();productImages.splice(${productImages.length},1);" style="position:absolute;top:2px;right:2px;width:20px;height:20px;background:rgba(0,0,0,0.6);border:none;border-radius:50%;color:white;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;">×</button>
-            ${index === 0 ? '<span style="position:absolute;bottom:0;left:0;right:0;background:var(--accent);color:var(--primary-dark);font-size:0.65rem;font-weight:700;padding:2px;text-align:center;">Chính</span>' : ''}
-          `;
-            preview.appendChild(div);
-            productImages.push(e.target.result);
-        };
-        reader.readAsDataURL(file);
-    });
-}
-
-// ========== EDIT PRODUCT IMAGE PREVIEW ==========
-let editProductImages = [];
-function previewEditProductImages(event) {
-    const files = event.target.files;
-    const preview = document.getElementById('editProductImagePreview');
-
-    // Clear existing preview
-    preview.innerHTML = '';
-
-    Array.from(files).forEach((file, index) => {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const div = document.createElement('div');
-            div.style.cssText = 'position:relative;width:80px;height:80px;border-radius:var(--radius-md);overflow:hidden;flex-shrink:0;';
-            div.innerHTML = `
-            <img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;" />
-            <button type="button" onclick="this.parentElement.remove();editProductImages.splice(${editProductImages.length},1);" style="position:absolute;top:2px;right:2px;width:20px;height:20px;background:rgba(0,0,0,0.6);border:none;border-radius:50%;color:white;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;">×</button>
-            ${index === 0 ? '<span style="position:absolute;bottom:0;left:0;right:0;background:var(--accent);color:var(--primary-dark);font-size:0.65rem;font-weight:700;padding:2px;text-align:center;">Chính</span>' : ''}
-          `;
-            preview.appendChild(div);
-            editProductImages.push(e.target.result);
-        };
-        reader.readAsDataURL(file);
-    });
-}
-
-// ========== CATEGORY IMAGE PREVIEW ==========
-let categoryImages = [];
-function previewCategoryImages(event) {
-    const files = event.target.files;
-    const preview = document.getElementById('categoryImagePreview');
-
-    // Clear existing preview
-    preview.innerHTML = '';
-
-    Array.from(files).forEach((file, index) => {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const div = document.createElement('div');
-            div.style.cssText = 'position:relative;width:80px;height:80px;border-radius:var(--radius-md);overflow:hidden;flex-shrink:0;';
-            div.innerHTML = `
-            <img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;" />
-            <button type="button" onclick="this.parentElement.remove();categoryImages.splice(${categoryImages.length},1);" style="position:absolute;top:2px;right:2px;width:20px;height:20px;background:rgba(0,0,0,0.6);border:none;border-radius:50%;color:white;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;">×</button>
-            ${index === 0 ? '<span style="position:absolute;bottom:0;left:0;right:0;background:var(--accent);color:var(--primary-dark);font-size:0.65rem;font-weight:700;padding:2px;text-align:center;">Chính</span>' : ''}
-          `;
-            preview.appendChild(div);
-            categoryImages.push(e.target.result);
-        };
-        reader.readAsDataURL(file);
-    });
-}
-
-// ========== EDIT CATEGORY IMAGE PREVIEW ==========
-let editCategoryImages = [];
-function previewEditCategoryImages(event) {
-    const files = event.target.files;
-    const preview = document.getElementById('editCategoryImagePreview');
-
-    // Clear existing preview
-    preview.innerHTML = '';
-
-    Array.from(files).forEach((file, index) => {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const div = document.createElement('div');
-            div.style.cssText = 'position:relative;width:80px;height:80px;border-radius:var(--radius-md);overflow:hidden;flex-shrink:0;';
-            div.innerHTML = `
-            <img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;" />
-            <button type="button" onclick="this.parentElement.remove();editCategoryImages.splice(${editCategoryImages.length},1);" style="position:absolute;top:2px;right:2px;width:20px;height:20px;background:rgba(0,0,0,0.6);border:none;border-radius:50%;color:white;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;">×</button>
-            ${index === 0 ? '<span style="position:absolute;bottom:0;left:0;right:0;background:var(--accent);color:var(--primary-dark);font-size:0.65rem;font-weight:700;padding:2px;text-align:center;">Chính</span>' : ''}
-          `;
-            preview.appendChild(div);
-            editCategoryImages.push(e.target.result);
-        };
-        reader.readAsDataURL(file);
-    });
-}
 
 // ========== EDIT PRODUCT MODAL ==========
 
@@ -858,6 +754,63 @@ if (alertTime) {
     setTimeout(() => {
         alertTime.remove(); // Xóa phần tử khỏi giao diện
     }, time);
+}
+
+// Filepond Image
+const listFilepondImage = document.querySelectorAll("[filepond-image]");
+let filePond = {};
+if (listFilepondImage.length > 0) {
+    listFilepondImage.forEach(filepondImage => {
+        FilePond.registerPlugin(FilePondPluginImagePreview);
+        FilePond.registerPlugin(FilePondPluginFileValidateType);
+
+        let files = null;
+        const elementImageDefault = filepondImage.closest("[image-default]");
+        if (elementImageDefault) {
+            const imageDefault = elementImageDefault.getAttribute("image-default");
+            if (imageDefault) {
+                files = [{
+                    source: imageDefault, // Đường dẫn ảnh
+                },]
+            }
+        }
+
+        filePond[filepondImage.name] = FilePond.create(filepondImage, {
+            labelIdle: '+',
+            files: files
+        });
+    });
+}
+// End Filepond Image
+
+// Filepond Image Multi
+const listFilepondImageMulti = document.querySelectorAll("[filepond-image-multi]");
+let filePondMulti = {};
+if (listFilepondImageMulti.length > 0) {
+    listFilepondImageMulti.forEach(filepondImage => {
+        FilePond.registerPlugin(FilePondPluginImagePreview);
+        FilePond.registerPlugin(FilePondPluginFileValidateType);
+
+        let files = null;
+        const elementListImageDefault = filepondImage.closest("[list-image-default]");
+        if (elementListImageDefault) {
+            let listImageDefault = elementListImageDefault.getAttribute("list-image-default");
+            if (listImageDefault) {
+                listImageDefault = JSON.parse(listImageDefault);
+                files = [];
+                listImageDefault.forEach(image => {
+                    files.push({
+                        source: image, // Đường dẫn ảnh
+                    });
+                })
+            }
+        }
+
+        filePondMulti[filepondImage.name] = FilePond.create(filepondImage, {
+            labelIdle: '+',
+            files: files,
+        });
+    });
 }
 // Login Form
 const loginForm = document.querySelector("#loginForm")
@@ -1306,4 +1259,46 @@ if (googleLogin) {
             });
     };
 
+}
+// Add Categories 
+const categoryCreate = document.querySelector("#category-create-form")
+if (categoryCreate) {
+    const validation = new JustValidate("#category-create-form")
+    validation
+        .addField('#name', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập tên danh mục'
+        }])
+        .onSuccess((event) => {
+            event.preventDefault();
+            const name = event.target.name.value
+            const status = event.target.status.value
+            const description = event.target.description.value
+            const avatars = filePond.avatar.getFiles()
+            let avatar = null
+            if (avatars.length > 0) {
+                avatar = avatars[0].file
+            }
+            const formData = new FormData()
+            formData.append("name", name),
+                formData.append("status", status)
+            formData.append("description", description)
+            formData.append("avatar", avatar)
+
+            fetch('/admin/categories/add', {
+                method: "POST",
+                body: formData
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.code == "error") {
+                        window.location.reload();
+                    }
+
+                    if (data.code == "success") {
+                        window.location.href = `/admin/categories`;
+                    }
+
+                })
+        })
 }

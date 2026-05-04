@@ -70,64 +70,33 @@ block main
       .modal-header
         h3 Thêm danh mục
         button.modal-close(onclick="closeModal('addCategoryModal')") ✕
-      form
+      form#category-create-form
         .form-group
           label Tên danh mục
           input.form-control(
             placeholder="Vd: Sofa & Ghế"
             type="text"
+            name = "name"
+            id = "name"
           )
         .form-group
-          label Ảnh sản phẩm
-          div(style="display:flex;flex-direction:column;gap:12px;")
-            #categoryImagePreview(style="display:flex;gap:8px;flex-wrap:wrap;")
-            div(
-              onclick="document.getElementById('categoryImageUpload').click()"
-              style="width:80px;height:80px;border:2px dashed var(--border);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--light-bg);"
-            )
-              svg(
-                stroke-width="2"
-                stroke="var(--text-light)"
-                fill="none"
-                viewBox="0 0 24 24"
-                height="24"
-                width="24"
-              )
-                line(y2="19" x2="12" y1="5" x1="12")
-                line(y2="12" x2="19" y1="12" x1="5")
-            input#categoryImageUpload.avatar-upload-input(
-              onchange="previewCategoryImages(event)"
-              multiple=""
-              accept="image/*"
-              type="file"
-            )
-            button.btn.btn-outline-dark.btn-sm(
-              onclick="document.getElementById('categoryImageUpload').click()"
-              style="width:fit-content;"
-              type="button"
-            )
-              svg(
-                stroke-width="2"
-                stroke="currentColor"
-                fill="none"
-                viewBox="0 0 24 24"
-                height="14"
-                width="14"
-              )
-                path(d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4")
-                polyline(points="17 8 12 3 7 8")
-                line(y2="15" x2="12" y1="3" x1="12")
-              | Chọn ảnh
-            p(style="font-size:0.75rem;color:var(--text-light);") Chọn nhiều ảnh để làm gallery. Ảnh đầu tiên sẽ là ảnh chính.
+          label Ảnh danh mục
+          input(
+            accept="image/*"
+            type="file"
+            filepond-image
+            name="avatar"
+          )
         .form-group
           label Mô tả
           textarea.form-control(
             placeholder="Mô tả danh mục..."
             rows="2"
+            name = "description"
           )
         .form-group
           label Trạng thái
-          select.form-control
+          select.form-control(name = "status")
             option Đang hoạt động
             option Tạm dừng
         div(style="display:flex;gap:12px;")
@@ -154,47 +123,13 @@ block main
             type="text"
           )
         .form-group
-          label Ảnh sản phẩm
-          div(style="display:flex;flex-direction:column;gap:12px;")
-            #editCategoryImagePreview(style="display:flex;gap:8px;flex-wrap:wrap;")
-            div(
-              onclick="document.getElementById('editCategoryImageUpload').click()"
-              style="width:80px;height:80px;border:2px dashed var(--border);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--light-bg);"
-            )
-              svg(
-                stroke-width="2"
-                stroke="var(--text-light)"
-                fill="none"
-                viewBox="0 0 24 24"
-                height="24"
-                width="24"
-              )
-                line(y2="19" x2="12" y1="5" x1="12")
-                line(y2="12" x2="19" y1="12" x1="5")
-            input#editCategoryImageUpload.avatar-upload-input(
-              onchange="previewEditCategoryImages(event)"
-              multiple=""
-              accept="image/*"
-              type="file"
-            )
-            button.btn.btn-outline-dark.btn-sm(
-              onclick="document.getElementById('editCategoryImageUpload').click()"
-              style="width:fit-content;"
-              type="button"
-            )
-              svg(
-                stroke-width="2"
-                stroke="currentColor"
-                fill="none"
-                viewBox="0 0 24 24"
-                height="14"
-                width="14"
-              )
-                path(d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4")
-                polyline(points="17 8 12 3 7 8")
-                line(y2="15" x2="12" y1="3" x1="12")
-              | Chọn ảnh
-            p(style="font-size:0.75rem;color:var(--text-light);") Chọn nhiều ảnh để làm gallery. Ảnh đầu tiên sẽ là ảnh chính.
+          label Ảnh danh mục
+          input(
+            accept="image/*"
+            type="file"
+            filepond-image
+            name="editAvatar"
+          )
         .form-group
           label Mô tả
           textarea#editCategoryDesc.form-control(
@@ -218,3 +153,9 @@ block main
             type="button"
             onclick="closeModal('editCategoryModal')"
           ) Hủy
+
+  if openAddModal
+    script.
+      document.addEventListener('DOMContentLoaded', function () {
+        openModal('addCategoryModal');
+      });
