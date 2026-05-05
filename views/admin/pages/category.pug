@@ -43,26 +43,34 @@ block main
         tr
           th Tên danh mục
           th Mô tả
-          th Số SP
           th Trạng thái
           th Người Tạo
           th Người Cập Nhật
           th Thao tác
 
       tbody
-        tr
-          td.td-bold 🛋 Sofa & Ghế
-          td
-            code(style="font-size:0.78rem;background:var(--light-bg);padding:2px 8px;border-radius:4px;") Mô tả
-          td 148
-          td
-            span.status-badge.status-active Hiển thị
-          td Nguyễn Văn A
-          td Nguyễn Văn B
-          td
-            .action-btns
-              button.action-btn.action-btn-edit(onclick="openEditCategoryModal('Bàn Ăn & Phòng Bếp', 'ban-an', 'Hiển thị')") ✏
-              button.action-btn.action-btn-delete 🗑
+        each item in categoryList
+          tr
+            td.td-bold #{item.name}
+            td
+              code(style="font-size:0.78rem;background:var(--light-bg);padding:2px 8px;border-radius:4px;") #{item.description}
+            td
+              span
+                if (item.status == "active")
+                  .status-badge.status-active Đang hoạt động
+                else if (item.status == "inactive")
+                  .status-badge.status-inactive Dùng hoạt động
+
+            td 
+              div #{item.createdByFullName} 
+              div.inner-time #{item.createdAtFormat}
+            td
+              div #{item.updatedByFullName}
+              div.inner-time #{item.updatedAtFormat}
+            td
+              .action-btns
+                button.action-btn.action-btn-edit(onclick="openEditCategoryModal()") ✏
+                button.action-btn.action-btn-delete 🗑
 
   // Add Category Modal
   #addCategoryModal.modal-backdrop
@@ -86,6 +94,7 @@ block main
             type="file"
             filepond-image
             name="avatar"
+            id = "avatar"
           )
         .form-group
           label Mô tả
@@ -97,8 +106,8 @@ block main
         .form-group
           label Trạng thái
           select.form-control(name = "status")
-            option Đang hoạt động
-            option Tạm dừng
+           option(value="active") Hoạt động
+           option(value="inactive") Tạm dừng
         div(style="display:flex;gap:12px;")
           button.btn.btn-gold(
             style="flex:1;justify-content:center;"

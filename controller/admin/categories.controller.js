@@ -1,7 +1,35 @@
+const Category = require("../../models/category.model")
+const Account = require("../../models/account.model")
 module.exports.index = async (req, res) => {
-  res.render("admin/pages/category", {
-    title: "Danh mục"
+  const categoryList = await Category.find({
+    deleted: false
   })
+  for (let item of categoryList) {
+    if (item.createdBy) {
+      const infoUserCreated = await Account.findOne({
+        _id: item.createdBy
+      })
+      item.createdByFullName = infoUserCreated ? infoUserCreated.fullname : ""
+    } else {
+      item.createdByFullName = ""
+    }
+    if (item.updatedBy) {
+      const infoUserUpdated = await Account.findOne({
+        _id: item.updatedBy
+      })
+      item.updatedByFullName = infoUserUpdated ? infoUserUpdated.fullname : ""
+    } else {
+      item.updatedByFullName = ""
+    }
+    item.createdAtFormat = item.createdAt ? item.createdAt.toLocaleString("vi-VN") : ""
+    item.updatedAtFormat = item.updatedAt ? item.updatedAt.toLocaleString("vi-VN") : ""
+  }
+  console.log(categoryList)
+  res.render("admin/pages/category", {
+    title: "Danh mục",
+    categoryList: categoryList
+  })
+
 }
 
 module.exports.openAddModal = async (req, res) => {
@@ -12,14 +40,22 @@ module.exports.openAddModal = async (req, res) => {
 }
 
 module.exports.add = async (req, res) => {
-  
+  try {
     console.log(req.body)
-  
-  req.flash("success", "Them thanh cong")
-  res.json({
-    code: "success"
-  })
+    req.body.createdBy = req.user.id
+    req.body.updatedBy = req.user.id
+    req.body.avatar = req.file ? req.file.path : ""
+    const newRecord = new Category(req.body)
+    await newRecord.save()
+    req.flash("success", "Thêm thành công")
+    res.json({
+      code: "success"
+    })
+  } catch (error) {
+    console.log(error)
+    req.flash("error", "Thêm thất bại")
+    res.json({
+      code: "error"
+    })
+  }
 }
-
-
-

@@ -16,14 +16,14 @@ module.exports.loginPost = async (req, res) => {
         const {
             email,
             password,
-            rememberPasseword
+            rememberPassword
         } = req.body
         const exitAccount = await Account.findOne({
             email: email
         })
         if (!exitAccount) {
             req.flash("error", "Không tìm thấy Email")
-            res.json({
+            return res.json({
                 code: "error"
             })
         }
@@ -39,7 +39,7 @@ module.exports.loginPost = async (req, res) => {
             id: exitAccount.id, // gán id vào token
             email: exitAccount.email // gán email vào token
         }, process.env.JWT_SECRET, { // gán JWT_SECRET vào token
-            expiresIn: rememberPasseword ? "7d" : "1d" // gán thời gian hết hạn của token
+            expiresIn: rememberPassword ? "7d" : "1d" // gán thời gian hết hạn của token
         })
         res.cookie("token", token, {
             maxAge: rememberPassword ? (30 * 24 * 60 * 60 * 1000) : (24 * 60 * 60 * 1000), // luu duoi dang milisenconds
@@ -81,7 +81,7 @@ module.exports.loginGoogle = async (req, res) => {
         // nếu chưa có thì tạo mới
         if (!user) {
             user = await Account.create({
-                fullName: payload.name,
+                fullname: payload.name,
                 email: payload.email,
                 password: "", // Google login không cần password
             });
@@ -121,43 +121,51 @@ module.exports.register = async (req, res) => {
     })
 }
 module.exports.registerPost = async (req, res) => {
-    const {
-        email,
-        password,
-        firstName,
-        lastName,
-        phone
-    } = req.body
-    const exitAccount = await Account.findOne({
-        email: email
-    })
-
-    if (exitAccount) {
-        req.flash("error", "Email đã tồn tại")
-        res.json({
-            code: "error",
-
+    try {
+        const {
+            email,
+            password,
+            firstName,
+            lastName,
+            phone
+        } = req.body
+        const exitAccount = await Account.findOne({
+            email: email
         })
-        return
+
+        if (exitAccount) {
+            req.flash("error", "Email đã tồn tại")
+            return res.json({
+                code: "error",
+                message: "Email da ton tai"
+            })
+        }
+
+        const salt = bcrypt.genSaltSync(10);
+        const hashPassword = bcrypt.hashSync(password, salt);
+        const newAccount = new Account({
+            email: email,
+            password: hashPassword,
+            fullname: `${firstName} ${lastName}`.trim(),
+            firstName: firstName,
+            lastName: lastName,
+            phone: phone
+        })
+
+        await newAccount.save()
+        req.flash("success", "Đăng kí thành công")
+
+        return res.json({
+            code: "success",
+        })
     }
-
-    const salt = bcrypt.genSaltSync(10);
-    const hashPassword = bcrypt.hashSync(password, salt);
-    const newAccount = new Account({
-        email: email,
-        password: hashPassword,
-        firstName: firstName,
-        lastName: lastName,
-        phone: phone
-    })
-
-    await newAccount.save()
-    req.flash("success", "Đăng kí thành công")
-
-    res.json({
-        code: "success",
-
-    })
+    catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            code: "error",
+            message: "Loi server khi dang ki"
+        })
+    }
 }
 
 module.exports.setting = async (req, res) => {

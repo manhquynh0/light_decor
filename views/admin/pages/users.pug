@@ -21,10 +21,10 @@ block main
     .toolbar-actions
       .toolbar-actions
         select.btn-admin.btn-admin-outline
-          option(value="all") Tất cả
-          option(value="active") Đang bán
-          option(value="hidden") Ẩn
-          option(value="out") Hết hàng
+          option Vai Trò
+          option Admin
+          option Editor
+          option Customer
       button.btn-admin.btn-admin-primary(onclick="openModal('addUserModal', '/admin/users/add')")
         svg(
           stroke-width="2.5"
@@ -41,33 +41,28 @@ block main
     table.data-table
       thead
         tr
+          th Ảnh đại diện
           th Người dùng
           th Email
           th Ngày tham gia
           th Đơn hàng
-          th Trạng thái
           th Vai trò
           th Thao tác
       tbody
-        tr
-          td
-            .td-name
-              .td-avatar NT
-              span.td-bold Nguyễn Thành
-          td admin@ohdecor.vn
-          td 01/01/2023
-          td —
-          td
-            span.status-badge.status-active Hoạt động
-          td
-            select.role-select
-              option(selected="") Admin
-              option Editor
-              option Customer
-          td
-            .action-btns
-              button.action-btn.action-btn-edit(onclick="openEditUserModal('Trần Linh', 'tranlinh@gmail.com', 'Customer', 'Hoạt động')") ✏
-              button.action-btn.action-btn-delete 🗑
+        each item in accountList
+          tr
+            td
+              if item.avatar
+                img(src=item.avatar, alt="", style="width:40px;height:40px;object-fit:cover;border-radius:50%;")
+            td #{item.firstname} #{item.lastname}
+            td #{item.email}
+            td #{item.createdAt.toLocaleString("vi-VN")}
+            td 0
+            td #{item.role}
+            td
+              .action-btns
+                button.action-btn.action-btn-edit(onclick=`openEditUserModal('${item.firstname} ${item.lastname}', '${item.email}', '${item.role}', '${item.status}')`) ✏
+                button.action-btn.action-btn-delete 🗑
   .table-pagination
     span Hiển thị 1–5 / 3.421 người dùng
     .pagination-btns
@@ -81,44 +76,56 @@ block main
       .modal-header
         h3 Thêm người dùng mới
         button.modal-close(onclick="closeModal('addUserModal')") ✕
-      form
+      form#user-create-form
         .form-row(style="margin-bottom:20px;")
           .form-group(style="margin:0;")
             label Họ
             input.form-control(
               placeholder="Nguyễn"
               type="text"
+              id = "firstname"
+              name = "firstname"
+              required
             )
           .form-group(style="margin:0;")
             label Tên
             input.form-control(
               placeholder="Văn A"
               type="text"
+              name="lastname"
+              required
+              id = "lastname"
             )
         .form-group
           label Email
           input.form-control(
             placeholder="email@example.com"
             type="email"
+            id = "email"
+            name = "email"
+            required
           )
         .form-group
-          label Mật khẩu tạm thời
+          label Mật khẩu 
           input.form-control(
             placeholder="Tối thiểu 8 ký tự"
             type="password"
+            id = "password"
+            name = "password"
+            required
           )
         .form-row(style="margin-bottom:20px;")
           .form-group(style="margin:0;")
             label Vai trò
-            select.form-control
-              option Customer
-              option Editor
-              option Admin
-          .form-group(style="margin:0;")
-            label Trạng thái
-            select.form-control
-              option Hoạt động
-              option Bị khóa
+            select.form-control(id ="role" name ="role" )
+              option(value="Customer") Customer
+              option(value="Editor") Editor
+              option(value="Admin") Admin
+          //- .form-group(style="margin:0;")
+          //-   label Trạng thái
+          //-   select.form-control(id ="status" name ="status")
+          //-     option Hoạt động
+          //-     option Bị khóa
         .form-group
           label Ảnh đại diện
           input(
@@ -126,6 +133,7 @@ block main
             type="file"
             filepond-image
             name="avatar"
+            id = "avatar"
           )
         div(style="display:flex;gap:12px;")
           button.btn.btn-gold(
@@ -204,3 +212,8 @@ block main
             type="button"
             onclick="closeModal('editUserModal')"
           ) Hủy
+  if openAddModal
+    script.
+      document.addEventListener('DOMContentLoaded', function () {
+        openModal('addUserModal');
+      })

@@ -17,6 +17,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // cho phép gửi dữ liệu dạng json
 app.use(express.json());
+
 // kết nối database
 DATABASE.connect();
 //thiết lập đường dẫn 

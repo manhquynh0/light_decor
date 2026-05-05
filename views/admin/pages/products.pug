@@ -40,29 +40,36 @@ block main
     table.data-table
       thead
         tr
-          th Sản phẩm
+          th Hình ảnh
+          th Tên
           th Danh mục
           th Giá
           th Tồn kho
           th Trạng thái
           th Thao tác
       tbody
-        tr
-          td
-            .td-name
-              div(
-                style="width:44px;height:44px;border-radius:8px;background:var(--light-bg);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;"
-              ) 🛋
-              span.td-bold Sofa góc L Velvet Teal
-          td Sofa & Ghế
-          td.td-bold 56.800.000 ₫
-          td 12
-          td
-            span.status-badge.status-active Đang bán
-          td
-            .action-btns
-              button.action-btn.action-btn-edit(onclick="openEditProductModal()") ✏
-              button.action-btn.action-btn-delete 🗑
+        each item in products
+          tr
+            td
+                div(
+                  style="width:44px;height:44px;border-radius:8px;background:var(--light-bg);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;border-radius:4px;overflow:hidden;"
+                ) 
+                  img(src= item.avatar alt="" style="width:100%;height:100%;object-fit:cover;")
+            td 
+              span.td-bold #{item.name}
+            td #{item.category ? item.category.name : ""}
+            td.td-bold #{Number(item.priceNEW).toLocaleString("vi-VN")} ₫
+            td #{item.stock}
+            td
+              span
+                if (item.status == "stock")
+                  .status-badge.status-active Còn hàng
+                else if (item.status == "out stock")
+                  .status-badge.status-inactive Hết hàng
+            td
+              .action-btns
+                button.action-btn.action-btn-edit(onclick="openEditProductModal()") ✏
+                button.action-btn.action-btn-delete 🗑
   .table-pagination
     span Hiển thị 1–5 / 486 sản phẩm
     .pagination-btns
@@ -76,27 +83,27 @@ block main
       .modal-header
         h3 Thêm sản phẩm
         button.modal-close(onclick="closeModal('addProductModal')") ✕
-      form
+      form#product-create-form
         .form-group
           label Tên sản phẩm
           input.form-control(
             placeholder="Vd: Sofa góc L Velvet Teal"
             type="text"
+            name = "name"
+            id = "name"
           )
         .form-row(style="margin-bottom:20px;")
           .form-group(style="margin:0;")
             label Danh mục
-            select.form-control
-              option Sofa & Ghế
-              option Bàn Ăn
-              option Phòng Ngủ
-              option Đèn & Ánh sáng
-              option Phụ kiện
+            select.form-control(name ="category" id="category")
+              each item in categories
+                option(value = item.id) #{item.name}
           .form-group(style="margin:0;")
             label Giá bán (₫)
             input.form-control(
               placeholder="0"
-              type="number"
+              name = "priceNEW"
+              id = "priceNEW"
             )
         .form-row(style="margin-bottom:20px;")
           .form-group(style="margin:0;")
@@ -104,20 +111,35 @@ block main
             input.form-control(
               placeholder="0"
               type="number"
+              name = "stock"
+              id = "stock"
             )
           .form-group(style="margin:0;")
             label Giá gốc (₫)
             input.form-control(
               placeholder="Để trống nếu không giảm giá"
               type="number"
+              name = "priceOLD"
+              id = "priceOLD"
             )
         .form-group
-          label Ảnh sản phẩm
+          label Ảnh đại diện
+          input(
+            accept="image/*"
+            type="file"
+            name="avatar"
+            id="avatar"
+            required
+            filepond-image
+          )
+        .form-group
+          label Ảnh sản phẩm (nhiều ảnh)
           input(
             accept="image/*"
             type="file"
             filepond-image-multi
             name="images"
+            id="images"
             multiple
           )
         .form-group
@@ -125,14 +147,14 @@ block main
           textarea.form-control(
             placeholder="Mô tả sản phẩm..."
             rows="3"
+            name = "description"
+            id = "description"
           )
         .form-group
           label Trạng thái
-          select.form-control
-            option Đang bán
-            option Ẩn
-            option Hết hàng
-            option Chờ duyệt
+          select.form-control(name = "status" id="status")
+            option(value="stock") Đang bán
+            option(value="out stock") Hết hàng
         div(style="display:flex;gap:12px;")
           button.btn.btn-gold(
             style="flex:1;justify-content:center;"
@@ -231,3 +253,8 @@ block main
             type="button"
             onclick="closeModal('editProductModal')"
           ) Hủy
+    if openAddModal
+      script.
+        document.addEventListener('DOMContentLoaded', function () {
+          openModal('addProductModal');
+        });

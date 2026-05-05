@@ -602,14 +602,14 @@ document.getElementById('avatarUpload')?.addEventListener('change', function (e)
 });
 
 // Load saved avatar
-const savedAvatar = localStorage.getItem('userAvatar');
-if (savedAvatar) {
-    const img = document.getElementById('userAvatarImg');
-    const initials = document.getElementById('avatarInitials');
-    img.src = savedAvatar;
-    img.style.display = 'block';
-    initials.style.display = 'none';
-}
+// const savedAvatar = localStorage.getItem('userAvatar');
+// if (savedAvatar) {
+//     const img = document.getElementById('userAvatarImg');
+//     const initials = document.getElementById('avatarInitials');
+//     img.src = savedAvatar;
+//     img.style.display = 'block';
+//     initials.style.display = 'none';
+// }
 
 
 
@@ -664,7 +664,7 @@ document.getElementById('editRoleForm')?.addEventListener('submit', function (e)
 
 // ========== EDIT CATEGORY MODAL ==========
 function openEditCategoryModal() {
-    openModal('editCategoryModal');
+    // openModal('editCategoryModal');
 }
 
 document.getElementById('editCategoryForm')?.addEventListener('submit', function (e) {
@@ -966,7 +966,7 @@ if (registerForm) {
             errorMessage: 'Mật khẩu không khớp!',
         },
         ])
-        .addField('input[type="checkbox"]', [{
+        .addField('#terms', [{
             rule: 'required',
             errorMessage: 'Bạn phải đồng ý với điều khoản và điều kiện!',
         }])
@@ -1000,7 +1000,7 @@ if (registerForm) {
                     }
                     if (data.code == "error") {
 
-                        window.location.reload();
+                        alert(data.message)
                     }
                 })
                 .catch(error => {
@@ -1274,16 +1274,23 @@ if (categoryCreate) {
             const name = event.target.name.value
             const status = event.target.status.value
             const description = event.target.description.value
-            const avatars = filePond.avatar.getFiles()
-            let avatar = null
-            if (avatars.length > 0) {
+            const avatarInput = event.target.querySelector('#avatar')
+            const avatarPond = filePond.avatar
+            const avatars = avatarPond ? avatarPond.getFiles() : []
+            const formData = new FormData()
+
+            formData.append("name", name)
+            formData.append("status", status)
+            formData.append("description", description)
+            let avatar = avatarInput?.files?.[0] || null
+            if (avatars.length > 0 && avatars[0].file) {
                 avatar = avatars[0].file
             }
-            const formData = new FormData()
-            formData.append("name", name),
-                formData.append("status", status)
-            formData.append("description", description)
-            formData.append("avatar", avatar)
+
+            if (avatar) {
+                formData.append("avatar", avatar)
+            }
+
 
             fetch('/admin/categories/add', {
                 method: "POST",
@@ -1297,6 +1304,162 @@ if (categoryCreate) {
 
                     if (data.code == "success") {
                         window.location.href = `/admin/categories`;
+                    }
+
+                })
+        })
+}
+// ADD Product
+const productCreate = document.querySelector("#product-create-form")
+if (productCreate) {
+    const validation = new JustValidate("#product-create-form")
+    validation
+        .addField('#name', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập tên sản phẩm'
+        }])
+        .addField('#category', [{
+            rule: "required",
+            errorMessage: 'Vui lòng chọn danh mục'
+        }])
+        .addField('#priceOLD', [{
+            rule: "number",
+            errorMessage: 'Giá cũ phải là số'
+        }])
+        .addField('#priceNEW', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập giá mới'
+        }, {
+            rule: "number",
+            errorMessage: 'Giá mới phải là số'
+        }])
+        .addField('#stock', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập số lượng'
+        }, {
+            rule: "number",
+            errorMessage: 'Số lượng phải là số'
+        }])
+        .addField('#description', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập mô tả'
+        }])
+        .onSuccess((event) => {
+            event.preventDefault();
+            const name = event.target.name.value
+            const category = event.target.category.value
+            const priceOLD = event.target.priceOLD.value
+            const priceNEW = event.target.priceNEW.value
+            const stock = event.target.stock.value
+            const status = event.target.status.value
+            const description = event.target.description.value
+            const avatarInput = event.target.querySelector('#avatar')
+            const avatarPond = filePond.avatar
+            const avatars = avatarPond ? avatarPond.getFiles() : []
+            const formData = new FormData()
+            const imageFiles = (filePondMulti.images?.getFiles?.() || []).filter(item => item.file);
+            if (imageFiles.length > 0) {
+                imageFiles.forEach(item => {
+                    formData.append("images", item.file);
+                })
+            }
+            formData.append("priceOLD", priceOLD)
+            formData.append("priceNEW", priceNEW)
+            formData.append("stock", stock)
+            formData.append("category", category)
+            formData.append("name", name)
+            formData.append("status", status)
+            formData.append("description", description)
+            let avatar = avatarInput?.files?.[0] || null
+            if (avatars.length > 0 && avatars[0].file) {
+                avatar = avatars[0].file
+            }
+
+            if (avatar) {
+                formData.append("avatar", avatar)
+            }
+
+
+            fetch('/admin/products/add', {
+                method: "POST",
+                body: formData
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.code == "error") {
+                        window.location.reload();
+                    }
+
+                    if (data.code == "success") {
+                        window.location.href = `/admin/products`;
+                    }
+
+                })
+        })
+}
+// ADD USERS
+const userCreate = document.querySelector("#user-create-form")
+if (userCreate) {
+    const validation = new JustValidate("#user-create-form")
+    validation
+        .addField('#firstname', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập tên'
+        }])
+        .addField('#lastname', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập họ'
+        }])
+        .addField('#email', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập email'
+        }, {
+            rule: "email",
+            errorMessage: 'Email không đúng định dạng'
+        }])
+        .addField('#password', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập mật khẩu'
+        }])
+        .onSuccess((event) => {
+            event.preventDefault();
+            const firstname = event.target.firstname.value
+            const lastname = event.target.lastname.value
+            const email = event.target.email.value
+            const password = event.target.password.value
+            const role = event.target.role.value
+
+            const formData = new FormData()
+            formData.append("firstname", firstname)
+            formData.append("lastname", lastname)
+            formData.append("email", email)
+            formData.append("password", password)
+            formData.append("role", role)
+
+            const avatarInput = event.target.querySelector('#avatar')
+            const avatarPond = filePond.avatar
+            const avatars = avatarPond ? avatarPond.getFiles() : []
+            let avatar = avatarInput?.files?.[0] || null
+            if (avatars.length > 0 && avatars[0].file) {
+                avatar = avatars[0].file
+            }
+
+            if (avatar) {
+                formData.append("avatar", avatar)
+            }
+
+            fetch('/admin/users/add', {
+                method: "POST",
+                body: formData
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.code == "error") {
+                        window.location.reload();
+                    }
+
+                    if (data.code == "success") {
+                        window.location.href = `/admin/users`;
                     }
 
                 })

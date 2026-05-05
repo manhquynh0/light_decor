@@ -5,8 +5,16 @@ const schema = new mongoose.Schema({
     name: String,
     status: String,
     avatar: String,
+    category: {
+        type: String,
+        ref: "Category"
+    }, // lưu id của danh mục
     createdBy: String,
+    priceOLD: String,
+    priceNEW: String,
     updatedBy: String,
+    images: Array,
+    stock: String,
     slug: {
         type: String,
         slug: "name",// theo truong name
@@ -23,5 +31,5 @@ const schema = new mongoose.Schema({
     {
         timestamps: true // TU DONG sinh ra truong creatAt va updateAt
     })
-const Category = mongoose.model('Category', schema, "categories")
-module.exports = Category
+const Product = mongoose.model('Product', schema, "products")
+module.exports = Product

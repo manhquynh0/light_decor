@@ -2,13 +2,14 @@ const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema(
     {
-        fullname: String,
+        firstname: String,
+        lastname: String,
+        avatar: String,
         email: String,
         phone: String,
         role: String,
         status: String,
         password: String,
-        avatar: String,
         createdBy: String,
         updatedBy: String,
         deleted: {

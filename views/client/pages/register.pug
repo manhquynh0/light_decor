@@ -23,6 +23,7 @@ block content
               required="" 
               placeholder="Nguyễn" 
               type="text"
+              name="firstname"
               )
           .form-group
             label(for="lastname") Tên
@@ -30,6 +31,7 @@ block content
               required="" 
               placeholder="Văn A" 
               type="text"
+              name="lastname"
               )
         .form-group
           label(for="email") Email
@@ -37,12 +39,14 @@ block content
             required="" 
             placeholder="example@email.com" 
             type="email"
+            name="email"
             )
         .form-group
           label(for="phone") Số điện thoại
           input#phone.form-control(
             placeholder="0901 191 616" 
             type="tel"
+            name="phone"
             )
         .form-group
           label(for="password") Mật khẩu
@@ -51,6 +55,7 @@ block content
               required="" 
               placeholder="Tối thiểu 8 ký tự" 
               type="password"
+              name="password"
               )
             button(
               style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:0.8rem;font-weight:700;color:var(--accent-dark);" 
@@ -64,6 +69,7 @@ block content
               required="" 
               placeholder="Nhập lại mật khẩu" 
               type="password"
+              name="confirmPassword"
               )
             button(
               style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:0.8rem;font-weight:700;color:var(--accent-dark);" 
@@ -75,10 +81,11 @@ block content
           label(
             style="display:flex;align-items:flex-start;gap:10px;font-size:0.85rem;cursor:pointer;line-height:1.5;"
             )
-            input(
+            input#terms(
               required="" 
               style="margin-top:3px;flex-shrink:0;" 
               type="checkbox"
+              name="terms"
               )
             | Tôi đồng ý với
             a(
