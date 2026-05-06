@@ -17,13 +17,13 @@ block main
       input(
         placeholder="Tìm sản phẩm..."
         type="text"
+        search
       )
     .toolbar-actions
-      select.btn-admin.btn-admin-outline
+      select.btn-admin.btn-admin-outline(filter-status)
         option(value="all") Tất cả
-        option(value="active") Đang bán
-        option(value="hidden") Ẩn
-        option(value="out") Hết hàng
+        option(value="stock") Đang bán
+        option(value="out stock") Hết hàng
       button.btn-admin.btn-admin-primary(onclick="openModal('addProductModal', '/admin/products/add')")
         svg(
           stroke-width="2.5"
@@ -48,7 +48,7 @@ block main
           th Trạng thái
           th Thao tác
       tbody
-        each item in products
+        each item in product
           tr
             td
                 div(
@@ -68,8 +68,11 @@ block main
                   .status-badge.status-inactive Hết hàng
             td
               .action-btns
-                button.action-btn.action-btn-edit(onclick="openEditProductModal()") ✏
-                button.action-btn.action-btn-delete 🗑
+                button.action-btn.action-btn-edit(onclick=`openModal('editProductModal', '/admin/products/edit/${item._id}')`) ✏
+                button.action-btn.action-btn-delete(
+                  data-url=`/admin/products/delete/${item._id}`,
+                  button-delete
+                ) 🗑
   .table-pagination
     span Hiển thị 1–5 / 486 sản phẩm
     .pagination-btns
@@ -164,97 +167,133 @@ block main
             onclick="closeModal('addProductModal')"
             type="button"
           ) Hủy
-  
-  #editProductModal.modal-backdrop
-    .modal-box
-      .modal-header
-        h3 Chỉnh sửa sản phẩm
-        button.modal-close(onclick="closeModal('editProductModal')") ✕
+  if (openEditModal)
+    #editProductModal.modal-backdrop
+      .modal-box
+        .modal-header
+          h3 Chỉnh sửa sản phẩm
+          button.modal-close(onclick="closeModal('editProductModal')") ✕
 
-      form
-        // Tên sản phẩm
-        .form-group
-          label Tên sản phẩm
-          input.form-control(
-            placeholder="Vd: Sofa góc L Velvet Teal"
-            type="text"
-          )
-
-        
-        .form-row(style="margin-bottom:20px;")
-          .form-group(style="margin:0;")
-            label Danh mục
-            select.form-control
-              option Sofa & Ghế
-              option Bàn Ăn
-              option Phòng Ngủ
-              option Đèn & Ánh sáng
-              option Phụ kiện
-
-          .form-group(style="margin:0;")
-            label Giá bán (₫)
+        form#product-edit-form
+          .form-group(style="display:none")
+            label ID
             input.form-control(
-              placeholder="0"
-              type="number"
+              type="text"
+              name="_id"
+              id="_id"
+              value = productDetail._id
+              hidden = true
+            )
+          // Tên sản phẩm
+          .form-group
+            label Tên sản phẩm
+            input.form-control(
+              placeholder="Vd: Sofa góc L Velvet Teal"
+              type="text"
+              name = "name"
+              id = "name"
+              value = productDetail.name
             )
 
-        // Tồn kho + Giá gốc
-        .form-row(style="margin-bottom:20px;")
-          .form-group(style="margin:0;")
-            label Tồn kho
-            input.form-control(
-              placeholder="0"
-              type="number"
-            )
+          
+          .form-row(style="margin-bottom:20px;")
+            .form-group(style="margin:0;")
+              label Danh mục
+              select.form-control(name = "category" id="category")
+                each item in categories
+                  option(value = item.id) #{item.name}
 
-          .form-group(style="margin:0;")
-            label Giá gốc (₫)
-            input.form-control(
-              placeholder="Để trống nếu không giảm giá"
-              type="number"
-            )
+            .form-group(style="margin:0;")
+              label Giá bán (₫)
+              input.form-control(
+                placeholder="0"
+                type="number"
+                value = productDetail.priceNEW
+              )
 
-        // Ảnh sản phẩm
-        .form-group
-          label Ảnh sản phẩm
-          input(
-            accept="image/*"
-            type="file"
-            filepond-image-multi
-            name="editImages"
-            multiple
-          )
+          // Tồn kho + Giá gốc
+          .form-row(style="margin-bottom:20px;")
+            .form-group(style="margin:0;")
+              label Tồn kho
+              input.form-control(
+                placeholder="0"
+                type="number"
+                value = productDetail.stock
+              )
 
-        // Mô tả
-        .form-group
-          label Mô tả
-          textarea.form-control(
-            placeholder="Mô tả sản phẩm..."
-            rows="3"
-          )
+            .form-group(style="margin:0;")
+              label Giá gốc (₫)
+              input.form-control(
+                placeholder="Để trống nếu không giảm giá"
+                type="number"
+                value = productDetail.priceOLD
+              )
 
-        // Trạng thái
-        .form-group
-          label Trạng thái
-          select.form-control
-            option Đang bán
-            option Ẩn
-            option Hết hàng
-            option Chờ duyệt
+      
+          .form-group
+            label Ảnh đại diện
+            div.inner-upload-image(image-default=productDetail.avatar)
+              input(
+                type="file"
+                id="avatar"
+                name="avatar"
+                accept="image/*"
+                filepond-image
+                )
+          .form-group
+              label Ảnh sản phẩm (nhiều ảnh)
+              div(list-image-default=JSON.stringify(productDetail.images))
+                input(
+                  type="file"
+                  id="images"
+                  name="images"
+                  multiple
+                  accept="image/*"
+                  filepond-image-multi
+                )
 
-        // Button
-        div(style="display:flex;gap:12px;")
-          button.btn.btn-gold(
-            style="flex:1;justify-content:center;"
-            type="submit"
-          ) Lưu thay đổi
+          .form-group
+            label Mô tả
+            textarea#editProductDesc.form-control(
+                placeholder="Mô tả sản phẩm..."
+                name="description"
+              )= productDetail.description
+          // Trạng thái
+          .form-group
+            label Trạng thái
+            select.form-control(name = "status" id="status")
+              option(value="stock" selected = productDetail.status == "stock" ? true : false) Đang bán
+              option(value="out stock" selected = productDetail.status == "out stock" ? true : false) Hết hàng
 
-          button.btn.btn-outline-dark(
-            type="button"
-            onclick="closeModal('editProductModal')"
-          ) Hủy
-    if openAddModal
-      script.
-        document.addEventListener('DOMContentLoaded', function () {
-          openModal('addProductModal');
-        });
+          // Button
+          div(style="display:flex;gap:12px;")
+            button.btn.btn-gold(
+              style="flex:1;justify-content:center;"
+              type="submit"
+            ) Lưu thay đổi
+
+            button.btn.btn-outline-dark(
+              type="button"
+              onclick="closeModal('editProductModal')"
+            ) Hủy
+  #confirmModal.modal-backdrop
+      .modal-box
+        .modal-header
+          h3 Xác nhận xoá
+          button.modal-close(onclick="closeConfirmModal()") ✕
+        p(style="margin:12px 0;") Bạn có chắc chắn muốn xoá mục này không?
+
+        .form-group(style="display:flex;gap:12px;justify-content:center;")
+          button.btn.btn-gold#confirmYes Xoá
+          button.btn.btn-outline-dark(onclick="closeConfirmModal()") Hủy
+  if openAddModal
+    script.
+      document.addEventListener('DOMContentLoaded', function () {
+        openModal('addProductModal');
+      });
+  if openEditModal
+    script.
+      document.addEventListener('DOMContentLoaded', function () {
+        openModal('editProductModal');
+      });
+    

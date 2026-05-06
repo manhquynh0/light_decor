@@ -4569,3 +4569,24 @@ ul {
         opacity: 0;
     }
 }
+
+.badge {
+    font-size: 0.78rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.badge-light {
+    background: var(--light-bg);
+}
+
+.badge-success {
+    background: rgba(46, 204, 113, 0.12);
+    color: #27ae60;
+}
+
+.badge-danger {
+    background: rgba(232, 64, 64, 0.08);
+    color: #c0392b;
+}

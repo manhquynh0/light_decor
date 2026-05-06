@@ -438,24 +438,31 @@ let previousUrl = window.location.pathname;
 function openModal(id, url = null) {
     const modal = document.getElementById(id);
 
-    // 👉 lưu URL hiện tại trước khi đổi
-    previousUrl = window.location.pathname;
-
-    modal?.classList.add('open');
-
-    if (url) { // nếu có url
-        history.pushState({ modal: id }, '', url); // đổi đường dẫn trên thanh địa chỉ trình duyệt nhưng không reload lại trang
-        //  url là đường dẫn của modal
+    if (modal) {
+        modal.classList.add('open');
+        if (url) {
+            // 👉 chỉ lưu URL khi sắp đổi URL
+            previousUrl = window.location.pathname;
+            history.pushState({ modal: id }, '', url);
+        }
+    } else if (url) {
+        // Modal không có trong DOM → chuyển trang để server render
+        window.location.href = url;
     }
 }
 
 function closeModal(id) {
     const modal = document.getElementById(id);
     modal?.classList.remove('open');
-
     // 👉 quay lại URL trước đó
-    history.pushState({}, '', previousUrl);
-
+    if (previousUrl !== window.location.pathname) {
+        // URL đã thay đổi qua pushState → pushState lại
+        history.pushState({}, '', previousUrl);
+    } else {
+        // Trang load trực tiếp (full navigation) → chuyển về trang list
+        const basePath = window.location.pathname.replace(/\/(edit|add)(\/.*)?$/, '');
+        window.location.href = basePath;
+    }
 }
 
 // click ra ngoài để đóng
@@ -463,7 +470,12 @@ document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
     backdrop.addEventListener('click', e => {
         if (e.target === backdrop) {
             backdrop.classList.remove('open');
-            history.pushState({}, '', previousUrl);
+            if (previousUrl !== window.location.pathname) {
+                history.pushState({}, '', previousUrl);
+            } else {
+                const basePath = window.location.pathname.replace(/\/(edit|add)(\/.*)?$/, '');
+                window.location.href = basePath;
+            }
         }
     });
 });
@@ -611,38 +623,12 @@ document.getElementById('avatarUpload')?.addEventListener('change', function (e)
 //     initials.style.display = 'none';
 // }
 
-
-
 // ========== EDIT PRODUCT MODAL ==========
-
 function openEditProductModal() {
     openModal('editProductModal');
 }
 // ========== EDIT ROLE MODAL ==========
-function openEditRoleModal(name, desc, permissions) {
-    document.getElementById('editRoleName').value = name;
-    document.getElementById('editRoleDesc').value = desc;
-
-    // Reset all checkboxes
-    document.getElementById('permManageUsers').checked = false;
-    document.getElementById('permManageProducts').checked = false;
-    document.getElementById('permViewOrders').checked = false;
-    document.getElementById('permUpdateOrders').checked = false;
-    document.getElementById('permManageRoles').checked = false;
-    document.getElementById('permManageSettings').checked = false;
-    document.getElementById('permViewReports').checked = false;
-
-    // Check permissions based on array
-    permissions.forEach(p => {
-        if (p === 'manage_users') document.getElementById('permManageUsers').checked = true;
-        if (p === 'manage_products') document.getElementById('permManageProducts').checked = true;
-        if (p === 'view_orders') document.getElementById('permViewOrders').checked = true;
-        if (p === 'update_orders') document.getElementById('permUpdateOrders').checked = true;
-        if (p === 'manage_roles') document.getElementById('permManageRoles').checked = true;
-        if (p === 'manage_settings') document.getElementById('permManageSettings').checked = true;
-        if (p === 'view_reports') document.getElementById('permViewReports').checked = true;
-    });
-
+function openEditRoleModal() {
     openModal('editRoleModal');
 }
 
@@ -664,7 +650,7 @@ document.getElementById('editRoleForm')?.addEventListener('submit', function (e)
 
 // ========== EDIT CATEGORY MODAL ==========
 function openEditCategoryModal() {
-    // openModal('editCategoryModal');
+    openModal('editCategoryModal');
 }
 
 document.getElementById('editCategoryForm')?.addEventListener('submit', function (e) {
@@ -1274,27 +1260,20 @@ if (categoryCreate) {
             const name = event.target.name.value
             const status = event.target.status.value
             const description = event.target.description.value
-            const avatarInput = event.target.querySelector('#avatar')
-            const avatarPond = filePond.avatar
-            const avatars = avatarPond ? avatarPond.getFiles() : []
-            const formData = new FormData()
-
-            formData.append("name", name)
-            formData.append("status", status)
-            formData.append("description", description)
-            let avatar = avatarInput?.files?.[0] || null
-            if (avatars.length > 0 && avatars[0].file) {
-                avatar = avatars[0].file
+            const dataFinal = {
+                name: name,
+                status: status,
+                description: description
             }
 
-            if (avatar) {
-                formData.append("avatar", avatar)
-            }
 
 
             fetch('/admin/categories/add', {
                 method: "POST",
-                body: formData
+                body: JSON.stringify(dataFinal),
+                headers: {
+                    "Content-Type": "application/json",
+                },
             })
                 .then(res => res.json())
                 .then(data => {
@@ -1410,6 +1389,18 @@ if (userCreate) {
             rule: "required",
             errorMessage: 'Vui lòng nhập họ'
         }])
+        .addField('#phone', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập số điện thoại'
+        }, {
+            rule: "minLength",
+            value: 10,
+            errorMessage: 'Số điện thoại phải có ít nhất 10 số'
+        }, {
+            rule: "maxLength",
+            value: 11,
+            errorMessage: 'Số điện thoại phải có nhiều nhất 11 số'
+        }])
         .addField('#email', [{
             rule: "required",
             errorMessage: 'Vui lòng nhập email'
@@ -1464,4 +1455,388 @@ if (userCreate) {
 
                 })
         })
+}
+// ADD ROLES
+const roleCreate = document.querySelector("#role-create-form")
+if (roleCreate) {
+    const validation = new JustValidate("#role-create-form")
+    validation
+        .addField('#name', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập tên vai trò'
+        }])
+        .addField('#description', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập mô tả'
+        }])
+        .onSuccess((event) => {
+            event.preventDefault();
+            const name = event.target.name.value
+            const description = event.target.description.value
+            const permissions = []
+            const listPermission = roleCreate.querySelectorAll("input[name='permissions']:checked")
+            listPermission.forEach((item) => {
+                permissions.push(item.value)
+            })
+
+            const dataFinal = {
+                name: name,
+                description: description,
+                permissions: permissions
+            };
+            console.log(dataFinal)
+            fetch('/admin/roles/add', {
+                method: "POST",
+                body: JSON.stringify(dataFinal),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.code == "error") {
+                        window.location.reload();
+                    }
+
+                    if (data.code == "success") {
+                        window.location.href = `/admin/roles`;
+                    }
+
+                })
+        })
+}
+// Edit Category
+const categoryEdit = document.querySelector("#category-edit-form")
+if (categoryEdit) {
+    const validation = new JustValidate("#category-edit-form")
+    validation
+        .addField('#name', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập tên danh mục'
+        }])
+        .onSuccess((event) => {
+            event.preventDefault();
+            const id = event.target._id.value
+            const name = event.target.name.value
+            const description = event.target.description.value
+            const status = event.target.status.value
+
+            const dataFinal = {
+                name: name,
+                description: description,
+                status: status
+            }
+
+
+            fetch(`/admin/categories/edit/${id}`, {
+                method: "PATCH",
+                body: JSON.stringify(dataFinal),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.code == "error") {
+
+                        window.location.reload();
+                    }
+
+                    if (data.code == "success") {
+                        closeModal('editCategoryModal');
+                        window.location.reload();
+                    }
+
+                })
+        })
+}
+
+function closeConfirmModal() {
+    deleteId = null;
+    document.getElementById("confirmModal").classList.remove("open");
+}
+let deleteUrl = null;
+
+// mở confirm
+document.addEventListener("click", function (e) {
+    const btn = e.target.closest("[button-delete]"); // tìm nút gần nhất có button-delete
+    if (!btn) return;
+
+    deleteUrl = btn.getAttribute("data-url");
+
+    document.getElementById("confirmModal").classList.add("open");
+});
+// DELETE CATEGORY
+document.getElementById("confirmYes")?.addEventListener("click", () => {
+    if (!deleteUrl) return;
+
+    fetch(deleteUrl, {
+        method: "PATCH" // hoặc DELETE tuỳ backend bạn
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.code === "success") {
+                closeConfirmModal();
+                window.location.reload();
+            } else {
+                alert("Xoá thất bại");
+            }
+        });
+});
+// Edit USER
+const userEdit = document.querySelector("#user-edit-form")
+if (userEdit) {
+    const validation = new JustValidate("#user-edit-form")
+    validation
+        .addField('#firstname', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập họ'
+        }])
+        .addField('#lastname', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập tên'
+        }])
+        .addField('#email', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập email'
+        }])
+        .addField('#phone', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập số điện thoại'
+        }])
+        .onSuccess((event) => {
+            event.preventDefault();
+            const id = event.target._id.value
+            const firstname = event.target.firstname.value
+            const lastname = event.target.lastname.value
+            const email = event.target.email.value
+            const password = event.target.password.value
+            const role = event.target.role.value
+            const phone = event.target.phone.value
+
+            const formData = new FormData()
+            formData.append("firstname", firstname)
+            formData.append("lastname", lastname)
+            formData.append("email", email)
+            formData.append("phone", phone)
+            formData.append("password", password)
+            formData.append("role", role)
+
+            const avatarInput = event.target.querySelector('#avatar');
+            const avatarPond = filePond.avatar;
+            const avatars = avatarPond ? avatarPond.getFiles() : [];
+
+            let avatar = null;
+
+            //  lấy ảnh từ filepond
+            if (avatars.length > 0 && avatars[0].file) {
+                avatar = avatars[0].file;
+
+                //  check nếu là ảnh cũ thì bỏ
+                const wrapper = avatarInput.closest("[image-default]");
+                const imageDefault = wrapper?.getAttribute("image-default");
+
+                if (imageDefault && imageDefault.includes(avatar.name)) {
+                    avatar = null;
+                }
+            }
+            if (avatar) {
+                formData.append("avatar", avatar);
+            }
+
+            fetch(`/admin/users/edit/${id}`, {
+                method: "PATCH",
+                body: formData
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.code == "error") {
+                        window.location.reload();
+                    }
+
+                    if (data.code == "success") {
+                        window.location.href = `/admin/users`;
+                    }
+
+                })
+        })
+}
+// Edit Product
+const productEdit = document.querySelector("#product-edit-form")
+if (productEdit) {
+    const validation = new JustValidate("#product-edit-form")
+    validation
+        .addField('#name', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập tên sản phẩm'
+        }])
+        .onSuccess((event) => {
+            event.preventDefault();
+            const id = event.target._id.value
+            const name = event.target.name.value
+            const description = event.target.description.value
+            const status = event.target.status.value
+
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('description', description);
+            formData.append('status', status);
+            const imagePond = filePond.avatar;
+            const avatars = imagePond ? imagePond.getFiles() : [];
+            let avatar = null;
+            if (avatars.length > 0) {
+                avatar = avatars[0].file;
+                const elementImageDefault = event.target.avatar.closest("[image-default]");
+                const imageDefault = elementImageDefault.getAttribute("image-default");
+                if (imageDefault.includes(avatar.name)) {
+                    avatar = null;
+                }
+            }
+            if (avatar) {
+                formData.append("avatar", avatar);
+            }
+            if (filePondMulti.images.getFiles().length > 0) {
+                filePondMulti.images.getFiles().forEach(item => {
+                    formData.append("images", item.file);
+                })
+            }
+
+            fetch(`/admin/products/edit/${id}`, {
+                method: "PATCH",
+                body: formData,
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.code == "error") {
+
+                        window.location.reload();
+                    }
+
+                    if (data.code == "success") {
+                        closeModal('editProductModal');
+                        window.location.reload();
+                    }
+
+                })
+        })
+}
+//Edit Role 
+const roleEdit = document.querySelector("#role-edit-form")
+if (roleEdit) {
+    const validation = new JustValidate("#role-edit-form")
+    validation
+        .addField('#name', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập tên vai trò'
+        }])
+        .addField('#description', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập mô tả vai trò'
+        }])
+        .onSuccess((event) => {
+            event.preventDefault();
+            const id = event.target._id.value
+            const name = event.target.name.value
+            const description = event.target.description.value
+            const permissions = []
+            const listPermission = roleEdit.querySelectorAll("input[name='permissions']:checked")
+            listPermission.forEach((item) => {
+                permissions.push(item.value)
+            })
+
+            const dataFinal = {
+                name: name,
+                description: description,
+                permissions: permissions
+            };
+            console.log(dataFinal)
+            fetch(`/admin/roles/edit/${id}`, {
+                method: "PATCH",
+                body: JSON.stringify(dataFinal),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.code == "error") {
+                        window.location.reload();
+                    }
+
+                    if (data.code == "success") {
+                        window.location.href = `/admin/roles`;
+                    }
+
+                })
+        })
+}
+//  Filter Status
+const filterStatus = document.querySelector("[filter-status]");
+if (filterStatus) {
+    const url = new URL(window.location.href);
+
+    // Lắng nghe thay đổi lựa chọn
+    filterStatus.addEventListener("change", () => {
+        const value = filterStatus.value;
+        if (value) {
+            url.searchParams.set("status", value);
+        } else {
+            url.searchParams.delete("status");
+        }
+
+        window.location.href = url.href;
+    })
+
+    // Hiển thị lựa chọn mặc định
+    const valueCurrent = url.searchParams.get("status");
+    if (valueCurrent) {
+        filterStatus.value = valueCurrent;
+    }
+}
+// Search
+const search = document.querySelector("[search]");
+if (search) {
+    const url = new URL(window.location.href);
+
+    // Lắng nghe phím đang gõ
+    search.addEventListener("keyup", (event) => {
+        if (event.code == "Enter") {
+            const value = search.value;
+            if (value) {
+                url.searchParams.set("keyword", value.trim());
+            } else {
+                url.searchParams.delete("keyword");
+            }
+
+            window.location.href = url.href;
+        }
+    })
+    const valueCurrent = url.searchParams.get("keyword");
+    if (valueCurrent) {
+        search.value = valueCurrent;
+    }
+}
+
+// Filter Role
+const filterRole = document.querySelector("[filter-role]");
+if (filterRole) {
+    const url = new URL(window.location.href);
+
+    // Lắng nghe thay đổi lựa chọn
+    filterRole.addEventListener("change", () => {
+        const value = filterRole.value;
+        if (value) {
+            url.searchParams.set("role", value);
+        } else {
+            url.searchParams.delete("role");
+        }
+
+        window.location.href = url.href;
+    })
+
+    // Hiển thị lựa chọn mặc định
+    const valueCurrent = url.searchParams.get("role");
+    if (valueCurrent) {
+        filterRole.value = valueCurrent;
+    }
 }

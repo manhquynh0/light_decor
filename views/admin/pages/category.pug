@@ -18,13 +18,13 @@ block main
       input(
         placeholder="Tìm danh mục..."
         type="text"
+        search
       )
     .toolbar-actions
-      select.btn-admin.btn-admin-outline
-        option(value="all") Tất cả
-        option(value="active") Đang bán
-        option(value="hidden") Ẩn
-        option(value="out") Hết hàng
+      select.btn-admin.btn-admin-outline(filter-status)
+        option(value="") Tất cả
+        option(value="active") Đang hoạt động
+        option(value="inactive") Tạm dừng
     button.btn-admin.btn-admin-primary(onclick="openModal('addCategoryModal','/admin/categories/add')")
       svg(
         stroke-width="2.5"
@@ -53,13 +53,13 @@ block main
           tr
             td.td-bold #{item.name}
             td
-              code(style="font-size:0.78rem;background:var(--light-bg);padding:2px 8px;border-radius:4px;") #{item.description}
+              span.badge.badge-light #{item.description}
             td
               span
                 if (item.status == "active")
                   .status-badge.status-active Đang hoạt động
                 else if (item.status == "inactive")
-                  .status-badge.status-inactive Dùng hoạt động
+                  .status-badge.status-inactive Dừng hoạt động
 
             td 
               div #{item.createdByFullName} 
@@ -69,8 +69,13 @@ block main
               div.inner-time #{item.updatedAtFormat}
             td
               .action-btns
-                button.action-btn.action-btn-edit(onclick="openEditCategoryModal()") ✏
-                button.action-btn.action-btn-delete 🗑
+                button.action-btn.action-btn-edit(
+                    onclick=`openModal('editCategoryModal', '/admin/categories/edit/${item._id}')`
+                ) ✏
+                button.action-btn.action-btn-delete(
+                    data-url=`/admin/categories/delete/${item._id}`,
+                    button-delete
+                ) 🗑
 
   // Add Category Modal
   #addCategoryModal.modal-backdrop
@@ -88,19 +93,9 @@ block main
             id = "name"
           )
         .form-group
-          label Ảnh danh mục
-          input(
-            accept="image/*"
-            type="file"
-            filepond-image
-            name="avatar"
-            id = "avatar"
-          )
-        .form-group
           label Mô tả
           textarea.form-control(
             placeholder="Mô tả danh mục..."
-            rows="2"
             name = "description"
           )
         .form-group
@@ -117,54 +112,75 @@ block main
             onclick="closeModal('addCategoryModal')"
             type="button"
           ) Hủy
-  // Edit Category Modal
-  #editCategoryModal.modal-backdrop
+  // Edit Category 
+  if (categoryDetail)
+    #editCategoryModal.modal-backdrop
+      .modal-box
+        .modal-header
+          h3 Chỉnh sửa danh mục
+          button.modal-close(onclick="closeModal('editCategoryModal')") ✕
+
+        form#category-edit-form
+          .form-group(style="display:none")
+            label ID
+            input.form-control(
+              type="text"
+              name="_id"
+              id="_id"
+              value = categoryDetail._id
+              hidden = true
+            )
+          .form-group
+            label Tên danh mục
+            input.form-control(
+              placeholder="Vd: Sofa & Ghế"
+              type="text"
+              name="name"
+              id="name"
+              value = categoryDetail.name
+            )
+          .form-group
+            label Mô tả
+            textarea#editCategoryDesc.form-control(
+                placeholder="Mô tả danh mục..."
+                name="description"
+              )= categoryDetail.description
+
+          .form-group
+            label Trạng thái
+            select#editCategoryStatus.form-control(name="status")
+              option(value="active" selected =categoryDetail.status == "active" ? true : false) Hoạt động
+              option(value="inactive" selected =categoryDetail.status == "inactive" ? true : false) Tạm dừng
+
+          div(style="display:flex;gap:12px;")
+            button.btn.btn-gold(
+              style="flex:1;justify-content:center;"
+              type="submit"
+            ) Lưu thay đổi
+
+            button.btn.btn-outline-dark(
+              type="button"
+              onclick="closeModal('editCategoryModal')"
+            ) Hủy
+  #confirmModal.modal-backdrop
     .modal-box
       .modal-header
-        h3 Chỉnh sửa danh mục
-        button.modal-close(onclick="closeModal('editCategoryModal')") ✕
+        h3 Xác nhận xoá
+        button.modal-close(onclick="closeConfirmModal()") ✕
 
-      form
-        .form-group
-          label Tên danh mục
-          input#editCategoryName.form-control(
-            placeholder="Vd: Sofa & Ghế"
-            type="text"
-          )
-        .form-group
-          label Ảnh danh mục
-          input(
-            accept="image/*"
-            type="file"
-            filepond-image
-            name="editAvatar"
-          )
-        .form-group
-          label Mô tả
-          textarea#editCategoryDesc.form-control(
-            placeholder="Mô tả danh mục..."
-            rows="2"
-          )
+      p(style="margin:12px 0;") Bạn có chắc chắn muốn xoá mục này không?
 
-        .form-group
-          label Trạng thái
-          select#editCategoryStatus.form-control
-            option Hoạt động
-            option Ngừng hoạt động
-
-        div(style="display:flex;gap:12px;")
-          button.btn.btn-gold(
-            style="flex:1;justify-content:center;"
-            type="submit"
-          ) Lưu thay đổi
-
-          button.btn.btn-outline-dark(
-            type="button"
-            onclick="closeModal('editCategoryModal')"
-          ) Hủy
+      .form-group(style="display:flex;gap:12px;justify-content:center;")
+        button.btn.btn-gold#confirmYes Xoá
+        button.btn.btn-outline-dark(onclick="closeConfirmModal()") Huỷ
 
   if openAddModal
     script.
       document.addEventListener('DOMContentLoaded', function () {
         openModal('addCategoryModal');
+      });
+  if openEditModal
+    script.
+      document.addEventListener('DOMContentLoaded', function () {
+        openModal('editCategoryModal');
       });

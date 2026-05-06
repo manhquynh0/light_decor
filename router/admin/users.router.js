@@ -6,4 +6,7 @@ const upload = multer({ storage: cloudinary.storage })
 router.get("/", usersController.index)
 router.get("/add", usersController.openAddModal)
 router.post("/add", upload.single("avatar"), usersController.add)
+router.get("/edit/:id", upload.single("avatar"), usersController.openEditModal)
+router.patch("/edit/:id", upload.single("avatar"), usersController.edit)
+router.patch("/delete/:id", usersController.delete)
 module.exports = router

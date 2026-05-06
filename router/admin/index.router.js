@@ -11,9 +11,9 @@ const authMiddleware = require("../../middlewares/auth.middlware")
 // Sub-routers
 router.use("/dashboard", authMiddleware.verifyToken, dashboardRouter)
 router.use("/products", authMiddleware.verifyToken, productsRouter)
-router.use("/users",  authMiddleware.verifyToken,usersRouter)
+router.use("/users", authMiddleware.verifyToken, usersRouter)
 router.use("/orders", authMiddleware.verifyToken, ordersRouter)
-router.use("/roles",  authMiddleware.verifyToken,rolesRouter)
+router.use("/roles", authMiddleware.verifyToken, rolesRouter)
 router.use("/categories", authMiddleware.verifyToken, categoriesRouter)
 
 module.exports = router

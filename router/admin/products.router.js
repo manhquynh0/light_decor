@@ -9,4 +9,10 @@ router.post("/add", upload.fields([
     { name: 'avatar', maxCount: 1 },
     { name: 'images', maxCount: 10 }]), productsController.add)
 
+router.get("/edit/:id", productsController.openEditModal)
+router.patch("/edit/:id", upload.fields([
+    { name: 'avatar', maxCount: 1 },
+    { name: 'images', maxCount: 10 }]), productsController.edit)
+router.patch("/delete/:id", productsController.delete)
+
 module.exports = router

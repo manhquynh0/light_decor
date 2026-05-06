@@ -17,14 +17,13 @@ block main
       input(
         placeholder="Tìm người dùng..."
         type="text"
+        search
       )
     .toolbar-actions
       .toolbar-actions
-        select.btn-admin.btn-admin-outline
-          option Vai Trò
-          option Admin
-          option Editor
-          option Customer
+        select.btn-admin.btn-admin-outline(filter-role)
+          each item in roleList
+            option(value=item.name) #{item.name}
       button.btn-admin.btn-admin-primary(onclick="openModal('addUserModal', '/admin/users/add')")
         svg(
           stroke-width="2.5"
@@ -61,8 +60,11 @@ block main
             td #{item.role}
             td
               .action-btns
-                button.action-btn.action-btn-edit(onclick=`openEditUserModal('${item.firstname} ${item.lastname}', '${item.email}', '${item.role}', '${item.status}')`) ✏
-                button.action-btn.action-btn-delete 🗑
+                button.action-btn.action-btn-edit(onclick=`openModal('editUserModal', '/admin/users/edit/${item._id}')`) ✏
+                button.action-btn.action-btn-delete(
+                  data-url=`/admin/users/delete/${item._id}`,
+                  button-delete
+                ) 🗑
   .table-pagination
     span Hiển thị 1–5 / 3.421 người dùng
     .pagination-btns
@@ -106,6 +108,15 @@ block main
             required
           )
         .form-group
+          label Số điện thoại 
+          input.form-control(
+            placeholder="0123456789"
+            type="text"
+            id = "phone"
+            name = "phone"
+            required
+          )
+        .form-group
           label Mật khẩu 
           input.form-control(
             placeholder="Tối thiểu 8 ký tự"
@@ -118,14 +129,9 @@ block main
           .form-group(style="margin:0;")
             label Vai trò
             select.form-control(id ="role" name ="role" )
-              option(value="Customer") Customer
-              option(value="Editor") Editor
-              option(value="Admin") Admin
-          //- .form-group(style="margin:0;")
-          //-   label Trạng thái
-          //-   select.form-control(id ="status" name ="status")
-          //-     option Hoạt động
-          //-     option Bị khóa
+              each item in roleList
+                option(value=item.name) #{item.name}
+         
         .form-group
           label Ảnh đại diện
           input(
@@ -144,76 +150,115 @@ block main
             onclick="closeModal('addUserModal')"
             type="button"
           ) Hủy
-  #editUserModal.modal-backdrop
+  if (accountDetail)
+    #editUserModal.modal-backdrop
+      .modal-box
+        .modal-header
+          h3 Chỉnh sửa người dùng
+          button.modal-close(onclick="closeModal('editUserModal')") ✕
+
+        form#user-edit-form
+          .form-group(style="display:none")
+            label ID
+            input.form-control(
+              type="text"
+              name="_id"
+              id="_id"
+              value = accountDetail._id
+              hidden = true
+            )
+          .form-row(style="margin-bottom:20px;")
+            .form-group(style="margin:0;")
+              label Họ
+              input.form-control(
+                placeholder="Nguyễn"
+                type="text"
+                value = accountDetail.firstname
+                id = "firstname"
+                name = "firstname"
+              )
+            .form-group(style="margin:0;")
+              label Tên
+              input.form-control(
+                placeholder="Văn A"
+                type="text"
+                value = accountDetail.lastname
+                id = "lastname"
+                name = "lastname"
+              )
+             
+          .form-group
+            label Email
+            input.form-control(
+              placeholder="email@example.com"
+              type="email"
+              value = accountDetail.email
+              id = "email"
+              name = "email"
+            )
+          .form-group
+            label Số điện thoại
+            input.form-control(
+              placeholder="0123456789"
+              type="text"
+              value = accountDetail.phone
+              id = "phone"
+              name = "phone"
+            )
+          .form-group
+            label Mật khẩu mới
+            input.form-control(
+              placeholder="Để trống nếu không đổi"
+              type="password"
+              id = "password"
+              name = "password"
+            )
+
+          .form-row(style="margin-bottom:20px;")
+            .form-group(style="margin:0;")
+              label Vai trò
+              select.form-control(id ="role" name ="role")
+                each item in roleList
+                  option(value=item.name) #{item.name}
+
+          .form-group
+            label Ảnh đại diện
+            div.inner-upload-image(image-default=accountDetail.avatar)
+              input(
+                type="file"
+                id="avatar"
+                name="avatar"
+                accept="image/*"
+                filepond-image
+              )
+          div(style="display:flex;gap:12px;")
+            button.btn.btn-gold(
+              style="flex:1;justify-content:center;"
+              type="submit"
+            ) Lưu thay đổi
+
+            button.btn.btn-outline-dark(
+              type="button"
+              onclick="closeModal('editUserModal')"
+            ) Hủy
+  #confirmModal.modal-backdrop
     .modal-box
       .modal-header
-        h3 Chỉnh sửa người dùng
-        button.modal-close(onclick="closeModal('editUserModal')") ✕
+        h3 Xác nhận xoá
+        button.modal-close(onclick="closeConfirmModal()") ✕
 
-      form
-        .form-row(style="margin-bottom:20px;")
-          .form-group(style="margin:0;")
-            label Họ
-            input.form-control(
-              placeholder="Nguyễn"
-              type="text"
-            )
-          .form-group(style="margin:0;")
-            label Tên
-            input.form-control(
-              placeholder="Văn A"
-              type="text"
-            )
+      p(style="margin:12px 0;") Bạn có chắc chắn muốn xoá mục này không?
 
-        .form-group
-          label Email
-          input.form-control(
-            placeholder="email@example.com"
-            type="email"
-          )
-
-        .form-group
-          label Mật khẩu mới
-          input.form-control(
-            placeholder="Để trống nếu không đổi"
-            type="password"
-          )
-
-        .form-row(style="margin-bottom:20px;")
-          .form-group(style="margin:0;")
-            label Vai trò
-            select.form-control
-              option Customer
-              option Editor
-              option Admin
-
-          .form-group(style="margin:0;")
-            label Trạng thái
-            select.form-control
-              option Hoạt động
-              option Bị khóa
-
-        .form-group
-          label Ảnh đại diện
-          input(
-            accept="image/*"
-            type="file"
-            filepond-image
-            name="editAvatar"
-          )
-
-        div(style="display:flex;gap:12px;")
-          button.btn.btn-gold(
-            style="flex:1;justify-content:center;"
-            type="submit"
-          ) Lưu thay đổi
-
-          button.btn.btn-outline-dark(
-            type="button"
-            onclick="closeModal('editUserModal')"
-          ) Hủy
+      .form-group(style="display:flex;gap:12px;justify-content:center;")
+        button.btn.btn-gold#confirmYes Xoá
+        button.btn.btn-outline-dark(onclick="closeConfirmModal()") Hủy
   if openAddModal
     script.
       document.addEventListener('DOMContentLoaded', function () {
         openModal('addUserModal');
+      })
+  if openEditModal
+    script.
+      document.addEventListener('DOMContentLoaded', function () {
+        openModal('editUserModal');
       })

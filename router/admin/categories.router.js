@@ -1,9 +1,10 @@
 const categoriesController = require("../../controller/admin/categories.controller")
 const router = require("express").Router()
-const multer = require("multer")
-const cloudinary = require("../../helpers/cloudinary.hepler")
-const upload = multer({storage : cloudinary.storage})
+
 router.get("/", categoriesController.index)
 router.get("/add", categoriesController.openAddModal)
-router.post("/add", upload.single("avatar"), categoriesController.add)
+router.post("/add", categoriesController.add)
+router.get("/edit/:id", categoriesController.openEditModal)
+router.patch("/edit/:id", categoriesController.edit)
+router.patch("/delete/:id", categoriesController.delete)
 module.exports = router

@@ -16,85 +16,35 @@ block main
         line(y2="12" x2="19" y1="12" x1="5")
       | Tạo vai trò mới
   div(style="display:flex;flex-direction:column;gap:16px;padding-top:8px;")
-    div(style="background:var(--off-white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 24px;")
-      div(style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;")
-        div(style="display:flex;align-items:center;gap:10px;")
-          div(style="width:36px;height:36px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--accent);")
-            svg(
-              stroke-width="2"
-              stroke="currentColor"
-              fill="none"
-              viewBox="0 0 24 24"
-              height="16"
-              width="16"
-            )
-              path(d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z")
-          div
-            strong(style="font-size:0.95rem;color:var(--text-dark);") Quản trị viên (Admin)
-            p(style="font-size:0.78rem;color:var(--text-light);") 2 người dùng
-        div(style="display:flex;gap:8px;")
-          button.action-btn.action-btn-edit(onclick="openEditRoleModal('Admin', 'Quản trị viên hệ thống', ['manage_users','manage_products','manage_orders','manage_roles','manage_settings','view_reports'])") ✏
+    each item in rolelist
+      div(style="background:var(--off-white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 24px;")
+        div(style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;")
+          div(style="display:flex;align-items:center;gap:10px;")
+            div(style="width:36px;height:36px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--accent);")
+              svg(
+                stroke-width="2"
+                stroke="currentColor"
+                fill="none"
+                viewBox="0 0 24 24"
+                height="16"
+                width="16"
+              )
+                path(d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z")
+            div
+              strong(style="font-size:0.95rem;color:var(--text-dark);") #{item.name}
+              p(style="font-size:0.78rem;color:var(--text-light);") #{item.description}
+          div(style="display:flex;gap:8px;")
+            button.action-btn.action-btn-edit(onclick=`openModal('editRoleModal', '/admin/roles/edit/${item._id}')`) ✏
+            button.action-btn.action-btn-delete(
+                  data-url=`/admin/roles/delete/${item._id}`,
+                  button-delete
+                ) 🗑
       div(style="display:flex;flex-wrap:wrap;gap:6px;")
-        span(style="padding:4px 10px;background:rgba(46,204,113,0.12);color:#27ae60;border-radius:999px;font-size:0.72rem;font-weight:700;") ✓ Quản lý người dùng
-        span(style="padding:4px 10px;background:rgba(46,204,113,0.12);color:#27ae60;border-radius:999px;font-size:0.72rem;font-weight:700;") ✓ Quản lý sản phẩm
-        span(style="padding:4px 10px;background:rgba(46,204,113,0.12);color:#27ae60;border-radius:999px;font-size:0.72rem;font-weight:700;") ✓ Quản lý đơn hàng
-        span(style="padding:4px 10px;background:rgba(46,204,113,0.12);color:#27ae60;border-radius:999px;font-size:0.72rem;font-weight:700;") ✓ Phân quyền
-        span(style="padding:4px 10px;background:rgba(46,204,113,0.12);color:#27ae60;border-radius:999px;font-size:0.72rem;font-weight:700;") ✓ Cài đặt hệ thống
-        span(style="padding:4px 10px;background:rgba(46,204,113,0.12);color:#27ae60;border-radius:999px;font-size:0.72rem;font-weight:700;") ✓ Xem báo cáo
-
-    div(style="background:var(--off-white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 24px;")
-      div(style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;")
-        div(style="display:flex;align-items:center;gap:10px;")
-          div(style="width:36px;height:36px;background:rgba(52,152,219,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#3498db;")
-            svg(
-              stroke-width="2"
-              stroke="currentColor"
-              fill="none"
-              viewBox="0 0 24 24"
-              height="16"
-              width="16"
-            )
-              path(d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7")
-              path(d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z")
-          div
-            strong(style="font-size:0.95rem;color:var(--text-dark);") Biên tập viên (Editor)
-            p(style="font-size:0.78rem;color:var(--text-light);") 1 người dùng
-        div(style="display:flex;gap:8px;")
-          button.action-btn.action-btn-edit(onclick="openEditRoleModal('Editor', 'Biên tập viên nội dung', ['manage_products','view_orders','view_reports'])") ✏
-          button.action-btn.action-btn-delete 🗑
-      div(style="display:flex;flex-wrap:wrap;gap:6px;")
-        span(style="padding:4px 10px;background:rgba(232,64,64,0.08);color:#c0392b;border-radius:999px;font-size:0.72rem;font-weight:700;") ✗ Quản lý người dùng
-        span(style="padding:4px 10px;background:rgba(46,204,113,0.12);color:#27ae60;border-radius:999px;font-size:0.72rem;font-weight:700;") ✓ Quản lý sản phẩm
-        span(style="padding:4px 10px;background:rgba(46,204,113,0.12);color:#27ae60;border-radius:999px;font-size:0.72rem;font-weight:700;") ✓ Xem đơn hàng
-        span(style="padding:4px 10px;background:rgba(232,64,64,0.08);color:#c0392b;border-radius:999px;font-size:0.72rem;font-weight:700;") ✗ Phân quyền
-        span(style="padding:4px 10px;background:rgba(232,64,64,0.08);color:#c0392b;border-radius:999px;font-size:0.72rem;font-weight:700;") ✗ Cài đặt hệ thống
-        span(style="padding:4px 10px;background:rgba(46,204,113,0.12);color:#27ae60;border-radius:999px;font-size:0.72rem;font-weight:700;") ✓ Xem báo cáo
-
-    div(style="background:var(--off-white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 24px;")
-      div(style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;")
-        div(style="display:flex;align-items:center;gap:10px;")
-          div(style="width:36px;height:36px;background:rgba(234,191,132,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--accent-dark);")
-            svg(
-              stroke-width="2"
-              stroke="currentColor"
-              fill="none"
-              viewBox="0 0 24 24"
-              height="16"
-              width="16"
-            )
-              path(d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2")
-              circle(r="4" cy="7" cx="12")
-          div
-            strong(style="font-size:0.95rem;color:var(--text-dark);") Khách hàng (Customer)
-            p(style="font-size:0.78rem;color:var(--text-light);") 3.419 người dùng
-        div(style="display:flex;gap:8px;")
-          button.action-btn.action-btn-edit(onclick="openEditRoleModal('Customer', 'Khách hàng mua sắm', ['view_products','place_order','view_own_orders'])") ✏
-          button.action-btn.action-btn-delete 🗑
-      div(style="display:flex;flex-wrap:wrap;gap:6px;")
-        span(style="padding:4px 10px;background:rgba(46,204,113,0.12);color:#27ae60;border-radius:999px;font-size:0.72rem;font-weight:700;") ✓ Xem sản phẩm
-        span(style="padding:4px 10px;background:rgba(46,204,113,0.12);color:#27ae60;border-radius:999px;font-size:0.72rem;font-weight:700;") ✓ Đặt hàng
-        span(style="padding:4px 10px;background:rgba(46,204,113,0.12);color:#27ae60;border-radius:999px;font-size:0.72rem;font-weight:700;") ✓ Xem đơn của mình
-        span(style="padding:4px 10px;background:rgba(232,64,64,0.08);color:#c0392b;border-radius:999px;font-size:0.72rem;font-weight:700;") ✗ Quản trị
+       each perm in permissionList
+        if item.permissions.includes(perm.value)
+          span(style="padding:4px 10px;background:rgba(9, 235, 103, 0.12);color:#27ae60;border-radius:999px;font-size:0.72rem;font-weight:700;") ✓ #{perm.label}
+        else
+          span(style="padding:4px 10px;background:rgba(225, 28, 31, 0.12);color:red;border-radius:999px;font-size:0.72rem;font-weight:700;") ✗ #{perm.label}
 
   // Add Role Modal
   #addRoleModal.modal-backdrop
@@ -102,42 +52,29 @@ block main
       .modal-header
         h3 Tạo vai trò mới
         button.modal-close(onclick="closeModal('addRoleModal')") ✕
-      form
+      form#role-create-form
         .form-group
           label Tên vai trò
           input.form-control(
             placeholder="Vd: Nhà kho"
             type="text"
+            id = "name"
+            name = "name"
           )
         .form-group
           label Mô tả
           input.form-control(
             placeholder="Mô tả ngắn về vai trò..."
             type="text"
+            id = "description"
+            name = "description"
           )
         p(style="font-size:0.82rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-light);margin-bottom:12px;") Quyền hạn
         div(style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;")
-          label(style="display:flex;align-items:center;gap:10px;font-size:0.88rem;")
-            input(type="checkbox")
-            | Quản lý người dùng
-          label(style="display:flex;align-items:center;gap:10px;font-size:0.88rem;")
-            input(checked="" type="checkbox")
-            | Quản lý sản phẩm
-          label(style="display:flex;align-items:center;gap:10px;font-size:0.88rem;")
-            input(checked="" type="checkbox")
-            | Xem đơn hàng
-          label(style="display:flex;align-items:center;gap:10px;font-size:0.88rem;")
-            input(type="checkbox")
-            | Cập nhật đơn hàng
-          label(style="display:flex;align-items:center;gap:10px;font-size:0.88rem;")
-            input(type="checkbox")
-            | Phân quyền
-          label(style="display:flex;align-items:center;gap:10px;font-size:0.88rem;")
-            input(type="checkbox")
-            | Cài đặt hệ thống
-          label(style="display:flex;align-items:center;gap:10px;font-size:0.88rem;")
-            input(checked="" type="checkbox")
-            | Xem báo cáo
+          each item in permissionList
+            label(style="display:flex;align-items:center;gap:10px;font-size:0.88rem;")
+              input(type="checkbox" name = "permissions" value = item.value)
+              | #{item.label}
         div(style="display:flex;gap:12px;")
           button.btn.btn-gold(
             style="flex:1;justify-content:center;"
@@ -149,51 +86,75 @@ block main
           ) Hủy
 
   // Edit Role Modal
-  #editRoleModal.modal-backdrop
-    .modal-box
-      .modal-header
-        h3 Chỉnh sửa vai trò
-        button.modal-close(onclick="closeModal('editRoleModal')") ✕
-      form
-        .form-group
-          label Tên vai trò
-          input#editRoleName.form-control(
-            type="text"
-          )
-        .form-group
-          label Mô tả
-          input#editRoleDesc.form-control(
-            type="text"
-          )
-        p(style="font-size:0.82rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-light);margin-bottom:12px;") Quyền hạn
-        div(style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;")
-          label(style="display:flex;align-items:center;gap:10px;font-size:0.88rem;")
-            input#permManageUsers(type="checkbox")
-            | Quản lý người dùng
-          label(style="display:flex;align-items:center;gap:10px;font-size:0.88rem;")
-            input#permManageProducts(type="checkbox")
-            | Quản lý sản phẩm
-          label(style="display:flex;align-items:center;gap:10px;font-size:0.88rem;")
-            input#permViewOrders(type="checkbox")
-            | Xem đơn hàng
-          label(style="display:flex;align-items:center;gap:10px;font-size:0.88rem;")
-            input#permUpdateOrders(type="checkbox")
-            | Cập nhật đơn hàng
-          label(style="display:flex;align-items:center;gap:10px;font-size:0.88rem;")
-            input#permManageRoles(type="checkbox")
-            | Phân quyền
-          label(style="display:flex;align-items:center;gap:10px;font-size:0.88rem;")
-            input#permManageSettings(type="checkbox")
-            | Cài đặt hệ thống
-          label(style="display:flex;align-items:center;gap:10px;font-size:0.88rem;")
-            input#permViewReports(type="checkbox")
-            | Xem báo cáo
-        div(style="display:flex;gap:12px;")
-          button.btn.btn-gold(
-            style="flex:1;justify-content:center;"
-            type="submit"
-          ) Lưu thay đổi
-          button.btn.btn-outline-dark(
-            onclick="closeModal('editRoleModal')"
-            type="button"
-          ) Hủy
+  if(openEditModal)
+    #editRoleModal.modal-backdrop
+      .modal-box
+        .modal-header
+          h3 Chỉnh sửa vai trò
+          button.modal-close(onclick="closeModal('editRoleModal')") ✕
+        form#role-edit-form
+          .form-group(style="display:none")
+            label ID
+            input.form-control(
+              type="text"
+              name="_id"
+              id="_id"
+              value = roleDetail._id
+              hidden = true
+            )
+          .form-group
+            label Tên vai trò
+            input.form-control(
+              type="text"
+              name="name"
+              id="name"
+              value = roleDetail.name
+            )
+          .form-group
+            label Mô tả
+            input.form-control(
+              type="text"
+              name="description"
+              id="description"
+              value = roleDetail.description
+            )
+          p(style="font-size:0.82rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-light);margin-bottom:12px;") Quyền hạn
+          div(style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;")
+            each item in permissionList
+              label(style="display:flex;align-items:center;gap:10px;font-size:0.88rem;")
+                input(
+                  type="checkbox"
+                  name="permissions"
+                  value=item.value
+                  checked = roleDetail.permissions.includes(item.value)
+                )
+                | #{item.label}
+          div(style="display:flex;gap:12px;")
+            button.btn.btn-gold(
+              style="flex:1;justify-content:center;"
+              type="submit"
+            ) Lưu thay đổi
+            button.btn.btn-outline-dark(
+              onclick="closeModal('editRoleModal')"
+              type="button"
+            ) Hủy
+  #confirmModal.modal-backdrop
+      .modal-box
+        .modal-header
+          h3 Xác nhận xoá
+          button.modal-close(onclick="closeConfirmModal()") ✕
+        p(style="margin:12px 0;") Bạn có chắc chắn muốn xoá mục này không?
+
+        .form-group(style="display:flex;gap:12px;justify-content:center;")
+          button.btn.btn-gold#confirmYes Xoá
+          button.btn.btn-outline-dark(onclick="closeConfirmModal()") Hủy
+  if openAddModal
+    script.
+      document.addEventListener('DOMContentLoaded', function () {
+        openModal('addRoleModal');
+      });
+  if openEditModal
+    script.
+      document.addEventListener('DOMContentLoaded', function () {
+        openModal('editRoleModal');
+      });
