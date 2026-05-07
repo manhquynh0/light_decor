@@ -31,83 +31,48 @@ block main
       // Orders List
       div(style="display:grid;gap:24px;")
         // Order 1: Delivered
-        div(
-          style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden;"
-          )
-          div(
-            style="display:grid;grid-template-columns:1fr auto;gap:20px;padding:24px;align-items:start;border-bottom:1px solid var(--border);background:var(--off-white);"
-            )
-            div
-              div(style="display:grid;grid-template-columns:1fr 1fr;gap:20px;")
-                div
-                  p(
-                    style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;color:var(--text-light);margin-bottom:4px;"
-                    ) Số đơn hàng
-                  p(style="font-size:1rem;font-weight:800;color:var(--primary);") MANHQUYNH-2024-001245
-                div
-                  p(
-                    style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;color:var(--text-light);margin-bottom:4px;"
-                    ) Ngày đặt hàng
-                  p(style="font-size:1rem;font-weight:600;color:var(--text-dark);") 15/04/2024
-                div
-                  p(
-                    style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;color:var(--text-light);margin-bottom:4px;"
-                    ) Tổng tiền
-                  p(style="font-size:1.1rem;font-weight:800;color:var(--primary);") 69.150.000 ₫
-                div
-                  p(
-                    style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;color:var(--text-light);margin-bottom:4px;"
-                    ) Trạng thái
-                  span(
-                    style="display:inline-block;padding:6px 12px;background:#e8f5e9;color:#2e7d32;border-radius:999px;font-size:0.8rem;font-weight:700;"
-                    ) ✓ Đã giao hàng
+        .order-card
+          .order-card-header
+            div(style="display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:20px;flex:1;")
+              div
+                p.order-meta-label Số đơn hàng
+                p.order-meta-val MANHQUYNH-2024-001245
+              div
+                p.order-meta-label Ngày đặt hàng
+                p.order-meta-val 15/04/2024
+              div
+                p.order-meta-label Tổng tiền
+                p(style="font-size:1.1rem;font-weight:800;color:var(--accent);") 69.150.000 ₫
+              div
+                p.order-meta-label Trạng thái
+                span.badge.badge-success ✓ Đã giao hàng
             a.btn.btn-outline-dark.btn-sm(
-              style="padding:10px 16px;white-space:nowrap;" 
+              style="padding:10px 16px;white-space:nowrap;color:white;border-color:rgba(255,255,255,0.2);" 
               href="/account/order-details"
               ) Xem chi tiết
-          div(style="padding:24px;")
-            div(style="display:flex;gap:16px;align-items:center;margin-bottom:16px;")
-              img(
-                alt="Sofa" 
-                style="width:64px;height:64px;border-radius:10px;object-fit:cover;flex-shrink:0;" 
-                src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/mau-ghe-sofa-vang-hien-dai-boc-da-han-quoc-sf360_thumb_350.jpg"
-                )
-              div(style="flex:1;")
-                p(style="font-size:0.9rem;font-weight:700;margin-bottom:4px;") Ghế sofa văng da Hàn Quốc
-                p(style="font-size:0.8rem;color:var(--text-light);") Màu: Vàng × 1
-              p(style="font-size:0.9rem;font-weight:700;color:var(--primary);text-align:right;") 34.000.000 ₫
-            div(style="display:flex;gap:16px;align-items:center;")
-              img(
-                alt="Sofa Mỹ" 
-                style="width:64px;height:64px;border-radius:10px;object-fit:cover;flex-shrink:0;" 
-                src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/sf618011-123-1666x1250_1_thumb_350.jpg"
-                )
-              div(style="flex:1;")
-                p(style="font-size:0.9rem;font-weight:700;margin-bottom:4px;") Sofa Phong Cách Mỹ SF007-123
-                p(style="font-size:0.8rem;color:var(--text-light);") Màu: Beige × 1
-              p(style="font-size:0.9rem;font-weight:700;color:var(--primary);text-align:right;") 35.000.000 ₫
-            div(
-              style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);display:flex;gap:12px;"
-              )
-              button.btn.btn-outline-dark.btn-sm(style="padding:10px 16px;") Mua lại
-              button.btn.btn-outline-dark.btn-sm(style="padding:10px 16px;") Để lại đánh giá
+          .order-items
+            .order-item
+              img(src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/mau-ghe-sofa-vang-hien-dai-boc-da-han-quoc-sf360_thumb_350.jpg" alt="Sofa")
+              .order-item-info
+                h4 Ghế sofa văng da Hàn Quốc
+                p Màu: Vàng × 1
+              p(style="font-size:0.9rem;font-weight:700;color:var(--white);margin-left:auto;") 34.000.000 ₫
+            .order-item
+              img(src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/sf618011-123-1666x1250_1_thumb_350.jpg" alt="Sofa Mỹ")
+              .order-item-info
+                h4 Sofa Phong Cách Mỹ SF007-123
+                p Màu: Beige × 1
+              p(style="font-size:0.9rem;font-weight:700;color:var(--white);margin-left:auto;") 35.000.000 ₫
+          .order-card-footer
+            button.btn.btn-outline-dark.btn-sm(style="padding:10px 16px;color:white;border-color:rgba(255,255,255,0.2);") Mua lại
+            button.btn.btn-outline-dark.btn-sm(style="padding:10px 16px;color:white;border-color:rgba(255,255,255,0.2);") Để lại đánh giá
       // Pagination
       div(style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:48px;")
-        button.btn.btn-outline-dark.btn-sm(
-          style="padding:10px 12px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;"
-          ) ←
-        button.btn.btn-sm(
-          style="padding:10px 12px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:var(--primary);color:white;border-radius:8px;font-weight:700;"
-          ) 1
-        button.btn.btn-outline-dark.btn-sm(
-          style="padding:10px 12px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;"
-          ) 2
-        button.btn.btn-outline-dark.btn-sm(
-          style="padding:10px 12px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;"
-          ) 3
-        button.btn.btn-outline-dark.btn-sm(
-          style="padding:10px 12px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;"
-          ) →
+        button.page-btn ←
+        button.page-btn.active 1
+        button.page-btn 2
+        button.page-btn 3
+        button.page-btn →
   // Help Section
   section.section(style="background:var(--off-white);")
     .container

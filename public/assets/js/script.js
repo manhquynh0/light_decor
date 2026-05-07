@@ -109,6 +109,24 @@ document.addEventListener('DOMContentLoaded', function () {
         startHeroAuto();
     }
 
+    // ========== FILTER ACCORDIONS ==========
+    const filterAccordions = document.querySelectorAll('.filter-accordion');
+    filterAccordions.forEach(accordion => {
+        const header = accordion.querySelector('.filter-accordion-header');
+        header?.addEventListener('click', () => {
+            accordion.classList.toggle('active');
+        });
+    });
+
+    // Space Tags Selection
+    const spaceTags = document.querySelectorAll('.space-tag');
+    spaceTags.forEach(tag => {
+        tag.addEventListener('click', () => {
+            tag.classList.toggle('active');
+        });
+    });
+
+
 
     // ========== CATEGORY SLIDER ==========
     const catTrack = document.getElementById('catTrack');
@@ -1257,13 +1275,15 @@ if (categoryCreate) {
         }])
         .onSuccess((event) => {
             event.preventDefault();
+            const parent = event.target.parent.value
             const name = event.target.name.value
             const status = event.target.status.value
             const description = event.target.description.value
             const dataFinal = {
                 name: name,
                 status: status,
-                description: description
+                description: description,
+                parent: parent
             }
 
 
@@ -1297,10 +1317,6 @@ if (productCreate) {
             rule: "required",
             errorMessage: 'Vui lòng nhập tên sản phẩm'
         }])
-        .addField('#category', [{
-            rule: "required",
-            errorMessage: 'Vui lòng chọn danh mục'
-        }])
         .addField('#priceOLD', [{
             rule: "number",
             errorMessage: 'Giá cũ phải là số'
@@ -1323,18 +1339,46 @@ if (productCreate) {
             rule: "required",
             errorMessage: 'Vui lòng nhập mô tả'
         }])
+        .addField('#material', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập chất liệu'
+        }])
+        .addField('#made', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập xuất xứ'
+        }])
+        .addField('#size', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập kích thước'
+        }])
+        .addField('#colorIndex', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập chỉ số màu'
+        }])
+        .addField('#power', [{
+            rule: "required",
+            errorMessage: 'Vui lòng nhập công suất'
+        }])
         .onSuccess((event) => {
             event.preventDefault();
             const name = event.target.name.value
-            const category = event.target.category.value
-            const priceOLD = event.target.priceOLD.value
-            const priceNEW = event.target.priceNEW.value
-            const stock = event.target.stock.value
-            const status = event.target.status.value
             const description = event.target.description.value
+            const status = event.target.status.value
+            const priceNEW = event.target.priceNEW.value
+            const priceOLD = event.target.priceOLD.value
+            const stock = event.target.stock.value
+            const material = event.target.material.value
+            const made = event.target.made.value
+            const size = event.target.size.value
+            const colorIndex = event.target.colorIndex.value
+            const power = event.target.power.value
+            const categoryCheckboxes = event.target.querySelectorAll('input[name="category"]:checked');
+            const categories = Array.from(categoryCheckboxes).map(cb => cb.value);
+
             const avatarInput = event.target.querySelector('#avatar')
             const avatarPond = filePond.avatar
             const avatars = avatarPond ? avatarPond.getFiles() : []
+
             const formData = new FormData()
             const imageFiles = (filePondMulti.images?.getFiles?.() || []).filter(item => item.file);
             if (imageFiles.length > 0) {
@@ -1345,7 +1389,15 @@ if (productCreate) {
             formData.append("priceOLD", priceOLD)
             formData.append("priceNEW", priceNEW)
             formData.append("stock", stock)
-            formData.append("category", category)
+            formData.append("material", material)
+            formData.append("made", made)
+            formData.append("size", size)
+            formData.append("colorIndex", colorIndex)
+            formData.append("power", power)
+            categories.forEach(id => {
+                formData.append("category", id);
+            });
+
             formData.append("name", name)
             formData.append("status", status)
             formData.append("description", description)
@@ -1516,6 +1568,7 @@ if (categoryEdit) {
         }])
         .onSuccess((event) => {
             event.preventDefault();
+            const parent = event.target.parent.value
             const id = event.target._id.value
             const name = event.target.name.value
             const description = event.target.description.value
@@ -1524,7 +1577,8 @@ if (categoryEdit) {
             const dataFinal = {
                 name: name,
                 description: description,
-                status: status
+                status: status,
+                parent: parent
             }
 
 
@@ -1640,6 +1694,7 @@ if (userEdit) {
                     avatar = null;
                 }
             }
+
             if (avatar) {
                 formData.append("avatar", avatar);
             }
@@ -1664,41 +1719,73 @@ if (userEdit) {
 // Edit Product
 const productEdit = document.querySelector("#product-edit-form")
 if (productEdit) {
-    const validation = new JustValidate("#product-edit-form")
-    validation
-        .addField('#name', [{
-            rule: "required",
-            errorMessage: 'Vui lòng nhập tên sản phẩm'
-        }])
-        .onSuccess((event) => {
-            event.preventDefault();
-            const id = event.target._id.value
-            const name = event.target.name.value
-            const description = event.target.description.value
-            const status = event.target.status.value
+    productEdit.addEventListener("submit", (event) => {
+        event.preventDefault();
+        try {
+            const id = event.target._id?.value;
+            if (!id) {
+                console.error("Không tìm thấy ID sản phẩm");
+                return;
+            }
+
+            const power = event.target.power?.value || "";
+            const made = event.target.made?.value || "";
+            const material = event.target.material?.value || "";
+            const size = event.target.size?.value || "";
+            const colorIndex = event.target.colorIndex?.value || "";
+            const name = event.target.name?.value || "";
+            const description = event.target.description?.value || "";
+            const status = event.target.status?.value || "stock";
+            const priceNEW = event.target.priceNEW?.value || "0";
+            const priceOLD = event.target.priceOLD?.value || "0";
+            const stock = event.target.stock?.value || "0";
+
+            const categoryCheckboxes = event.target.querySelectorAll('input[name="category"]:checked');
+            const categories = Array.from(categoryCheckboxes).map(cb => cb.value);
 
             const formData = new FormData();
             formData.append('name', name);
             formData.append('description', description);
             formData.append('status', status);
-            const imagePond = filePond.avatar;
-            const avatars = imagePond ? imagePond.getFiles() : [];
-            let avatar = null;
-            if (avatars.length > 0) {
-                avatar = avatars[0].file;
-                const elementImageDefault = event.target.avatar.closest("[image-default]");
-                const imageDefault = elementImageDefault.getAttribute("image-default");
-                if (imageDefault.includes(avatar.name)) {
-                    avatar = null;
+            formData.append('power', power);
+            formData.append('made', made);
+            formData.append('material', material);
+            formData.append('size', size);
+            formData.append('colorIndex', colorIndex);
+            formData.append('priceNEW', priceNEW);
+            formData.append('priceOLD', priceOLD);
+            formData.append('stock', stock);
+
+            categories.forEach(catId => {
+                formData.append('category', catId);
+            });
+
+            // Xử lý Avatar
+            const avatarPond = filePond.avatar;
+            if (avatarPond) {
+                const avatars = avatarPond.getFiles();
+                if (avatars.length > 0) {
+                    const avatarFile = avatars[0].file;
+                    const wrapper = event.target.querySelector("[image-default]");
+                    const imageDefault = wrapper?.getAttribute("image-default");
+
+                    if (avatarFile instanceof File) {
+                        if (!imageDefault || !imageDefault.includes(avatarFile.name)) {
+                            formData.append("avatar", avatarFile);
+                        }
+                    }
                 }
             }
-            if (avatar) {
-                formData.append("avatar", avatar);
-            }
-            if (filePondMulti.images.getFiles().length > 0) {
-                filePondMulti.images.getFiles().forEach(item => {
-                    formData.append("images", item.file);
-                })
+
+            // Xử lý Multi Images
+            const imagesPond = filePondMulti.images;
+            if (imagesPond) {
+                const files = imagesPond.getFiles();
+                files.forEach(item => {
+                    if (item.file instanceof File) {
+                        formData.append("images", item.file);
+                    }
+                });
             }
 
             fetch(`/admin/products/edit/${id}`, {
@@ -1707,18 +1794,21 @@ if (productEdit) {
             })
                 .then(res => res.json())
                 .then(data => {
-                    if (data.code == "error") {
-
-                        window.location.reload();
-                    }
-
                     if (data.code == "success") {
                         closeModal('editProductModal');
                         window.location.reload();
+                    } else {
+                        alert("Cập nhật thất bại: " + (data.message || "Lỗi không xác định"));
                     }
-
                 })
-        })
+                .catch(err => {
+                    console.error("Lỗi Fetch:", err);
+                    alert("Có lỗi xảy ra khi kết nối với máy chủ.");
+                });
+        } catch (err) {
+            console.error("Lỗi thực thi script:", err);
+        }
+    })
 }
 //Edit Role 
 const roleEdit = document.querySelector("#role-edit-form")
@@ -1839,4 +1929,15 @@ if (filterRole) {
     if (valueCurrent) {
         filterRole.value = valueCurrent;
     }
+}
+
+// Tab Switching (Product Detail)
+function switchTab(tabId, btn) {
+    // Remove active class from all buttons and panes
+    document.querySelectorAll('.tab-nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+
+    // Add active class to current button and pane
+    btn.classList.add('active');
+    document.getElementById('tab-' + tabId).classList.add('active');
 }

@@ -1,0 +1,20 @@
+mixin category-checkbox(list, level, parentArr = [])
+  if list && list.length > 0
+    ul(style=`list-style:none; padding-left: ${level > 0 ? '20px' : '0'}; margin: 0;`)
+      each item in list
+        - let isChecked = false
+        if parentArr && parentArr.length > 0
+          - isChecked = parentArr.includes(item._id.toString())
+        li(style="margin-bottom: 8px;")
+          label(style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 400;")
+            input(
+              type="checkbox"
+              name="category"
+              id = "category"
+              value=item._id.toString()
+              checked=isChecked
+              style="width: 16px; height: 16px; accent-color: var(--gold);"
+            )
+            span #{item.name}
+          if item.children && item.children.length > 0
+            +category-checkbox(item.children, level + 1, parentArr)

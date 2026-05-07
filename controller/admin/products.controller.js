@@ -1,5 +1,6 @@
 const Product = require("../../models/products.model")
 const Category = require("../../models/category.model")
+const categoryHelper = require("../../helpers/categoryTree.helper")
 module.exports.index = async (req, res) => {
   const find = {
     deleted: false,
@@ -15,18 +16,21 @@ module.exports.index = async (req, res) => {
     find.status = req.query.status
   }
   const product = await Product.find(find).populate("category", "name")
-  const categories = await Category.find({
-    deleted: false,
-    status: "active"
+  const allCategories = await Category.find({
+    deleted: false
   })
-
+  const categoryTree = categoryHelper.categoryTree(allCategories)
   res.render("admin/pages/products", {
     title: "Sản phẩm",
     product: product,
-    categories: categories
+    categoryTree: categoryTree
   })
 }
 module.exports.openAddModal = async (req, res) => {
+  const allCategories = await Category.find({
+    deleted: false
+  })
+  const categoryTree = categoryHelper.categoryTree(allCategories)
   const product = await Product.find({
     deleted: false,
   })
@@ -34,6 +38,7 @@ module.exports.openAddModal = async (req, res) => {
     title: "Sản phẩm",
     openAddModal: true,
     product: product,
+    categoryTree: categoryTree
   })
 }
 module.exports.add = async (req, res) => {
@@ -41,6 +46,12 @@ module.exports.add = async (req, res) => {
     req.body.priceOLD = req.body.priceOLD ? parseInt(req.body.priceOLD) : 0
     req.body.priceNEW = req.body.priceNEW ? parseInt(req.body.priceNEW) : 0
     req.body.stock = req.body.stock ? parseInt(req.body.stock) : 0
+    
+    if (req.body.category) {
+      if (!Array.isArray(req.body.category)) {
+        req.body.category = [req.body.category];
+      }
+    }
     if (req.files && req.files.avatar) {
       req.body.avatar = req.files.avatar[0].path;
     } else {
@@ -71,10 +82,10 @@ module.exports.openEditModal = async (req, res) => {
   const product = await Product.find({
     deleted: false,
   })
-  const categories = await Category.find({
-    deleted: false,
-    status: "active"
+  const allCategories = await Category.find({
+    deleted: false
   })
+  const categoryTree = categoryHelper.categoryTree(allCategories)
   const productDetail = await Product.findOne({
     _id: req.params.id,
     deleted: false
@@ -84,14 +95,14 @@ module.exports.openEditModal = async (req, res) => {
     openEditModal: true,
     product: product,
     productDetail: productDetail,
-    categories: categories,
+    categoryTree: categoryTree,
   })
 }
 module.exports.edit = async (req, res) => {
   try {
 
-    if (req.file) {
-      req.body.avatar = req.file.path;
+    if (req.files && req.files.avatar) {
+      req.body.avatar = req.files.avatar[0].path;
     } else {
       delete req.body.avatar;
     }
@@ -99,6 +110,12 @@ module.exports.edit = async (req, res) => {
       req.body.images = req.files.images.map(file => file.path);
     } else {
       delete req.body.images;
+    }
+
+    if (req.body.category) {
+      if (!Array.isArray(req.body.category)) {
+        req.body.category = [req.body.category];
+      }
     }
     await Product.updateOne({ _id: req.params.id }, req.body)
     console.log(req.body)
@@ -113,6 +130,7 @@ module.exports.edit = async (req, res) => {
       code: "error"
     })
   }
+
 
 }
 module.exports.delete = async (req, res) => {

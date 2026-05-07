@@ -1,4 +1,6 @@
 extend ../layouts/default
+include ../mixins/option
+include ../mixins/category-checkbox
 block main
   // SUB: PRODUCTS
   #sub-products.admin-sub-panel
@@ -57,9 +59,13 @@ block main
                   img(src= item.avatar alt="" style="width:100%;height:100%;object-fit:cover;")
             td 
               span.td-bold #{item.name}
-            td #{item.category ? item.category.name : ""}
+            td
+              if item.category && item.category.length > 0
+                each cat in item.category
+                  span.badge.badge-light(style="margin-right: 4px; border: 1px solid var(--border);") #{cat.name}
             td.td-bold #{Number(item.priceNEW).toLocaleString("vi-VN")} ₫
-            td #{item.stock}
+            td 
+              div(style="color: white;font-weight: bold;") #{item.stock}
             td
               span
                 if (item.status == "stock")
@@ -98,9 +104,8 @@ block main
         .form-row(style="margin-bottom:20px;")
           .form-group(style="margin:0;")
             label Danh mục
-            select.form-control(name ="category" id="category")
-              each item in categories
-                option(value = item.id) #{item.name}
+            div(style="border: 1px solid var(--border); border-radius: 6px; padding: 12px; max-height: 200px; overflow-y: auto; background: var(--light-bg); color: var(--white);")
+              +category-checkbox(categoryTree, 0)
           .form-group(style="margin:0;")
             label Giá bán (₫)
             input.form-control(
@@ -124,6 +129,49 @@ block main
               type="number"
               name = "priceOLD"
               id = "priceOLD"
+            )
+        .form-row(style="margin-bottom:20px;")
+          .form-group(style="margin:0;")
+            label Chất liệu
+            input.form-control(
+              placeholder=""
+              type="text"
+              name = "material"
+              id = "material"
+            )
+          .form-group(style="margin:0;")
+            label Xuất xứ
+            input.form-control(
+              placeholder=""
+              type="text"
+              name = "made"
+              id = "made"
+            )
+        .form-row(style="margin-bottom:20px;")
+          .form-group(style="margin:0;")
+            label Kích thước
+            input.form-control(
+              placeholder=""
+              type="text"
+              name = "size"
+              id = "size"
+            )
+          .form-group(style="margin:0;")
+            label Chỉ số màu
+            input.form-control(
+              placeholder=""
+              type="text"
+              name = "colorIndex"
+              id = "colorIndex"
+            )
+        .form-row(style="margin-bottom:20px;")
+          .form-group(style="margin:0;")
+            label Công suất
+            input.form-control(
+              placeholder=""
+              type="text"
+              name = "power"
+              id = "power"
             )
         .form-group
           label Ảnh đại diện
@@ -199,16 +247,16 @@ block main
           .form-row(style="margin-bottom:20px;")
             .form-group(style="margin:0;")
               label Danh mục
-              select.form-control(name = "category" id="category")
-                each item in categories
-                  option(value = item.id) #{item.name}
-
+              div(style="border: 1px solid var(--border); border-radius: 6px; padding: 12px; max-height: 200px; overflow-y: auto; background: var(--light-bg); color: var(--white);")
+                +category-checkbox(categoryTree, 0, productDetail.category)
             .form-group(style="margin:0;")
               label Giá bán (₫)
               input.form-control(
                 placeholder="0"
                 type="number"
                 value = productDetail.priceNEW
+                name = "priceNEW"
+                id = "priceNEW"
               )
 
           // Tồn kho + Giá gốc
@@ -219,6 +267,8 @@ block main
                 placeholder="0"
                 type="number"
                 value = productDetail.stock
+                name = "stock"
+                id = "stock"
               )
 
             .form-group(style="margin:0;")
@@ -227,9 +277,58 @@ block main
                 placeholder="Để trống nếu không giảm giá"
                 type="number"
                 value = productDetail.priceOLD
+                name = "priceOLD"
+                id = "priceOLD"
               )
-
-      
+          .form-row(style="margin-bottom:20px;")
+            .form-group(style="margin:0;")
+              label Chất liệu
+              input.form-control(
+                placeholder=""
+                type="text"
+                name = "material"
+                id = "material"
+                value = productDetail.material
+              )
+            .form-group(style="margin:0;")
+              label Xuất xứ
+              input.form-control(
+                placeholder=""
+                type="text"
+                name = "made"
+                id = "made"
+                value = productDetail.made
+              )
+          .form-row(style="margin-bottom:20px;")
+            .form-group(style="margin:0;")
+              label Kích thước
+              input.form-control(
+                placeholder=""
+                type="text"
+                name = "size"
+                id = "size"
+                value = productDetail.size
+              )
+            .form-group(style="margin:0;")
+              label Chỉ số màu
+              input.form-control(
+                placeholder=""
+                type="text"
+                name = "colorIndex"
+                id = "colorIndex"
+                value = productDetail.colorIndex
+              )
+          .form-row(style="margin-bottom:20px;")
+            .form-group(style="margin:0;")
+              label Công suất
+              input.form-control(
+                placeholder=""
+                type="text"
+                name = "power"
+                id = "power"
+                value = productDetail.power
+              )
+    
           .form-group
             label Ảnh đại diện
             div.inner-upload-image(image-default=productDetail.avatar)
@@ -240,6 +339,7 @@ block main
                 accept="image/*"
                 filepond-image
                 )
+        
           .form-group
               label Ảnh sản phẩm (nhiều ảnh)
               div(list-image-default=JSON.stringify(productDetail.images))
@@ -251,31 +351,31 @@ block main
                   accept="image/*"
                   filepond-image-multi
                 )
-
+      
           .form-group
             label Mô tả
             textarea#editProductDesc.form-control(
                 placeholder="Mô tả sản phẩm..."
                 name="description"
               )= productDetail.description
-          // Trạng thái
+            // Trạng thái
           .form-group
             label Trạng thái
             select.form-control(name = "status" id="status")
               option(value="stock" selected = productDetail.status == "stock" ? true : false) Đang bán
               option(value="out stock" selected = productDetail.status == "out stock" ? true : false) Hết hàng
-
-          // Button
-          div(style="display:flex;gap:12px;")
-            button.btn.btn-gold(
-              style="flex:1;justify-content:center;"
-              type="submit"
-            ) Lưu thay đổi
-
-            button.btn.btn-outline-dark(
-              type="button"
-              onclick="closeModal('editProductModal')"
-            ) Hủy
+  
+            // Button
+            div(style="display:flex;gap:12px;")
+              button.btn.btn-gold(
+                style="flex:1;justify-content:center;"
+                type="submit"
+              ) Lưu thay đổi
+  
+              button.btn.btn-outline-dark(
+                type="button"
+                onclick="closeModal('editProductModal')"
+              ) Hủy
   #confirmModal.modal-backdrop
       .modal-box
         .modal-header

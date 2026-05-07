@@ -82,9 +82,13 @@ module.exports.loginGoogle = async (req, res) => {
         if (!user) {
             user = await Account.create({
                 fullname: payload.name,
+                firstname: payload.given_name || "",
+                lastname: payload.family_name || "",
                 email: payload.email,
+                avatar: payload.picture,
                 password: "", // Google login không cần password
             });
+
         }
 
         // tạo JWT giống login thường
@@ -147,10 +151,11 @@ module.exports.registerPost = async (req, res) => {
             email: email,
             password: hashPassword,
             fullname: `${firstName} ${lastName}`.trim(),
-            firstName: firstName,
-            lastName: lastName,
+            firstname: firstName,
+            lastname: lastName,
             phone: phone
         })
+
 
         await newAccount.save()
         req.flash("success", "Đăng kí thành công")

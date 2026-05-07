@@ -1,0 +1,15 @@
+mixin options(list, level, parent = "")
+  if list && list.length > 0
+    each item in list
+      - let isSelected = false
+      if parent
+        if Array.isArray(parent)
+          - isSelected = parent.includes(item._id.toString())
+        else
+          - isSelected = (parent.toString() == item._id.toString())
+      option(
+        value = (item._id ? item._id.toString() : "")
+        selected = isSelected
+      ) #{'--'.repeat(level)} #{item.name}
+      if item.children && item.children.length > 0
+        +options(item.children, level + 1, parent)

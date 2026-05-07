@@ -35,7 +35,7 @@ block content
               | Mua sắm ngay
           .hero-stats
             .hero-stat
-              span.stat-number 10+
+              span.stat-number 1+
               span.stat-label Năm kinh nghiệm
             .hero-stat-divider
             .hero-stat
@@ -44,7 +44,7 @@ block content
             .hero-stat-divider
             .hero-stat
               span.stat-number 200+
-              span.stat-label Dự án hoàn thành
+              span.stat-label Sản Phẩm hoàn thành
         .hero-right
           #heroCarousel.hero-carousel
             .hero-slides
@@ -91,76 +91,14 @@ block content
           button#catPrev.cat-arr.cat-arr-prev(aria-label="Trước") ‹
           #categorySlider.category-slider
             #catTrack.cat-track
-              a.cat-card(href="/products")
-                .cat-img-wrap
-                  img(
-                    alt="SOFA" 
-                    src="https://i.pinimg.com/736x/78/11/16/7811160ca96d44a845ec1dfd8da1b4ed.jpg"
-                    )
-                .cat-info
-                  h3 SOFA
-                  span Ghế sofa vải và ghế dài
-                  em Xem thêm →
-              a.cat-card(href="/products")
-                .cat-img-wrap
-                  img(
-                    alt="ĐÈN" 
-                    src="https://i.pinimg.com/736x/78/11/16/7811160ca96d44a845ec1dfd8da1b4ed.jpg"
-                    )
-                .cat-info
-                  h3 ĐÈN
-                  span Đèn trang trí nội thất
-                  em Xem thêm →
-              a.cat-card(href="/products")
-                .cat-img-wrap
-                  img(
-                    alt="TỦ" 
-                    src="https://i.pinimg.com/736x/78/11/16/7811160ca96d44a845ec1dfd8da1b4ed.jpg"
-                    )
-                .cat-info
-                  h3 TỦ
-                  span Tủ phòng khách, phòng ngủ
-                  em Xem thêm →
-              a.cat-card(href="/products")
-                .cat-img-wrap
-                  img(
-                    alt="GIƯỜNG" 
-                    src="https://i.pinimg.com/736x/78/11/16/7811160ca96d44a845ec1dfd8da1b4ed.jpg"
-                    )
-                .cat-info
-                  h3 GIƯỜNG
-                  span Giường đa phong cách
-                  em Xem thêm →
-              a.cat-card(href="/products")
-                .cat-img-wrap
-                  img(
-                    alt="GHẾ" 
-                    src="https://i.pinimg.com/736x/78/11/16/7811160ca96d44a845ec1dfd8da1b4ed.jpg"
-                    )
-                .cat-info
-                  h3 GHẾ
-                  span Chất liệu gỗ, nhôm, nhựa
-                  em Xem thêm →
-              a.cat-card(href="/products")
-                .cat-img-wrap
-                  img(
-                    alt="BÀN" 
-                    src="https://i.pinimg.com/736x/78/11/16/7811160ca96d44a845ec1dfd8da1b4ed.jpg"
-                    )
-                .cat-info
-                  h3 BÀN
-                  span Bàn ăn, bàn làm việc đẹp
-                  em Xem thêm →
-              a.cat-card(href="/products")
-                .cat-img-wrap
-                  img(
-                    alt="CÂY" 
-                    src="https://i.pinimg.com/736x/78/11/16/7811160ca96d44a845ec1dfd8da1b4ed.jpg"
-                    )
-                .cat-info
-                  h3 CÂY
-                  span Cây xanh trang trí
-                  em Xem thêm →
+              each item in products
+                a.cat-card(href=`/products/${item.slug}`)
+                  .cat-img-wrap
+                    img(src=item.avatar)
+                  .cat-info
+                    h3 #{item.name}
+                    span 
+                    em Xem thêm →
           button#catNext.cat-arr.cat-arr-next(aria-label="Tiếp") ›
     // BỘ SƯU TẬP – TABS
     section#products.section.collection-section
@@ -177,212 +115,158 @@ block content
         .collection-panels
           #panel-modern.coll-panel.active
             .products-grid
-              article.prod-card
-                a.prod-img-wrap(href="/products")
-                  img(
-                    alt="Ghế sofa văng da Hàn Quốc" 
-                    src="https://i.pinimg.com/736x/78/11/16/7811160ca96d44a845ec1dfd8da1b4ed.jpg"
+              each item in listModernProducts
+                article.prod-card
+                  a.prod-img-wrap(href="/products")
+                    img(
+                      alt=""
+                      src=item.avatar
                     )
-                  span.prod-badge -6%
-                  .prod-overlay
-                    button.quick-add
-                      svg(
-                        stroke-width="2" 
-                        stroke="currentColor" 
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        height="18" 
-                        width="18"
-                        )
-                        path(d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z")
-                        line(
-                          y2="6" 
-                          x2="21" 
-                          y1="6" 
-                          x1="3"
+                    span.prod-badge -#{Math.round((1 - (item.priceNEW / item.priceOLD)) * 100)}%
+                    .prod-overlay
+                      button.quick-add
+                        svg(
+                          stroke-width="2" 
+                          stroke="currentColor" 
+                          fill="none" 
+                          viewBox="0 0 24 24" 
+                          height="18" 
+                          width="18"
                           )
-                        path(d="M16 10a4 4 0 0 1-8 0")
-                      | Thêm giỏ hàng
-                .prod-body
-                  h3.prod-name
-                    a(href="/products") Ghế sofa văng da Hàn Quốc hiện đại thanh lịch
-                  .prod-price
-                    span.price-old 36.000.000 ₫
-                    span.price-new 34.000.000 ₫
-                  .prod-stars ★★★★★
-              article.prod-card
-                a.prod-img-wrap(href="/products")
-                  img(
-                    alt="Sofa Phong Cách Mỹ" 
-                    src="https://i.pinimg.com/736x/78/11/16/7811160ca96d44a845ec1dfd8da1b4ed.jpg"
-                    )
-                  span.prod-badge -22%
-                  .prod-overlay
-                    button.quick-add
-                      svg(
-                        stroke-width="2" 
-                        stroke="currentColor" 
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        height="18" 
-                        width="18"
-                        )
-                        path(d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z")
-                        line(
-                          y2="6" 
-                          x2="21" 
-                          y1="6" 
-                          x1="3"
-                          )
-                        path(d="M16 10a4 4 0 0 1-8 0")
-                      | Thêm giỏ hàng
-                .prod-body
-                  h3.prod-name
-                    a(href="/products") Sofa Phong Cách Mỹ SF007-123
-                  .prod-price
-                    span.price-old 45.000.000 ₫
-                    span.price-new 35.000.000 ₫
-                  .prod-stars ★★★★★
-              article.prod-card
-                a.prod-img-wrap(href="/products")
-                  img(
-                    alt="Sofa Phong Cách Mỹ SF618015" 
-                    src="https://i.pinimg.com/736x/78/11/16/7811160ca96d44a845ec1dfd8da1b4ed.jpg"
-                    )
-                  span.prod-badge -7%
-                  .prod-overlay
-                    button.quick-add
-                      svg(
-                        stroke-width="2" 
-                        stroke="currentColor" 
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        height="18" 
-                        width="18"
-                        )
-                        path(d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z")
-                        line(
-                          y2="6" 
-                          x2="21" 
-                          y1="6" 
-                          x1="3"
-                          )
-                        path(d="M16 10a4 4 0 0 1-8 0")
-                      | Thêm giỏ hàng
-                .prod-body
-                  h3.prod-name
-                    a(href="/products") Sofa Phong Cách Mỹ SF618015-123
-                  .prod-price
-                    span.price-old 6.000.000 ₫
-                    span.price-new 5.600.000 ₫
-                  .prod-stars ★★★★☆
-              article.prod-card
-                a.prod-img-wrap(href="/products")
-                  img(
-                    alt="Sofa góc L HNS142" 
-                    src="https://i.pinimg.com/736x/78/11/16/7811160ca96d44a845ec1dfd8da1b4ed.jpg"
-                    )
-                  span.prod-badge -20%
-                  .prod-overlay
-                    button.quick-add
-                      svg(
-                        stroke-width="2" 
-                        stroke="currentColor" 
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        height="18" 
-                        width="18"
-                        )
-                        path(d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z")
-                        line(
-                          y2="6" 
-                          x2="21" 
-                          y1="6" 
-                          x1="3"
-                          )
-                        path(d="M16 10a4 4 0 0 1-8 0")
-                      | Thêm giỏ hàng
-                .prod-body
-                  h3.prod-name
-                    a(href="/products") Sofa góc L HNS142 – Thiết kế đơn giản, hiện đại
-                  .prod-price
-                    span.price-old 3.750.000 ₫
-                    span.price-new 3.000.000 ₫
-                  .prod-stars ★★★★★
+                          path(d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z")
+                          line(
+                            y2="6" 
+                            x2="21" 
+                            y1="6" 
+                            x1="3"
+                            )
+                          path(d="M16 10a4 4 0 0 1-8 0")
+                        | Thêm giỏ hàng
+                  .prod-body
+                    h3.prod-name
+                      a(href="/products") #{item.name}
+                    .prod-price
+                     span.price-old #{Number(item.priceOLD).toLocaleString('vi-VN')} ₫
+                     span.price-new #{Number(item.priceNEW).toLocaleString('vi-VN')} ₫
+                    .prod-stars ★★★★★
             .products-view-all
               a.btn.btn-outline-dark(href="/products") Xem thêm sản phẩm
           #panel-classic.coll-panel
             .products-grid
-              article.prod-card
-                a.prod-img-wrap(href="/products")
-                  img(
-                    alt="Sofa cổ điển" 
-                    src="https://i.pinimg.com/736x/78/11/16/7811160ca96d44a845ec1dfd8da1b4ed.jpg"
+              each item in listClassicProducts
+                article.prod-card
+                  a.prod-img-wrap(href="/products")
+                    img(
+                      alt=""
+                      src=item.avatar
                     )
-                  .prod-overlay
-                    button.quick-add Thêm giỏ hàng
-                .prod-body
-                  h3.prod-name
-                    a(href="/products") Sofa Cổ Điển Tân Hoàng Gia
-                  .prod-price
-                    span.price-new 12.500.000 ₫
-                  .prod-stars ★★★★☆
-              article.prod-card
-                a.prod-img-wrap(href="/products")
-                  img(
-                    alt="Ghế gỗ tân cổ điển" 
-                    src="https://i.pinimg.com/736x/78/11/16/7811160ca96d44a845ec1dfd8da1b4ed.jpg"
-                    )
-                  .prod-overlay
-                    button.quick-add Thêm giỏ hàng
-                .prod-body
-                  h3.prod-name
-                    a(href="/products") Ghế Gỗ Tân Cổ Điển Cao Cấp
-                  .prod-price
-                    span.price-new 4.200.000 ₫
-                  .prod-stars ★★★★★
+                    span.prod-badge -#{Math.round((1 - (item.priceNEW / item.priceOLD)) * 100)}%
+                    .prod-overlay
+                      button.quick-add
+                        svg(
+                          stroke-width="2" 
+                          stroke="currentColor" 
+                          fill="none" 
+                          viewBox="0 0 24 24" 
+                          height="18" 
+                          width="18"
+                          )
+                          path(d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z")
+                          line(
+                            y2="6" 
+                            x2="21" 
+                            y1="6" 
+                            x1="3"
+                            )
+                          path(d="M16 10a4 4 0 0 1-8 0")
+                        | Thêm giỏ hàng
+                  .prod-body
+                    h3.prod-name
+                      a(href="/products") #{item.name}
+                    .prod-price
+                     span.price-old #{Number(item.priceOLD).toLocaleString('vi-VN')} ₫
+                     span.price-new #{Number(item.priceNEW).toLocaleString('vi-VN')} ₫
+                    .prod-stars ★★★★★
           #panel-simple.coll-panel
             .products-grid
-              article.prod-card
-                a.prod-img-wrap(href="/products")
-                  img(
-                    alt="Sofa đơn giản" 
-                    src="https://i.pinimg.com/736x/78/11/16/7811160ca96d44a845ec1dfd8da1b4ed.jpg"
+              each item in listSimpleProducts
+                article.prod-card
+                  a.prod-img-wrap(href="/products")
+                    img(
+                      alt=""
+                      src=item.avatar
                     )
-                  .prod-overlay
-                    button.quick-add Thêm giỏ hàng
-                .prod-body
-                  h3.prod-name
-                    a(href="/products") Sofa Tối Giản Scandinavian
-                  .prod-price
-                    span.price-new 8.900.000 ₫
-                  .prod-stars ★★★★★
+                    span.prod-badge -#{Math.round((1 - (item.priceNEW / item.priceOLD)) * 100)}%
+                    .prod-overlay
+                      button.quick-add
+                        svg(
+                          stroke-width="2" 
+                          stroke="currentColor" 
+                          fill="none" 
+                          viewBox="0 0 24 24" 
+                          height="18" 
+                          width="18"
+                          )
+                          path(d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z")
+                          line(
+                            y2="6" 
+                            x2="21" 
+                            y1="6" 
+                            x1="3"
+                            )
+                          path(d="M16 10a4 4 0 0 1-8 0")
+                        | Thêm giỏ hàng
+                  .prod-body
+                    h3.prod-name
+                      a(href="/products") #{item.name}
+                    .prod-price
+                     span.price-old #{Number(item.priceOLD).toLocaleString('vi-VN')} ₫
+                     span.price-new #{Number(item.priceNEW).toLocaleString('vi-VN')} ₫
+                    .prod-stars ★★★★★
           #panel-luxury.coll-panel
             .products-grid
-              article.prod-card
-                a.prod-img-wrap(href="/products")
-                  img(
-                    alt="Sofa sang trọng" 
-                    src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/sf618011-123-1666x1250_1_thumb_350.jpg"
+              each item in listLuxuryProducts
+                article.prod-card
+                  a.prod-img-wrap(href="/products")
+                    img(
+                      alt=""
+                      src=item.avatar
                     )
-                  span.prod-badge Premium
-                  .prod-overlay
-                    button.quick-add Thêm giỏ hàng
-                .prod-body
-                  h3.prod-name
-                    a(href="/products") Sofa Da Thật Nhập Khẩu Italy
-                  .prod-price
-                    span.price-new 68.000.000 ₫
-                  .prod-stars ★★★★★
+                    span.prod-badge -#{Math.round((1 - (item.priceNEW / item.priceOLD)) * 100)}%
+                    .prod-overlay
+                      button.quick-add
+                        svg(
+                          stroke-width="2" 
+                          stroke="currentColor" 
+                          fill="none" 
+                          viewBox="0 0 24 24" 
+                          height="18" 
+                          width="18"
+                          )
+                          path(d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z")
+                          line(
+                            y2="6" 
+                            x2="21" 
+                            y1="6" 
+                            x1="3"
+                            )
+                          path(d="M16 10a4 4 0 0 1-8 0")
+                        | Thêm giỏ hàng
+                  .prod-body
+                    h3.prod-name
+                      a(href="/products") #{item.name}
+                    .prod-price
+                     span.price-old #{Number(item.priceOLD).toLocaleString('vi-VN')} ₫
+                     span.price-new #{Number(item.priceNEW).toLocaleString('vi-VN')} ₫
+                    .prod-stars ★★★★★    
     // INSPIRATION BANNER
     section.inspiration-section
       .inspiration-inner
-        .inspiration-bg(
-          style="background-image:url('https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/banner/m_banner.webp')"
-          )
+        .inspiration-bg
+          img(src="/assets/images/banner.png")
         .inspiration-overlay
         .inspiration-content.container
-          p.insp-eyebrow OH!Decor
+          p.insp-eyebrow MANHQUYNH!Decor
           h2.insp-title
             | NGUỒN CẢM HỨNG
             br
@@ -494,41 +378,38 @@ block content
           article.testi-card
             .testi-stars ★★★★★
             blockquote.testi-text
-              | "Web4s cung cấp nhiều tính năng hữu ích như quản lý sản phẩm, đơn hàng, và
-              |   tích hợp thanh toán trực tuyến, giúp việc kinh doanh trở nên thuận tiện và hiệu quả hơn."
+              | "Mình thật sự rất hài lòng với sản phẩm đèn trang trí ở đây. Thiết kế đẹp, hiện đại và đúng như hình mô tả trên website. Sau khi lắp lên phòng khách thì không gian trở nên sang trọng và ấm cúng hơn rất nhiều. Ánh sáng dịu mắt, tạo cảm giác thư giãn vào buổi tối. Đóng gói kỹ, giao hàng nhanh và hỗ trợ khách hàng rất chuyên nghiệp."
             .testi-person
               img(
-                alt="Anh Tùng" 
-                src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/khach_hang/aimy_testimonial_client_img_02.webp"
+                alt="Anh Vũ" 
+                src="/assets/images/av1.jpg"
                 )
               div
-                strong Anh Tùng
+                strong Anh Vũ
                 span Đại diện công ty Forincon
           article.testi-card.featured
             .testi-stars ★★★★★
             blockquote.testi-text
-              | "Nhờ vào cấu trúc website tối ưu hóa SEO mà Web4s thiết kế, trang web của tôi
-              |   đã có thứ hạng cao hơn trên các công cụ tìm kiếm, kéo theo lượng truy cập tăng đáng kể."
+              | "Ban đầu mình khá phân vân vì mua đèn online sợ chất lượng không như mong đợi, nhưng khi nhận hàng thì thật sự bất ngờ. Chất liệu chắc chắn, hoàn thiện tinh tế và cực kỳ sang trọng. Đội ngũ tư vấn hỗ trợ rất nhiệt tình, giúp mình chọn được mẫu phù hợp với phong cách nội thất của căn hộ. Chắc chắn mình sẽ tiếp tục ủng hộ trong những lần tới."
             .testi-person
               img(
-                alt="Chị Thảo" 
-                src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/khach_hang/aimy_testimonial_client_img_01.webp"
+                alt="Anh Mạnh" 
+                src="/assets/images/av2.png"
                 )
               div
-                strong Chị Thảo My
+                strong Anh Mạnh
                 span Đại diện công ty ABC
           article.testi-card
             .testi-stars ★★★★★
             blockquote.testi-text
-              | "Web4s cung cấp nhiều tính năng hữu ích, đáp ứng đầy đủ nhu cầu của doanh
-              |   nghiệp. Thời gian triển khai dự án nhanh chóng, đảm bảo đúng tiến độ và yêu cầu của tôi."
+              | "Mình mua bộ đèn thả để trang trí cho quán cafe và kết quả vượt ngoài mong đợi. Không chỉ đẹp mà ánh sáng còn tạo cảm giác cực kỳ ấm áp, giúp không gian quán nổi bật và thu hút khách hơn hẳn. Rất nhiều khách đến quán đã hỏi xin địa chỉ mua đèn. Giá thành hợp lý so với chất lượng, chế độ bảo hành rõ ràng nên mình rất yên tâm sử dụng."
             .testi-person
               img(
-                alt="Chị Thảo Vân Anh" 
-                src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/khach_hang/home_1_testimonial_image_1.webp"
+                alt="Anh Quỳnh" 
+                src="/assets/images/av3.jpg"
                 )
               div
-                strong Chị Thảo Vân Anh
+                strong Anh Quỳnh
                 span Giám đốc công ty MDS
     // PROJECTS CAROUSEL
     section#projects.section.projects-section
@@ -538,47 +419,47 @@ block content
             p.section-eyebrow Dự án
             h2.section-title Không gian sống khác biệt
             p.section-desc(style="max-width:540px;")
-              | OH Decor cung cấp giải pháp tổng thể từ Kiến trúc tới nội
-              |   thất đặc biệt là các dự án Biệt thự sang trọng, Sky villa hàng đầu tại Việt Nam.
-          a.btn.btn-outline-dark(href="blogs.html") Xem tất cả dự án
+              |   MANHQUYNH Decor cung cấp giải pháp tổng thể từ Kiến trúc tới nội
+              |   thất đặc biệt là các dự án nội thất sang trọng hàng đầu tại Việt Nam.
+          a.btn.btn-outline-dark(href="/products") Xem tất cả sản phẩm
       .proj-carousel-wrap
         #projCarousel.proj-carousel
           .proj-slide.active
             img(
               alt="Căn hộ xanh Ecopark" 
-              src="https://cdn3729.cdn-template-4s.com/thumbs/du-an/1_thumb_720.jpg"
+              src="/assets/images/banner2.png"
               )
             .proj-caption
-              span.proj-tag Căn hộ
-              h3 Mát mắt với căn hộ xanh – Chỉ 250 triệu nội thất tại Ecopark
-              a.proj-read-more(href="blogs.html") Xem chi tiết →
+              span.proj-tag Hiện Đại
+              h3 Mát mắt với đèn bàn mang phong cách hiện đại
+              a.proj-read-more(href="/products") Xem chi tiết →
           .proj-slide
             img(
               alt="Căn hộ 100m2" 
-              src="https://cdn3729.cdn-template-4s.com/thumbs/du-an/ascentia-viethome-8_thumb_720.jpg"
+              src="/assets/images/banner3.png"
               )
             .proj-caption
-              span.proj-tag Thiết kế nội thất
-              h3 Không gian hiện đại trong căn hộ 100m²
-              a.proj-read-more(href="blogs.html") Xem chi tiết →
+              span.proj-tag Lung Linh
+              h3 Lung linh với đèn chùm pha lê
+              a.proj-read-more(href="/news") Xem chi tiết →
           .proj-slide
             img(
-              alt="Căn hộ Hạ Long" 
-              src="https://cdn3729.cdn-template-4s.com/thumbs/du-an/lfstudio-vn_01668_thumb_720.jpg"
+              alt="" 
+              src="/assets/images/banner8.png"
               )
             .proj-caption
-              span.proj-tag Căn hộ cao cấp
-              h3 Khám phá căn hộ hiện đại ngay trung tâm Hạ Long
-              a.proj-read-more(href="blogs.html") Xem chi tiết →
+              span.proj-tag Độc đáo
+              h3 Rực rỡ cùng đèn từ đồ tái chế
+              a.proj-read-more(href="/news") Xem chi tiết →
           .proj-slide
             img(
               alt="Phong cách tối giản" 
-              src="https://cdn3729.cdn-template-4s.com/thumbs/du-an/galaxy-vanphuc-1_thumb_720.jpg"
+              src="/assets/images/banner9.png"
               )
             .proj-caption
               span.proj-tag Tối giản
-              h3 Mang phong cách hiện đại, tối giản vào căn nhà
-              a.proj-read-more(href="blogs.html") Xem chi tiết →
+              h3 Mang phong cách cổ điển, tối giản vào căn nhà
+              a.proj-read-more(href="/news") Xem chi tiết →
         button#projPrev.proj-arr.proj-prev(aria-label="Ảnh trước") ‹
         button#projNext.proj-arr.proj-next(aria-label="Ảnh tiếp") ›
         #projDots.proj-dots
@@ -593,10 +474,10 @@ block content
           div
             p.section-eyebrow Blog
             h2.section-title Tin tức mới nhất
-          a.btn.btn-outline-dark(href="blogs.html") Xem tất cả →
+          a.btn.btn-outline-dark(href="/news") Xem tất cả →
         .news-grid
           article.news-card
-            a.news-img-link(href="blogs.html")
+            a.news-img-link(href="/news")
               img(
                 alt="Design Talk" 
                 src="https://cdn3729.cdn-template-4s.com/thumbs/tin-tuc/1_1_thumb_350.webp"
@@ -607,12 +488,12 @@ block content
                 span 30/10/2024
                 span 208 lượt xem
               h3
-                a(href="blogs.html") Design Talk – Chuyện trò về những xu hướng nội thất
+                a(href="/news") Design Talk – Chuyện trò về những xu hướng nội thất
               p
                 | Xu hướng chính là những gì được nhiều người quan tâm đến trong một khoảng thời gian nhất định...
-              a.news-read-more(href="blogs.html") Đọc thêm →
+              a.news-read-more(href="/news") Đọc thêm →
           article.news-card
-            a.news-img-link(href="blogs.html")
+            a.news-img-link(href="/news")
               img(
                 alt="Làn gió Lagom" 
                 src="https://cdn3729.cdn-template-4s.com/thumbs/tin-tuc/2_1_thumb_350.webp"
@@ -623,11 +504,11 @@ block content
                 span 30/10/2024
                 span 195 lượt xem
               h3
-                a(href="blogs.html") Mang làn gió Lagom đến không gian sống của bạn
+                a(href="/news") Mang làn gió Lagom đến không gian sống của bạn
               p Lagom, một thuật ngữ không còn quá xa lạ với nhiều người. Phong cách sống "vừa đủ"...
-              a.news-read-more(href="blogs.html") Đọc thêm →
+              a.news-read-more(href="/news") Đọc thêm →
           article.news-card
-            a.news-img-link(href="blogs.html")
+            a.news-img-link(href="/news")
               img(
                 alt="Gỗ sồi" 
                 src="https://cdn3729.cdn-template-4s.com/thumbs/tin-tuc/3_1_thumb_350.webp"
@@ -638,9 +519,9 @@ block content
                 span 30/10/2024
                 span 196 lượt xem
               h3
-                a(href="blogs.html") Nội thất gỗ sồi – sự giao thoa của vẻ đẹp và chất lượng
+                a(href="/news") Nội thất gỗ sồi – sự giao thoa của vẻ đẹp và chất lượng
               p Ngày nay, xu hướng tìm về với vẻ đẹp đơn giản, bền vững, gần gũi với thiên nhiên...
-              a.news-read-more(href="blogs.html") Đọc thêm →
+              a.news-read-more(href="/news") Đọc thêm →
     // LIVING SPACES (full-width image carousel)
     section.section.spaces-section
       .container
@@ -658,7 +539,7 @@ block content
             )
             img(
               alt="Phòng khách hiện đại" 
-              src="https://cdn3729.cdn-template-4s.com/thumbs/du-an/lfstudio-vn_01668_thumb_720.jpg"
+              src="/assets/images/banner5.png"
               )
           .space-item(
             data-desc="Không gian yên tĩnh, thư giãn cho gia đình" 
@@ -666,7 +547,7 @@ block content
             )
             img(
               alt="Phòng ngủ sang trọng" 
-              src="https://cdn3729.cdn-template-4s.com/thumbs/du-an/galaxy-vanphuc-1_thumb_720.jpg"
+              src="/assets/images/banner4.png"
               )
           .space-item(
             data-desc="Nơi gặp gỡ và chia sẻ những khoảnh khắc ấm áp" 
@@ -674,7 +555,7 @@ block content
             )
             img(
               alt="Khu ăn uống" 
-              src="https://cdn3729.cdn-template-4s.com/media/banner/slider_text_image.webp"
+              src="/assets/images/banner6.png"
               )
           .space-item(
             data-desc="Không gian tập trung, sáng tạo tuyệt vời" 
@@ -682,7 +563,7 @@ block content
             )
             img(
               alt="Góc làm việc" 
-              src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/banner/mini_cart_banner.jpg"
+              src="/assets/images/banner7.png"
               )
         #spacesInfo.spaces-info
           h3#spaceLabel Phòng khách hiện đại
@@ -693,22 +574,22 @@ block content
           button.space-thumb.active(data-idx="0")
             img(
               alt="" 
-              src="https://cdn3729.cdn-template-4s.com/thumbs/du-an/lfstudio-vn_01668_thumb_720.jpg"
+              src="/assets/images/banner5.png"
               )
           button.space-thumb(data-idx="1")
             img(
               alt="" 
-              src="https://cdn3729.cdn-template-4s.com/thumbs/du-an/galaxy-vanphuc-1_thumb_720.jpg"
+              src="/assets/images/banner4.png"
               )
           button.space-thumb(data-idx="2")
             img(
               alt="" 
-              src="https://cdn3729.cdn-template-4s.com/media/banner/slider_text_image.webp"
+              src="/assets/images/banner6.png"
               )
           button.space-thumb(data-idx="3")
             img(
               alt="" 
-              src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/banner/mini_cart_banner.jpg"
+              src="/assets/images/banner7.png"
               )
     // CONTACT CTA
     section.section.cta-section

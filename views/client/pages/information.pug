@@ -12,26 +12,26 @@ block main
             .form-group(style="margin:0;")
               label(for="firstName") Họ
               input#firstName.form-control(
-                value="Nguyễn"
+                value=user.firstname
                 type="text"
               )
             .form-group(style="margin:0;")
               label(for="lastName") Tên
               input#lastName.form-control(
-                value="Thành"
+                value=user.lastname
                 type="text"
               )
           .form-group
             label(for="profileEmail") Email
             input#profileEmail.form-control(
-              value="admin@ohdecor.vn"
+              value=user.email
               type="email"
             )
           .form-group
             label(for="profilePhone") Số điện thoại
             input#profilePhone.form-control(
               placeholder="+84 xxx xxx xxx"
-              value="0901 191 616"
+              value=user.phone
               type="tel"
             )
           .form-group
@@ -39,7 +39,7 @@ block main
             textarea#profileBio.form-control(
               placeholder="Viết vài dòng giới thiệu về bạn..."
               rows="3"
-            ) Quản trị viên hệ thống OH!Decor. Chuyên gia nội thất cao cấp với 8 năm kinh nghiệm.
+            ) #{user.roleName}
           .form-row(style="margin-bottom:20px;")
             .form-group(style="margin:0;")
               label(for="profileCity") Thành phố

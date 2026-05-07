@@ -1,14 +1,14 @@
 extends ../layouts/default.pug
 
 block content
-  .page-hero
-    .container
-      h1 Tin tức & Cảm hứng
-      p Xu hướng nội thất, mẹo thiết kế và câu chuyện không gian sống
-      nav.breadcrumb
-        a(href="index.html") Trang chủ
-        span ›
-        span Tin tức
+  .page-hero(style="padding:0; margin-bottom: 40px;")
+    .hero-image-wrap(style="width: 100%; height: 550px; overflow: hidden;")
+      img(src="/assets/images/new.png" alt="ManhQuynh" style="width: 100%; height: 100%; object-fit: cover;")
+    .container(style="margin-top: -60px; position: relative; z-index: 2;")
+      nav.breadcrumb(style="background: rgba(0,0,0,0.5); display: inline-flex; padding: 10px 20px; border-radius: 8px; backdrop-filter: blur(4px);")
+        a(href="/home" style="color: var(--white);") Trang chủ
+        span(style="color: var(--text-light); margin: 0 10px;") ›
+        span(style="color: var(--accent);") Tin tức & Cảm hứng
 
   section.section
     .container
@@ -47,7 +47,8 @@ block content
         article.news-card
           a.news-img-link(href="#")
             img(src="https://i.pinimg.com/736x/d8/bd/ae/d8bdae22912c0a4040e4f3d336cb645a.jpg" alt="Lagom")
-          span.news-cat Phong cách sống
+            span.news-cat Phong cách sống
+
           
           .news-body
             .news-meta
@@ -64,7 +65,8 @@ block content
         article.news-card
           a.news-img-link(href="#")
             img(src="https://i.pinimg.com/736x/d8/bd/ae/d8bdae22912c0a4040e4f3d336cb645a.jpg" alt="Gỗ sồi")
-          span.news-cat Vật liệu
+            span.news-cat Vật liệu
+
           
           .news-body
             .news-meta
@@ -81,7 +83,8 @@ block content
         article.news-card
           a.news-img-link(href="#")
             img(src="https://i.pinimg.com/736x/d8/bd/ae/d8bdae22912c0a4040e4f3d336cb645a.jpg" alt="Cây decor")
-          span.news-cat Mẹo hay
+            span.news-cat Mẹo hay
+
           
           .news-body
             .news-meta
@@ -98,7 +101,8 @@ block content
         article.news-card
           a.news-img-link(href="#")
             img(src="https://i.pinimg.com/736x/d8/bd/ae/d8bdae22912c0a4040e4f3d336cb645a.jpg" alt="Đèn trang trí")
-          span.news-cat Mẹo hay
+            span.news-cat Mẹo hay
+
           
           .news-body
             .news-meta
@@ -115,7 +119,8 @@ block content
         article.news-card
           a.news-img-link(href="#")
             img(src="https://i.pinimg.com/736x/d8/bd/ae/d8bdae22912c0a4040e4f3d336cb645a.jpg" alt="Sofa nhỏ")
-          span.news-cat Tư vấn
+            span.news-cat Tư vấn
+
           
           .news-body
             .news-meta
@@ -132,7 +137,8 @@ block content
         article.news-card
           a.news-img-link(href="#")
             img(src="https://i.pinimg.com/736x/d8/bd/ae/d8bdae22912c0a4040e4f3d336cb645a.jpg" alt="Japandi")
-          span.news-cat Xu hướng
+            span.news-cat Xu hướng
+
           
           .news-body
             .news-meta

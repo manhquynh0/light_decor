@@ -23,7 +23,7 @@ block main
       .toolbar-actions
         select.btn-admin.btn-admin-outline(filter-role)
           each item in roleList
-            option(value=item.name) #{item.name}
+            option(value=item._id) #{item.name}
       button.btn-admin.btn-admin-primary(onclick="openModal('addUserModal', '/admin/users/add')")
         svg(
           stroke-width="2.5"
@@ -57,7 +57,7 @@ block main
             td #{item.email}
             td #{item.createdAt.toLocaleString("vi-VN")}
             td 0
-            td #{item.role}
+            td #{item.role ? item.role.name : "Chưa có vai trò"}  
             td
               .action-btns
                 button.action-btn.action-btn-edit(onclick=`openModal('editUserModal', '/admin/users/edit/${item._id}')`) ✏
@@ -130,7 +130,7 @@ block main
             label Vai trò
             select.form-control(id ="role" name ="role" )
               each item in roleList
-                option(value=item.name) #{item.name}
+                option(value=item._id) #{item.name}
          
         .form-group
           label Ảnh đại diện
@@ -219,7 +219,9 @@ block main
               label Vai trò
               select.form-control(id ="role" name ="role")
                 each item in roleList
-                  option(value=item.name) #{item.name}
+                  option(value=item._id
+                      selected=String(item._id) === String(accountDetail.role)
+                  ) #{item.name}
 
           .form-group
             label Ảnh đại diện

@@ -4,10 +4,14 @@ const schema = new mongoose.Schema(
     {
         firstname: String,
         lastname: String,
+        fullname: String,
         avatar: String,
         email: String,
         phone: String,
-        role: String,
+        role: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Role"
+        },
         status: String,
         password: String,
         createdBy: String,

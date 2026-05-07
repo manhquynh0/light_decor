@@ -1,5 +1,5 @@
 extend ../layouts/default
-
+include ../mixins/option
 block main
   // SUB: CATEGORIES
   #sub-categories.admin-sub-panel
@@ -93,6 +93,17 @@ block main
             id = "name"
           )
         .form-group
+          label Danh mục cha
+          select.form-control(
+            name = "parent"
+            id = "parent"
+          )
+            option(value="") Chọn danh mục cha
+            if categoryTree
+              +options(categoryTree, 0)
+            else
+              option(value="" disabled) No categories found (categoryTree undefined)
+        .form-group
           label Mô tả
           textarea.form-control(
             placeholder="Mô tả danh mục..."
@@ -139,6 +150,14 @@ block main
               id="name"
               value = categoryDetail.name
             )
+          .form-group
+            label Danh mục cha
+            select.form-control(
+              name = "parent"
+              id = "parent"
+            )
+              option(value="") Chọn danh mục cha
+              +options(categoryTree, 0, categoryDetail.parent)
           .form-group
             label Mô tả
             textarea#editCategoryDesc.form-control(

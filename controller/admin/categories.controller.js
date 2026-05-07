@@ -1,5 +1,6 @@
 const Category = require("../../models/category.model")
 const Account = require("../../models/account.model")
+const categoryHelper = require("../../helpers/categoryTree.helper")
 module.exports.index = async (req, res) => {
   const find = {
     deleted: false
@@ -35,10 +36,15 @@ module.exports.index = async (req, res) => {
     item.updatedAtFormat = item.updatedAt ? item.updatedAt.toLocaleString("vi-VN") : ""
   }
 
-  console.log(categoryList)
+  const allCategories = await Category.find({
+    deleted: false
+  })
+  const categoryTree = categoryHelper.categoryTree(allCategories)
+
   res.render("admin/pages/category", {
     title: "Danh mục",
     categoryList: categoryList,
+    categoryTree: categoryTree,
   })
 
 }
@@ -47,11 +53,13 @@ module.exports.openAddModal = async (req, res) => {
   const categoryList = await Category.find({
     deleted: false
   })
+  const categoryTree = categoryHelper.categoryTree(categoryList)
+  console.log(categoryTree)
   res.render("admin/pages/category", {
     title: "Danh mục",
     categoryList: categoryList,
+    categoryTree: categoryTree,
     openAddModal: true
-
   })
 }
 
@@ -82,10 +90,11 @@ module.exports.openEditModal = async (req, res) => {
   const categoryList = await Category.find({
     deleted: false
   })
-  console.log(categoryDetail)
+  const categoryTree = categoryHelper.categoryTree(categoryList)
   res.render("admin/pages/category", {
     title: "Danh mục",
     categoryList: categoryList,
+    categoryTree: categoryTree,
     categoryDetail: categoryDetail,
     openEditModal: true
   })

@@ -18,7 +18,7 @@
     "pug": "^3.0.4"
   },
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon --inspect index.js"
   },
   "name": "light_decorr",
   "version": "1.0.0",

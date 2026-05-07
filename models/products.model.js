@@ -5,10 +5,16 @@ const schema = new mongoose.Schema({
     name: String,
     status: String,
     avatar: String,
+    power: String,
+    made: String,
+    size: String,
+    colorIndex: String,
+    material: String,
     category: {
-        type: String,
+        type: Array,
         ref: "Category"
-    }, // lưu id của danh mục
+    }, // lưu mảng id của danh mục
+
     createdBy: String,
     priceOLD: String,
     priceNEW: String,

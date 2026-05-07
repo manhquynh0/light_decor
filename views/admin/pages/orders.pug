@@ -38,11 +38,7 @@ block main
           td Sofa góc L Velvet
           td.td-bold 56.800.000 ₫
           td
-            select.order-status-select(onchange="updateOrderStatus(this)")
-              option(value="pending" selected) Chờ xử lý
-              option(value="shipped") Đang giao
-              option(value="delivered") Đã giao
-              option(value="cancelled") Đã hủy
+            .status-badge.status-active Đang hoạt động
           td
             .action-btns
               button.action-btn.action-btn-view(

@@ -18,7 +18,7 @@ module.exports.index = async (req, res) => {
     find.role = req.query.role
   }
   const roleList = await Role.find({ deleted: false })
-  const accountList = await Account.find(find)
+  const accountList = await Account.find(find).populate('role', 'name')
   res.render("admin/pages/users", {
     accountList: accountList,
     roleList: roleList
@@ -26,7 +26,8 @@ module.exports.index = async (req, res) => {
 }
 
 module.exports.openAddModal = async (req, res) => {
-  const accountList = await Account.find({ deleted: false })
+  const accountList = await Account.find({ deleted: false }).populate('role', 'name')
+
   const roleList = await Role.find({ deleted: false })
   res.render("admin/pages/users", {
     title: "Danh sách người dùng",
@@ -75,7 +76,8 @@ module.exports.openEditModal = async (req, res) => {
     _id: req.params.id,
     deleted: false
   })
-  const accountList = await Account.find({ deleted: false })
+  const accountList = await Account.find({ deleted: false }).populate('role')
+
   res.render("admin/pages/users", {
     title: "Danh sách người dùng",
     accountDetail: accountDetail,

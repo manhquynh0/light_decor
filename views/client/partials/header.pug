@@ -19,11 +19,25 @@ header#site-header.site-header
         | MANHQUYNH
         span.logo-decor Decor.
     nav#site-nav.site-nav
-      a.nav-link.active(href="/home") Trang chủ
+      a.nav-link(href="/home") Trang chủ
       a.nav-link(href="/about") Về chúng tôi
       a.nav-link(href="/products") Sản phẩm
       a.nav-link(href="/news") Tin tức
       a.nav-link(href="/contact") Liên hệ
+    
+    script.
+      document.addEventListener("DOMContentLoaded", () => {
+        const currentPath = window.location.pathname.replace(/\/$/, ""); // Bỏ dấu / ở cuối nếu có
+        const navLinks = document.querySelectorAll(".nav-link");
+        navLinks.forEach(link => {
+          const targetPath = link.getAttribute("href").replace(/\/$/, "");
+          if (currentPath === targetPath || (targetPath !== "" && currentPath.startsWith(targetPath + "/"))) {
+            link.classList.add("active");
+          }
+        });
+      });
+
+
     .header-actions
       button#searchToggle.icon-action.search-toggle(aria-label="Tìm kiếm")
         svg(
