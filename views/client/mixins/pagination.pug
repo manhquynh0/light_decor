@@ -1,0 +1,12 @@
+mixin pagination(pagination, listLength)
+  .pagination(pagination data-total-pages=pagination.totalPage)
+    button.page-btn.prev-button  ‹
+    - for (let i = 1; i <= pagination.totalPage; i++)
+      button.page-btn(
+        class=pagination.currentPage === i ? "active" : ""
+        button-pagination=i
+      ) #{i}
+    button.page-btn.next-button  ›
+  .inner-wrap(style="display:flex;justify-content:center;margin-top:1rem;")
+    span.inner-label
+    | Hiển thị #{pagination.skip + 1} - #{pagination.skip + listLength} của #{pagination.totalRecord}

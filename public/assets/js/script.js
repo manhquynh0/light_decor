@@ -1941,3 +1941,105 @@ function switchTab(tabId, btn) {
     btn.classList.add('active');
     document.getElementById('tab-' + tabId).classList.add('active');
 }
+// Pagination
+const pagination = document.querySelector("[pagination]");
+const prevButton = document.querySelector(".prev-button");
+const nextButton = document.querySelector(".next-button");
+if (pagination) {
+    const url = new URL(window.location.href);
+    const valueCurrent = url.searchParams.get("page") || "1";
+    const currentPage = parseInt(valueCurrent) || 1;
+    const totalPages = parseInt(pagination.dataset.totalPages) || 1;
+
+    // Lắng nghe thay đổi lựa chọn (cho các nút số trang)
+    const pageButtons = pagination.querySelectorAll("[button-pagination]");
+    pageButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const page = button.getAttribute("button-pagination");
+            if (page) {
+                url.searchParams.set("page", page);
+                window.location.href = url.href;
+            }
+        });
+    });
+
+    // Hiển thị lựa chọn mặc định
+    pagination.value = currentPage;
+
+    if (prevButton) {
+        prevButton.disabled = currentPage <= 1;
+        prevButton.addEventListener("click", () => {
+            if (currentPage > 1) {
+                url.searchParams.set("page", currentPage - 1);
+                window.location.href = url.href;
+            }
+        })
+    }
+
+    if (nextButton) {
+        nextButton.disabled = currentPage >= totalPages;
+        nextButton.addEventListener("click", () => {
+            if (currentPage < totalPages) {
+                url.searchParams.set("page", currentPage + 1);
+                window.location.href = url.href;
+            }
+        })
+    }
+}
+// Filter Price
+const filterPrice = document.querySelector("[filter-price]")
+if (filterPrice) {
+    const url = new URL(window.location.href)
+    filterPrice.addEventListener("change", () => {
+        const value = filterPrice.value
+        if (value) {
+            const [min, max] = value.split("-")
+            url.searchParams.set("priceMin", min)
+            url.searchParams.set("priceMax", max)
+        } else {
+            url.searchParams.delete("priceMin");
+            url.searchParams.delete("priceMax");
+        }
+        window.location.href = url.href;
+    })
+
+    // set lại value khi reload
+    const valueCurrentMin = url.searchParams.get("priceMin");
+    const valueCurrentMax = url.searchParams.get("priceMax");
+    if (valueCurrentMin !== null && valueCurrentMax !== null) {
+        filterPrice.value = `${valueCurrentMin}-${valueCurrentMax}`;
+    }
+
+}
+// Filter Status
+const listStatus = document.querySelectorAll("[name='status']");
+if (listStatus.length > 0) {
+    const url = new URL(window.location.href);
+    listStatus.forEach(radio => {
+        radio.addEventListener("change", () => {
+            const value = radio.value;
+            if (value) {
+                url.searchParams.set("status", value);
+            } else {
+                url.searchParams.delete("status");
+            }
+            window.location.href = url.href;
+        });
+    });
+
+    // set lại value khi reload
+    const statusCurrent = url.searchParams.get("status") || "";
+    const activeRadio = document.querySelector(`[name='status'][value='${statusCurrent}']`);
+    if (activeRadio) {
+        activeRadio.checked = true;
+    }
+}
+const filterReset = document.querySelector("[filter-reset]");
+if (filterReset) {
+    const url = new URL(window.location.href);
+
+    filterReset.addEventListener("click", () => {
+        url.search = "";
+        window.location.href = url.href;
+    })
+}

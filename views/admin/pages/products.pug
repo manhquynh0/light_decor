@@ -1,6 +1,7 @@
 extend ../layouts/default
 include ../mixins/option
 include ../mixins/category-checkbox
+include ../mixins/pagination
 block main
   // SUB: PRODUCTS
   #sub-products.admin-sub-panel
@@ -79,12 +80,7 @@ block main
                   data-url=`/admin/products/delete/${item._id}`,
                   button-delete
                 ) 🗑
-  .table-pagination
-    span Hiển thị 1–5 / 486 sản phẩm
-    .pagination-btns
-      button.page-num.active 1
-      button.page-num 2
-      button.page-num 3
+  +pagination(pagination, product.length)
 
   // Add Product Modal
   #addProductModal.modal-backdrop

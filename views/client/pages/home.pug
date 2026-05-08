@@ -283,43 +283,31 @@ block content
             .section-head
               div
                 p.section-eyebrow Phòng khách
-                h2.section-title Sofa & Ghế
+                h2.section-title Tinh Tế & Sang Trọng
               a.btn.btn-outline-dark.btn-sm(href="/products") Xem tất cả
             .showcase-prod-list
-              article.showcase-prod-card
-                a.showcase-prod-img(href="/products")
-                  img(
-                    alt="Ghế sofa văng" 
-                    src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/mau-ghe-sofa-vang-hien-dai-boc-da-han-quoc-sf360_thumb_350.jpg"
+              each item in listLivingProducts
+                article.showcase-prod-card
+                  a.showcase-prod-img(href="/products")
+                    img(
+                      alt="" 
+                      src=item.avatar
                     )
-                .showcase-prod-info
-                  h3
-                    a(href="/products") Ghế sofa văng da Hàn Quốc hiện đại
-                  .prod-price
-                    span.price-old 36.000.000 ₫
-                    span.price-new 34.000.000 ₫
-                  button.btn.btn-gold-outline Thêm giỏ hàng
-              article.showcase-prod-card
-                a.showcase-prod-img(href="/products")
-                  img(
-                    alt="Sofa Phong Cách Mỹ" 
-                    src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/sf618011-123-1666x1250_1_thumb_350.jpg"
-                    )
-                .showcase-prod-info
-                  h3
-                    a(href="/products") Sofa Phong Cách Mỹ SF007-123
-                  .prod-price
-                    span.price-old 45.000.000 ₫
-                    span.price-new 35.000.000 ₫
-                  button.btn.btn-gold-outline Thêm giỏ hàng
+                  .showcase-prod-info
+                    h3
+                      a(href="/products") #{item.name}
+                    .prod-price
+                      span.price-old #{Number(item.priceOLD).toLocaleString('vi-VN')} ₫
+                      span.price-new #{Number(item.priceNEW).toLocaleString('vi-VN')} ₫
+                    button.btn.btn-gold-outline Thêm giỏ hàng
+             
           .showcase-banner
             .showcase-banner-inner
               img(
                 alt="Nội thất phòng khách" 
-                src="https://cdn3729.cdn-template-4s.com/thumbs/du-an/ascentia-viethome-8_thumb_720.jpg"
+                src="https://res.cloudinary.com/drakip2hi/image/upload/v1778223002/vvyau8e37a88ywijivwx.jpg"
                 )
               .showcase-banner-caption
-                span Nội thất phòng khách
                 a.showcase-link(href="/products") Xem thêm →
     // PRODUCT SHOWCASE 2: PHÒNG BẾP (reversed)
     section.section.showcase-section.bg-light
@@ -328,11 +316,11 @@ block content
           .showcase-banner
             .showcase-banner-inner
               img(
-                alt="Nội thất phòng bếp" 
-                src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/banner/25_1.jpg"
+                alt="" 
+                src="https://i.pinimg.com/1200x/b4/0f/43/b40f437944134d18871836f3843cb653.jpg"
                 )
               .showcase-banner-caption
-                span Nội thất phòng bếp
+              
                 a.showcase-link(href="/products") Xem thêm →
           .showcase-products
             .section-head
@@ -341,32 +329,21 @@ block content
                 h2.section-title Bàn & Tủ bếp
               a.btn.btn-outline-dark.btn-sm(href="/products") Xem tất cả
             .showcase-prod-list
-              article.showcase-prod-card
-                a.showcase-prod-img(href="/products")
-                  img(
-                    alt="Sofa phong cách" 
-                    src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/sf005-123-1666x1250_thumb_350.jpg"
-                    )
-                .showcase-prod-info
-                  h3
-                    a(href="/products") Sofa Phong Cách Mỹ SF618015-123
-                  .prod-price
-                    span.price-old 6.000.000 ₫
-                    span.price-new 5.600.000 ₫
-                  button.btn.btn-gold-outline Thêm giỏ hàng
-              article.showcase-prod-card
-                a.showcase-prod-img(href="/products")
-                  img(
-                    alt="Sofa góc L" 
-                    src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/hns142-2_thumb_350.jpg"
-                    )
-                .showcase-prod-info
-                  h3
-                    a(href="/products") Sofa góc L HNS142 – Thiết kế đơn giản
-                  .prod-price
-                    span.price-old 3.750.000 ₫
-                    span.price-new 3.000.000 ₫
-                  button.btn.btn-gold-outline Thêm giỏ hàng
+              each item in listKittchenProducts
+                article.showcase-prod-card
+                  a.showcase-prod-img(href="/products")
+                    img(
+                      alt="" 
+                      src=item.avatar
+                      )
+                  .showcase-prod-info
+                    h3
+                      a(href="/products") #{item.name}
+                    .prod-price
+                      span.price-old #{Number(item.priceOLD).toLocaleString('vi-VN')} ₫
+                      span.price-new #{Number(item.priceNEW).toLocaleString('vi-VN')} ₫
+                    button.btn.btn-gold-outline Thêm giỏ hàng
+             
     // TESTIMONIALS
     section.section.testimonials-section
       .container
@@ -599,7 +576,7 @@ block content
             h2 GÓP Ý TỪ BẠN
             p
               | Mỗi đóng góp từ bạn chính là kim chỉ nam để chúng tôi không ngừng thay đổi và cải thiện mỗi ngày.
-          a.btn.btn-gold(href="contact.html") Liên hệ ngay
+          a.btn.btn-gold(href="/contact") Liên hệ ngay
     // BRANDS
     section.section.brands-section
       .container
@@ -608,8 +585,8 @@ block content
           #brandsInner.brands-inner
             img(
               alt="Brand 1" 
-              src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_3.webp"
-              )
+              src="/assets/images/av2.png"
+            )
             img(
               alt="Brand 2" 
               src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_10.webp"

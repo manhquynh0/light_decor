@@ -11,10 +11,41 @@ module.exports.index = async (req, res) => {
       $options: "i"
     }
   }
+  // Lọc theo trạng thái
   if (req.query.status) {
     find.status = req.query.status
   }
+
+  // Phân trang
+
+  const limitItems = 9;
+  let page = 1;
+
+  if (req.query.page) {
+    const currentPage = parseInt(req.query.page);
+    if (!isNaN(currentPage) && currentPage > 0) {
+      page = currentPage;
+    }
+  }
+
+  const totalRecord = await Category.countDocuments(find);
+  const totalPage = Math.max(Math.ceil(totalRecord / limitItems), 1); // nếu total page < 1 thì = 1 >  1 thì giữ nguyên
+  if (page > totalPage) {
+    page = totalPage;
+  }
+
+  const skip = (page - 1) * limitItems; // bỏ qua bao nhiêu record
   const categoryList = await Category.find(find)
+    .sort({ name: "asc" })
+    .limit(limitItems)
+    .skip(skip);
+
+  const pagination = {
+    currentPage: page,
+    totalPage: totalPage,
+    skip: skip,
+    totalRecord: totalRecord
+  };
   for (let item of categoryList) {
     if (item.createdBy) {
       const infoUserCreated = await Account.findOne({
@@ -35,7 +66,6 @@ module.exports.index = async (req, res) => {
     item.createdAtFormat = item.createdAt ? item.createdAt.toLocaleString("vi-VN") : ""
     item.updatedAtFormat = item.updatedAt ? item.updatedAt.toLocaleString("vi-VN") : ""
   }
-
   const allCategories = await Category.find({
     deleted: false
   })
@@ -45,6 +75,7 @@ module.exports.index = async (req, res) => {
     title: "Danh mục",
     categoryList: categoryList,
     categoryTree: categoryTree,
+    pagination: pagination
   })
 
 }

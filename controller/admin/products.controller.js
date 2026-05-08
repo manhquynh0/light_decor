@@ -15,7 +15,36 @@ module.exports.index = async (req, res) => {
   if (req.query.status) {
     find.status = req.query.status
   }
-  const product = await Product.find(find).populate("category", "name")
+  // Phân trang
+
+  const limitItems = 9;
+  let page = 1;
+
+  if (req.query.page) {
+    const currentPage = parseInt(req.query.page);
+    if (!isNaN(currentPage) && currentPage > 0) {
+      page = currentPage;
+    }
+  }
+
+  const totalRecord = await Category.countDocuments(find);
+  const totalPage = Math.max(Math.ceil(totalRecord / limitItems), 1); // nếu total page < 1 thì = 1 >  1 thì giữ nguyên
+  if (page > totalPage) {
+    page = totalPage;
+  }
+
+  const skip = (page - 1) * limitItems; // bỏ qua bao nhiêu record
+  const product = await Product.find(find)
+    .sort({ name: "asc" })
+    .limit(limitItems)
+    .skip(skip).populate("category", "name");
+
+  const pagination = {
+    currentPage: page,
+    totalPage: totalPage,
+    skip: skip,
+    totalRecord: totalRecord
+  };
   const allCategories = await Category.find({
     deleted: false
   })
@@ -23,7 +52,8 @@ module.exports.index = async (req, res) => {
   res.render("admin/pages/products", {
     title: "Sản phẩm",
     product: product,
-    categoryTree: categoryTree
+    categoryTree: categoryTree,
+    pagination: pagination
   })
 }
 module.exports.openAddModal = async (req, res) => {
@@ -46,7 +76,7 @@ module.exports.add = async (req, res) => {
     req.body.priceOLD = req.body.priceOLD ? parseInt(req.body.priceOLD) : 0
     req.body.priceNEW = req.body.priceNEW ? parseInt(req.body.priceNEW) : 0
     req.body.stock = req.body.stock ? parseInt(req.body.stock) : 0
-    
+
     if (req.body.category) {
       if (!Array.isArray(req.body.category)) {
         req.body.category = [req.body.category];

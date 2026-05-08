@@ -1,5 +1,5 @@
 extends ../layouts/default.pug
-
+include ../mixins/pagination.pug
 block content
   .page-hero(style="padding:0; margin-bottom: 40px;")
     .hero-image-wrap(style="width: 100%; height: 550px; overflow: hidden;")
@@ -18,31 +18,27 @@ block content
         aside#filterPanel.filter-panel
           .filter-header-wrap
             h3(style="margin:0;") Bộ lọc
-            button.filter-clear-btn Xoá tất cả
+            button.filter-clear-btn(filter-reset) Xoá tất cả
           
           .filter-sidebar-search
             i.fa-solid.fa-magnifying-glass
-            input(type="text" placeholder="Tìm kiếm đèn...")
-          
-          // Khoảng giá
+            input(type="text" placeholder="Tìm kiếm đèn..." search)
+   
           .filter-accordion.active
             .filter-accordion-header
-              h3 Khoảng giá
+              h3 Sắp xếp theo
               i.fa-solid.fa-chevron-down.chevron
             .filter-accordion-content
               .filter-group-inner
                 label(style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:0.85rem;cursor:pointer;")
-                  input(checked="" name="price" type="radio")
-                  | Dưới 10 triệu
+                  input(name="status" value="" type="radio" checked)
+                  | Tất cả
                 label(style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:0.85rem;cursor:pointer;")
-                  input(name="price" type="radio")
-                  | 10 – 25 triệu
+                  input(name="status" value="new" type="radio")
+                  | Sản phẩm mới
                 label(style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:0.85rem;cursor:pointer;")
-                  input(name="price" type="radio")
-                  | 25 – 50 triệu
-                label(style="display:flex;align-items:center;gap:10px;font-size:0.85rem;cursor:pointer;")
-                  input(name="price" type="radio")
-                  | Trên 50 triệu
+                  input(name="status" value="promotion" type="radio")
+                  | Khuyến mãi HOT
 
           // Không gian
           // Danh mục động từ categoryTree
@@ -62,14 +58,15 @@ block content
           .shop-header
             span(style="font-size:0.88rem;color:var(--text-light);")
               | Hiển thị 
-              strong(style="color:var(--accent);") 12 
-              | sản phẩm
+              strong(style="color:var(--accent);") #{pagination.totalRecord}
+              |  sản phẩm
             div(style="display:flex;align-items:center;gap:12px;")
-              select.shop-sort-select
-                option Mới nhất
-                option Giá thấp → cao
-                option Giá cao → thấp
-                option Nổi bật
+              select.shop-sort-select(filter-price)
+                option(value="") Mặc định
+                option(value="0-10000000") Dưới 10.000.000 ₫
+                option(value="10000000-20000000") 10.000.000 - 20.000.000 ₫
+                option(value="20000000-30000000") 20.000.000 - 30.000.000 ₫
+                option(value="30000000-") Trên 30.000.000 ₫
           .products-list-grid
             each item in products
               article.prod-card
@@ -78,7 +75,7 @@ block content
                     alt="Ghế sofa văng" 
                     src=item.avatar
                     )
-                  span.prod-badge - #{Math.floor(((Number(item.priceOLD) - Number(item.priceNEW)) / Number(item.priceOLD)) * 100)}%
+                  span.prod-badge - #{Number(item.priceOLD) > 0 ? Math.floor(((Number(item.priceOLD) - Number(item.priceNEW)) / Number(item.priceOLD)) * 100) : 0}%
                   .prod-overlay
                     button.quick-add Thêm giỏ hàng
                 .prod-body
@@ -88,8 +85,4 @@ block content
                     span.price-old #{Number(item.priceOLD).toLocaleString('vi-VN')} ₫
                     span.price-new #{Number(item.priceNEW).toLocaleString('vi-VN')} ₫
                   .prod-stars ★★★★★
-          .pagination
-            button.page-btn.active 1
-            button.page-btn 2
-            button.page-btn 3
-            button.page-btn ›
+          +pagination(pagination, products.length)

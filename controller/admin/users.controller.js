@@ -17,11 +17,42 @@ module.exports.index = async (req, res) => {
   if (req.query.role) {
     find.role = req.query.role
   }
+
+  // Phân trang
+
+  const limitItems = 9;
+  let page = 1;
+
+  if (req.query.page) {
+    const currentPage = parseInt(req.query.page);
+    if (!isNaN(currentPage) && currentPage > 0) {
+      page = currentPage;
+    }
+  }
+
+  const totalRecord = await Account.countDocuments(find);
+  const totalPage = Math.max(Math.ceil(totalRecord / limitItems), 1); // nếu total page < 1 thì = 1 >  1 thì giữ nguyên
+  if (page > totalPage) {
+    page = totalPage;
+  }
+
+  const skip = (page - 1) * limitItems; // bỏ qua bao nhiêu record
+  const accountList = await Account.find(find)
+    .sort({ name: "asc" })
+    .limit(limitItems)
+    .skip(skip).populate('role', 'name')
+
+  const pagination = {
+    currentPage: page,
+    totalPage: totalPage,
+    skip: skip,
+    totalRecord: totalRecord
+  };
   const roleList = await Role.find({ deleted: false })
-  const accountList = await Account.find(find).populate('role', 'name')
   res.render("admin/pages/users", {
     accountList: accountList,
-    roleList: roleList
+    roleList: roleList,
+    pagination: pagination,
   })
 }
 

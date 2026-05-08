@@ -1962,6 +1962,49 @@ ul {
     margin-bottom: 2px;
 }
 
+.footer-team-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px !important;
+}
+
+.team-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.team-item img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent);
+    flex-shrink: 0;
+}
+
+.team-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.team-info strong {
+    font-size: 0.88rem;
+    color: var(--white);
+    font-weight: 700;
+}
+
+.team-info a {
+    font-size: 0.78rem !important;
+    color: rgba(255, 255, 255, 0.45) !important;
+}
+
+.team-info a:hover {
+    color: var(--accent) !important;
+    padding-left: 0 !important;
+}
+
 .footer-bottom {
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     padding: 20px 0;

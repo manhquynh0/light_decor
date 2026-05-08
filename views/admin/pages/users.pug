@@ -1,4 +1,5 @@
 extend ../layouts/default
+include ../mixins/pagination
 block main
   // SUB: USERS
   #sub-users.admin-sub-panel
@@ -65,12 +66,7 @@ block main
                   data-url=`/admin/users/delete/${item._id}`,
                   button-delete
                 ) 🗑
-  .table-pagination
-    span Hiển thị 1–5 / 3.421 người dùng
-    .pagination-btns
-      button.page-num.active 1
-      button.page-num 2
-      button.page-num 3
+  +pagination(pagination, accountList.length)
 
   // Add User Modal
   #addUserModal.modal-backdrop

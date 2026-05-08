@@ -1,5 +1,6 @@
 extend ../layouts/default
 include ../mixins/option
+include ../mixins/pagination.pug
 block main
   // SUB: CATEGORIES
   #sub-categories.admin-sub-panel
@@ -76,7 +77,7 @@ block main
                     data-url=`/admin/categories/delete/${item._id}`,
                     button-delete
                 ) 🗑
-
+    +pagination(pagination, categoryList.length)
   // Add Category Modal
   #addCategoryModal.modal-backdrop
     .modal-box
