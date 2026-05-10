@@ -70,9 +70,9 @@ block content
           .products-list-grid
             each item in products
               article.prod-card
-                a.prod-img-wrap(href="#")
+                a.prod-img-wrap(href=`products/${item.slug}`)
                   img(
-                    alt="Ghế sofa văng" 
+                    alt="" 
                     src=item.avatar
                     )
                   span.prod-badge - #{Number(item.priceOLD) > 0 ? Math.floor(((Number(item.priceOLD) - Number(item.priceNEW)) / Number(item.priceOLD)) * 100) : 0}%

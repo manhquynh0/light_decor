@@ -3,96 +3,47 @@ extends ../layouts/default.pug
 block content
   .container(style="padding-top:20px;")
     nav.breadcrumb(style="background:none;padding:0;")
-      span Ghế Sofa Văng Da Hàn Quốc
+
   // Product detail
   section.container
     .pd-wrap
-      // LEFT: Gallery
+      // LEFT: 
       .pd-gallery
         #pdMainImg.pd-main-img
           img#pdMainImgEl(
-            alt="Ghế Sofa Văng Da Hàn Quốc" 
-            src="https://i.pinimg.com/736x/24/4c/51/244c51c0f493b13b5b9f9e8dcb8ab241.jpg"
+            alt=""
+            src=product.avatar
             )
         #pdThumbs.pd-thumbs
-          .pd-thumb.active(
-            data-src="https://i.pinimg.com/736x/24/4c/51/244c51c0f493b13b5b9f9e8dcb8ab241.jpg"
-            )
-            img(
-              alt="" 
-              src="https://i.pinimg.com/736x/24/4c/51/244c51c0f493b13b5b9f9e8dcb8ab241.jpg"
-              )
-          .pd-thumb(
-            data-src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/sf618011-123-1666x1250_1_thumb_350.jpg"
-            )
-            img(
-              alt="" 
-              src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/sf618011-123-1666x1250_1_thumb_350.jpg"
-              )
-          .pd-thumb(
-            data-src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/sf005-123-1666x1250_thumb_350.jpg"
-            )
-            img(
-              alt="" 
-              src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/sf005-123-1666x1250_thumb_350.jpg"
-              )
-          .pd-thumb(data-src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/hns142-2_thumb_350.jpg")
-            img(
-              alt="" 
-              src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/hns142-2_thumb_350.jpg"
-              )
+          .pd-thumb.active(data-src=product.avatar)
+            img(src=product.avatar)
+          if product.images
+            each item in product.images
+              .pd-thumb(data-src=item)
+                img(src=item)
+         
       // RIGHT: Info
       .pd-info
         div
-          p.pd-category Cổ Điển
-          h1.pd-name Đèn Trang Trí Hiện Đại Thanh Lịch Phong Cách Hàn Quốc
+          p.pd-category #{product.category ? product.category.map(c => c.name).join(", ") : ""}
+          h1.pd-name #{product.name}
         .pd-stars
           span.stars ★★★★★
           span 4.9 (128 đánh giá)
           span(style="color:#2a9d5c;font-weight:600;") · Còn hàng
         .pd-price-wrap
-          span.pd-price-new 34.000.000 ₫
-          span.pd-price-old 36.000.000 ₫
-          span.pd-save –6%
+          span.pd-price-new #{Number(product.priceNEW).toLocaleString('vi-VN')} ₫
+          span.pd-price-old #{Number(product.priceOLD).toLocaleString('vi-VN')} ₫
+          span.pd-save - #{Math.floor(((Number(product.priceOLD) - Number(product.priceNEW)) / Number(product.priceOLD)) * 100)}%
         p(style="font-size:.9rem;color:var(--text-mid);line-height:1.8;")
-          |Đèn trang trí được thiết kế theo phong cách hiện đại tinh tế, lấy cảm hứng từ xu hướng nội thất Hàn Quốc, mang lại vẻ đẹp sang trọng và ấm áp cho không gian sống. Sử dụng chất liệu cao cấp với thân đèn hợp kim chắc chắn, chao đèn thiết kế tỉ mỉ giúp ánh sáng tỏa ra dịu nhẹ, bền bỉ theo thời gian. Sản phẩm phù hợp cho phòng khách, phòng ngủ, quán cà phê hoặc không gian decor hiện đại, tạo điểm nhấn thẩm mỹ và nâng tầm không gian sống.
+          | #{product.description}
         .pd-divider
         // Color selection
         div
           p.pd-label
-            | Màu sắc:
-            strong#colorLabel(style="color:var(--primary);font-weight:800;") Vàng bò
-          .pd-colors
-            button.pd-color-btn.active(
-              onclick="selectColor(this)" 
-              data-label="Vàng bò" 
-              title="Vàng bò" 
-              style="background:#c8a063;"
-              )
-            button.pd-color-btn(
-              onclick="selectColor(this)" 
-              data-label="Nâu đậm" 
-              title="Nâu đậm" 
-              style="background:#4a3728;"
-              )
-            button.pd-color-btn(
-              onclick="selectColor(this)" 
-              data-label="Kem" 
-              title="Kem" 
-              style="background:#e8ddd0;"
-              )
-            button.pd-color-btn(
-              onclick="selectColor(this)" 
-              data-label="Xanh rêu" 
-              title="Xanh rêu" 
-              style="background:#2E3D36;"
-              )
-            button.pd-color-btn(
-              onclick="selectColor(this)" 
-              data-label="Xám" 
-              title="Xám" 
-              style="background:#8c8c8c;"
-              )
+            | Màu sắc : 
+            strong#colorLabel(style="color:yellow;font-weight:800;") #{product.colorIndex}
+
         // Size selection
         div
           p.pd-label
@@ -100,20 +51,16 @@ block content
           .pd-sizes
             button.pd-size-btn.active(
               onclick="selectSize(this)" 
-              data-label="2 chỗ ngồi"
-              ) 2 chỗ (160cm)
-            button.pd-size-btn(
-              onclick="selectSize(this)" 
-              data-label="3 chỗ ngồi"
-              ) 3 chỗ (220cm)
+              data-label=product.size
+              ) #{product.size}
         .pd-divider
         // Quantity & actions
         .pd-qty-row
           .pd-qty
             button(onclick="changeQty(-1)") −
             span#pdQty 1
-            button(onclick="changeQty(1)") +
-          a.btn.btn-gold.btn-add-cart(href="cart.html")
+            button(onclick="changeQty(1)" ) +
+          button.btn.btn-gold.btn-add-cart(product-id = product._id)
             svg(
               stroke-width="2" 
               stroke="currentColor" 
@@ -145,7 +92,7 @@ block content
                 )
         a.btn.btn-outline-dark(
           style="justify-content:center;padding:14px 28px;font-size:.95rem;" 
-          href="checkout.html"
+          href="/cart"
           ) Mua ngay →
         .pd-divider
         // Meta info
@@ -178,7 +125,7 @@ block content
                 )
             span
               | Giao hàng
-              strong  2 – 5 ngày
+              strong(style = "color :white")  2 – 5 ngày
               | · Miễn phí với đơn trên 5 triệu
           .pd-meta-row
             svg(
@@ -197,7 +144,7 @@ block content
                 y1="3" 
                 x1="12"
                 )
-            span
+            span(style = "color :white")
               | Đổi trả miễn phí trong
               strong  30 ngày
           .pd-meta-row
@@ -212,7 +159,7 @@ block content
               path(d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z")
             span
               | Bảo hành chính hãng
-              strong  12 tháng
+              strong(style = "color :white")  12 tháng
           .pd-meta-row
             svg(
               stroke-width="2" 
@@ -262,42 +209,40 @@ block content
     // Description
     #tab-desc.tab-pane.active
       div(style="max-width:800px;font-size:.95rem;color:var(--text-mid);line-height:1.9;")
-        h3(style="font-size:1.1rem;font-weight:800;color:var(--white);margin-bottom:12px;") Ghế Sofa Văng Da Hàn Quốc – Đỉnh Cao Của Phong Cách Hiện Đại
+        h3(style="font-size:1.1rem;font-weight:800;color:var(--white);margin-bottom:12px;") #{product.name}
         p
-          | Ghế sofa văng từ bộ sưu tập
-          strong Premium Collection
-          | của OH!Decor — sự kết hợp hoàn hảo giữa vẻ đẹp thẩm mỹ và công năng sử dụng thực tiễn. Với phần đệm rộng và mềm mại, chiếc sofa này không chỉ là chỗ ngồi mà còn là điểm nhấn trang trí hoàn hảo cho không gian phòng khách của bạn.
+          | #{product.description}
         br
         h4(style="font-weight:700;color:var(--accent);margin-bottom:8px;") ✦ Điểm nổi bật
-        ul(style="list-style:none;padding:0;display:flex;flex-direction:column;gap:8px;")
-          li → Chất liệu da bò Hàn Quốc nhập khẩu, mềm mại tự nhiên, bền màu theo thời gian
-          li → Khung gỗ sồi Mỹ sấy kiệt chuẩn kỹ thuật — không mọt, không cong vênh
-          li → Đệm mút D40 cao cấp mật độ cao, giữ form lâu, đàn hồi tốt
-          li → Lò xo zigzag ở lưng ghế — tạo cảm giác ngồi thoải mái, chắc chắn
-          li → Chân sofa kim loại mạ đồng cao cấp — chịu lực tốt, không gỉ sét
-          li → Thiết kế modular linh hoạt — phù hợp nhiều không gian khác nhau
+          ul(style="list-style:none;padding:0;display:flex;flex-direction:column;gap:8px;")
+            li → Thiết kế hiện đại sang trọng — phù hợp phòng khách, phòng ngủ và không gian decor cao cấp
+            li → Thân đèn hợp kim sơn tĩnh điện cao cấp — chống oxy hóa, bền đẹp theo thời gian
+            li → Chao đèn acrylic/kính cao cấp — ánh sáng dịu mắt, tăng tính thẩm mỹ cho không gian
+            li → Sử dụng chip LED tiết kiệm điện — tuổi thọ cao, ánh sáng ổn định
+            li → Chỉ số hoàn màu CRI cao — tái hiện màu sắc vật thể chân thực và tự nhiên
+            li → Nhiều chế độ ánh sáng linh hoạt — dễ dàng phù hợp với từng nhu cầu sử dụng
     // Specs
     #tab-specs.tab-pane
       table.spec-table
         tbody
           tr
             td Kích thước
-            td D300 × H500 mm
+            td #{product.size}
           tr
             td Chất liệu bặt
-            td Khung gỗ sồi Mỹ (oak)
+            td #{product.material}
           tr
             td Chỉ số màu
-            td > 80
+            td #{product.colorIndex}
           tr
             td Công Suất
-            td 12W
+            td #{product.power}
           tr
             td Nhiệt độ màu
             td 2700K - 6500K
           tr
             td Xuất xứ
-            td Việt Nam (nguyên liệu nhập khẩu)
+            td #{product.made}
           tr
             td Bảo hành
             td 12 tháng
@@ -335,14 +280,14 @@ block content
           .review-author
             img.review-avatar(
               alt="Khách hàng" 
-              src=""
+              src="../assets/images/thanh.jpg"
               )
             div
-              .review-name Nguyễn Thị Mai
-              .review-date 12/04/2024
+              .review-name(style ="color :var(--white)") Đỗ Văn Thành
+              .review-date(style ="color :var(--text-light)") 5/8/2026
           .review-stars ★★★★★
           p.review-text
-            | Sofa đẹp hơn hình rất nhiều! Chất liệu da mềm, màu vàng bò rất sang trọng. Đội ngũ giao hàng chuyên nghiệp, lắp đặt nhanh gọn. Rất hài lòng với lựa chọn này!
+            | Đèn đẹp hơn hình rất nhiều! Chất liệu da mềm, màu vàng bò rất sang trọng. Đội ngũ giao hàng chuyên nghiệp, lắp đặt nhanh gọn. Rất hài lòng với lựa chọn này!
         .review-item
           .review-author
             img.review-avatar(
@@ -350,23 +295,23 @@ block content
               src="../assets/images/manhquynhdz.png"
               )
             div
-              .review-name Trần Minh Tuấn
-              .review-date 28/03/2024
+              .review-name(style ="color :var(--white)") Trần Minh Tuấn
+              .review-date(style ="color :var(--text-light)") 28/03/2024
           .review-stars ★★★★★
           p.review-text
-            | Mua lần thứ 2 rồi, chất lượng vẫn rất tốt như lần đầu. Khung gỗ chắc, đệm ngồi thoải mái. Phòng khách nhà mình nhờ cái sofa này mà trông sang hẳn lên.
+            | Mua lần thứ 2 rồi, chất lượng vẫn rất tốt như lần đầu. Khung gỗ chắc, đệm ngồi thoải mái. Phòng khách nhà mình nhờ cái đèn này mà trông sang hẳn lên.
         .review-item
           .review-author
             img.review-avatar(
               alt="Khách hàng" 
-              src="/assets/images/manhquynhdz.png"
+              src="../assets/images/nghia.png"
               )
             div
-              .review-name Lê Thị Hương
-              .review-date 15/03/2024
+              .review-name(style ="color :var(--white)") Lê Thị Hương
+              .review-date(style ="color :var(--text-light)") 15/03/2024
           .review-stars ★★★★☆
           p.review-text
-            | Sofa rất đẹp và sang trọng. Về chất lượng thì đúng với mô tả. Chỉ tiếc là giao hàng chậm hơn dự kiến 1 ngày, nhưng nhìn chung vẫn OK. Sẽ giới thiệu cho bạn bè.
+            | Đèn rất đẹp và sang trọng. Về chất lượng thì đúng với mô tả. Chỉ tiếc là giao hàng chậm hơn dự kiến 1 ngày, nhưng nhìn chung vẫn OK. Sẽ giới thiệu cho bạn bè.
       // Write review
       div(
         style="margin-top:32px;padding:28px;border:2px solid var(--border);border-radius:var(--radius-xl);"
@@ -407,79 +352,28 @@ block content
         div
           p.section-eyebrow Gợi ý
           h2.section-title Sản phẩm liên quan
-        a.btn.btn-outline-dark.btn-sm(href="products.html") Xem tất cả
+        a.btn.btn-outline-dark.btn-sm(href="/products") Xem tất cả
       .products-grid
-        article.prod-card
-          a.prod-img-wrap(href="product-detail.html")
-            img(
-              alt="Sofa Mỹ" 
-              src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/sf618011-123-1666x1250_1_thumb_350.jpg"
-              )
-            span.prod-badge -22%
-            .prod-overlay
-              button.quick-add Thêm giỏ hàng
-          .prod-body
-            span(
-              style="font-size:.72rem;font-weight:700;color:var(--accent-dark);text-transform:uppercase;"
-              ) SOFA
-            h3.prod-name
-              a(href="product-detail.html") Sofa Phong Cách Mỹ SF007-123
-            .prod-price
-              span.price-old 45.000.000 ₫
-              span.price-new 35.000.000 ₫
-            .prod-stars ★★★★★
-        article.prod-card
-          a.prod-img-wrap(href="product-detail.html")
-            img(
-              alt="Sofa" 
-              src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/sf005-123-1666x1250_thumb_350.jpg"
-              )
-            span.prod-badge -7%
-            .prod-overlay
-              button.quick-add Thêm giỏ hàng
-          .prod-body
-            span(
-              style="font-size:.72rem;font-weight:700;color:var(--accent-dark);text-transform:uppercase;"
-              ) SOFA
-            h3.prod-name
-              a(href="product-detail.html") Sofa Phong Cách Mỹ SF618015-123
-            .prod-price
-              span.price-old 6.000.000 ₫
-              span.price-new 5.600.000 ₫
-            .prod-stars ★★★★☆
-        article.prod-card
-          a.prod-img-wrap(href="product-detail.html")
-            img(
-              alt="Sofa góc" 
-              src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/hns142-2_thumb_350.jpg"
-              )
-            span.prod-badge -20%
-            .prod-overlay
-              button.quick-add Thêm giỏ hàng
-          .prod-body
-            span(
-              style="font-size:.72rem;font-weight:700;color:var(--accent-dark);text-transform:uppercase;"
-              ) SOFA
-            h3.prod-name
-              a(href="product-detail.html") Sofa góc L HNS142 – Thiết kế hiện đại
-            .prod-price
-              span.price-old 3.750.000 ₫
-              span.price-new 3.000.000 ₫
-            .prod-stars ★★★★★
-        article.prod-card
-          a.prod-img-wrap(href="product-detail.html")
-            img(
-              alt="Ghế" 
-              src="https://cdn3729.cdn-template-4s.com/thumbs/danh-muc/download_1_thumb_350.webp"
-              )
-            .prod-overlay
-              button.quick-add Thêm giỏ hàng
-          .prod-body
-            span(
-              style="font-size:.72rem;font-weight:700;color:var(--accent-dark);text-transform:uppercase;"
-              ) GHẾ
-            h3.prod-name
-              a(href="product-detail.html") Ghế Accent hiện đại tối giản
-            .prod-price
-              span.price-new 4.500.000 ₫
-            .prod-stars ★★★★☆
+        each item in productList
+          article.prod-card
+            a.prod-img-wrap(href=`/products/${item.slug}`)
+              .prod-image
+                img(
+                  alt=""
+                  src=item.avatar
+                  )
+                span.prod-badge - #{Math.floor(((Number(item.priceOLD) - Number(item.priceNEW)) / Number(item.priceOLD)) * 100)}%
+              .prod-overlay
+                button.quick-add Thêm giỏ hàng
+            .prod-body
+              span(
+                style="font-size:.72rem;font-weight:700;color:var(--accent-dark);text-transform:uppercase;"
+                ) #{item.category[0].name}
+              h3.prod-name
+                a(href=`/products/${item.slug}`)
+                  | #{item.name}
+              .prod-price
+                span.price-new #{Number(item.priceNEW).toLocaleString('vi-VN')} ₫
+                span.price-old #{Number(item.priceOLD).toLocaleString('vi-VN')} ₫
+
+              .prod-stars ★★★★★

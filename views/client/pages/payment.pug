@@ -39,37 +39,43 @@ block content
                 style="width:28px;height:28px;background:var(--accent);color:var(--primary-dark);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:800;"
                 ) 1
               | Thông tin giao hàng
-            form(style="display:grid;gap:16px;")
+            form(style="display:grid;gap:16px;"
+              class="form-payment")
               div(style="display:grid;grid-template-columns:1fr 1fr;gap:16px;")
                 .form-group(style="margin:0;")
                   label Họ *
                   input.form-control(
                     placeholder="Nguyễn" 
                     type="text"
+                    id = "firstName"
                     )
                 .form-group(style="margin:0;")
                   label Tên *
                   input.form-control(
                     placeholder="Văn A" 
                     type="text"
+                    id = "lastName"
                     )
               .form-group(style="margin:0;")
                 label Email *
                 input.form-control(
                   placeholder="example@email.com" 
                   type="email"
+                  id = "email"
                   )
               .form-group(style="margin:0;")
                 label Số điện thoại *
                 input.form-control(
                   placeholder="0901 191 616" 
                   type="tel"
+                  id = "phone"
                   )
               .form-group(style="margin:0;")
                 label Địa chỉ *
                 input.form-control(
                   placeholder="Số nhà, tên đường..." 
                   type="text"
+                  id = "address"
                   )
               div(style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;")
                 .form-group(style="margin:0;")
@@ -95,6 +101,7 @@ block content
                   style="resize:vertical;" 
                   placeholder="Ghi chú về đơn hàng (không bắt buộc)" 
                   rows="3"
+                  id = "note"
                   )
           // Payment method
           div(
@@ -115,6 +122,7 @@ block content
                   checked="" 
                   name="payment" 
                   type="radio"
+                  value = "money"
                   )
                 span(style="font-weight:700;font-size:0.9rem;color:var(--white);") COD – Thanh toán khi nhận hàng
                 span(
@@ -126,51 +134,50 @@ block content
                 input(
                   name="payment" 
                   type="radio"
+                  value = "bank"
                   )
                 span(style="font-weight:700;font-size:0.9rem;color:var(--text-mid);") Chuyển khoản ngân hàng
+              
+              div#bank-transfer-info(style="display:none; padding:20px; background:var(--light-bg); border:1px dashed var(--border); border-radius:var(--radius-md); margin-top:-8px; margin-bottom:10px;")
+                div(style="display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap;")
+                  div(style="flex:1; min-width:200px;")
+                    p(style="margin-bottom:8px; color:var(--text-light); font-size:0.85rem;") Tên chủ tài khoản: 
+                      strong(style="color:var(--white);") VU MANH QUYNH
+                    p(style="margin-bottom:8px; color:var(--text-light); font-size:0.85rem;") Số tài khoản: 
+                      strong(style="color:var(--white); font-size:1.1rem;") 0522115385
+                    p(style="margin-bottom:8px; color:var(--text-light); font-size:0.85rem;") Ngân hàng: 
+                      strong(style="color:var(--white);") MB Bank
+                    p(style="margin-bottom:0; color:var(--text-light); font-size:0.85rem;") Nội dung chuyển khoản: 
+                      strong(style="color:var(--accent);") [MÃ ĐƠN HÀNG]
+                  div(style="text-align:center;")
+                    img(src="/assets/images/qr.jpg" alt="QR Code" style="width:110px; height:110px; border-radius:8px; border:2px solid var(--border); background:#fff; padding:4px;")
+                    p(style="font-size:0.75rem; color:var(--text-light); margin-top:6px; margin-bottom:0;") Quét mã thanh toán
               label(
                 style="display:flex;align-items:center;gap:14px;padding:16px;border:2px solid var(--border);border-radius:var(--radius-md);cursor:pointer;"
                 )
                 input(
                   name="payment" 
                   type="radio"
+                  value = "vnpay"
                   )
-                span(style="font-weight:700;font-size:0.9rem;color:var(--text-mid);") Thẻ tín dụng / Ghi nợ (Visa, MasterCard)
+                span(style="font-weight:700;font-size:0.9rem;color:var(--text-mid);") VNPay
               label(
                 style="display:flex;align-items:center;gap:14px;padding:16px;border:2px solid var(--border);border-radius:var(--radius-md);cursor:pointer;"
                 )
                 input(
                   name="payment" 
                   type="radio"
+                  value = "momo"
                   )
-                span(style="font-weight:700;font-size:0.9rem;color:var(--text-mid);") Ví điện tử (MoMo, ZaloPay)
+                span(style="font-weight:700;font-size:0.9rem;color:var(--text-mid);") Ví điện tử MoMo
         // Order summary
         div(style="position:sticky;top:100px;")
           div(
             style="background:var(--light-bg);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;"
             )
             h3(style="font-size:1rem;font-weight:800;color:var(--white);margin-bottom:20px;") Đơn hàng của bạn
-            div(style="display:flex;flex-direction:column;gap:14px;margin-bottom:20px;")
-              div(style="display:flex;gap:12px;align-items:center;")
-                img(
-                  alt="Sofa" 
-                  style="width:56px;height:56px;border-radius:10px;object-fit:cover;flex-shrink:0;" 
-                  src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/mau-ghe-sofa-vang-hien-dai-boc-da-han-quoc-sf360_thumb_350.jpg"
-                  )
-                div(style="flex:1;")
-                  p(style="font-size:0.85rem;font-weight:700;margin-bottom:2px;color:var(--white);") Ghế sofa văng da Hàn Quốc
-                  p(style="font-size:0.78rem;color:var(--text-light);") Màu: Vàng × 1
-                span(style="font-size:0.88rem;font-weight:800;color:var(--accent);white-space:nowrap;") 34.000.000 ₫
-              div(style="display:flex;gap:12px;align-items:center;")
-                img(
-                  alt="Sofa Mỹ" 
-                  style="width:56px;height:56px;border-radius:10px;object-fit:cover;flex-shrink:0;" 
-                  src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/sf618011-123-1666x1250_1_thumb_350.jpg"
-                  )
-                div(style="flex:1;")
-                  p(style="font-size:0.85rem;font-weight:700;margin-bottom:2px;color:var(--white);") Sofa Phong Cách Mỹ SF007-123
-                  p(style="font-size:0.78rem;color:var(--text-light);") Beige × 1
-                span(style="font-size:0.88rem;font-weight:800;color:var(--accent);white-space:nowrap;") 35.000.000 ₫
+            div(style="display:flex;flex-direction:column;gap:14px;margin-bottom:20px;"
+              class="order-summary")
             div(
               style="border-top:1px solid var(--border);padding-top:16px;display:flex;flex-direction:column;gap:10px;"
               )
@@ -178,7 +185,7 @@ block content
                 style="display:flex;justify-content:space-between;font-size:0.88rem;color:var(--text-light);"
                 )
                 span Tạm tính
-                span(style="color:var(--text-mid);") 69.000.000 ₫
+                span(style="color:var(--text-mid);" class="payment-subtotal") 0 ₫
               div(
                 style="display:flex;justify-content:space-between;font-size:0.88rem;color:var(--text-light);"
                 )
@@ -188,7 +195,7 @@ block content
                 style="display:flex;justify-content:space-between;font-size:1rem;font-weight:800;color:var(--white);border-top:1px solid var(--border);padding-top:12px;"
                 )
                 span Tổng cộng
-                span(style="color:var(--accent);") 69.150.000 ₫
+                span(style="color:var(--accent);" class="payment-total") 0 ₫
             button.btn.btn-gold(style="width:100%;justify-content:center;margin-top:20px;padding:16px;font-size:1rem;") 🔒 Đặt hàng ngay
             p(style="text-align:center;font-size:0.75rem;color:var(--text-light);margin-top:12px;")
               | Bằng cách đặt hàng, bạn đồng ý với 

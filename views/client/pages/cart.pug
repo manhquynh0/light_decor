@@ -16,43 +16,16 @@ block content
         div
           .cart-items-wrap
             .cart-row.cart-row-header
+              input.cart-check-all(type="checkbox" style="cursor:pointer; width:18px; height:18px;")
               span Sản phẩm
               span(style="text-align:center;") Số lượng
               span(style="text-align:center;") Đơn giá
               span(style="text-align:right;") Thành tiền
               span
 
-            .cart-row(data-price="34000000")
-              div(style="display:flex;align-items:center;gap:16px;")
-                img.cart-prod-img(src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/mau-ghe-sofa-vang-hien-dai-boc-da-han-quoc-sf360_thumb_350.jpg" alt="Sofa")
-                div
-                  strong(style="display:block;font-size:0.92rem;margin-bottom:4px;") Ghế sofa văng da Hàn Quốc
-                  span(style="font-size:0.8rem;color:var(--text-light);") Màu: Vàng / Chất liệu: Da
+            div(cart-items)
 
-              .cart-qty(style="justify-content:center;")
-                button −
-                span.qty-val 1
-                button +
 
-              div(style="text-align:center;font-size:0.92rem;font-weight:700;color:var(--accent);") 34.000.000 ₫
-              .line-total(style="text-align:right;font-size:0.92rem;font-weight:800;color:var(--white);") 34.000.000 ₫
-              button(title="Xóa" style="color:var(--text-light);font-size:1.1rem;padding:4px 8px;") ✕
-
-            .cart-row(data-price="35000000")
-              div(style="display:flex;align-items:center;gap:16px;")
-                img.cart-prod-img(src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/sf618011-123-1666x1250_1_thumb_350.jpg" alt="Sofa Mỹ")
-                div
-                  strong(style="display:block;font-size:0.92rem;margin-bottom:4px;") Sofa Phong Cách Mỹ SF007-123
-                  span(style="font-size:0.8rem;color:var(--text-light);") Màu: Beige / Kích thước: 3 chỗ
-
-              .cart-qty(style="justify-content:center;")
-                button −
-                span.qty-val 1
-                button +
-
-              div(style="text-align:center;font-size:0.92rem;font-weight:700;color:var(--accent);") 35.000.000 ₫
-              .line-total(style="text-align:right;font-size:0.92rem;font-weight:800;color:var(--white);") 35.000.000 ₫
-              button(title="Xóa" style="color:var(--text-light);font-size:1.1rem;padding:4px 8px;") ✕
 
           div(style="margin-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;")
             div(style="display:flex;gap:10px;")
@@ -81,7 +54,7 @@ block content
             span Tổng cộng
             strong.total-val 69.150.000 ₫
 
-          a.btn.btn-gold(href="/cart/payment" style="width:100%;justify-content:center;margin-top:20px;padding:16px;font-size:1rem;") Thanh toán ngay →
+          button.btn.btn-gold#btn-checkout(style="width:100%;justify-content:center;margin-top:20px;padding:16px;font-size:1rem; cursor:pointer;") Thanh toán ngay →
 
           div(style="margin-top:16px;text-align:center;")
             p(style="font-size:0.78rem;color:var(--text-light);display:flex;align-items:center;justify-content:center;gap:6px;")
@@ -93,10 +66,7 @@ block content
           div(style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);")
             p(style="font-size:0.8rem;font-weight:700;color:var(--text-mid);margin-bottom:10px;") Chúng tôi chấp nhận:
             div(style="display:flex;gap:8px;flex-wrap:wrap;")
-              span.payment-badge VISA
-              span.payment-badge MasterCard
-              span.payment-badge COD
-              span.payment-badge MoMo
+              span.payment-badge VNPay
               span.payment-badge ZaloPay
 
   // You may also like

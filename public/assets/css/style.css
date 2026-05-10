@@ -1043,7 +1043,7 @@ ul {
 }
 
 .prod-name a:hover {
-    color: var(--primary);
+    color: yellow;
 }
 
 .prod-price {
@@ -1225,7 +1225,7 @@ ul {
 }
 
 .showcase-prod-info h3 a:hover {
-    color: var(--primary);
+    color: yellow;
 }
 
 .showcase-banner-inner {
@@ -2319,7 +2319,7 @@ ul {
 
 .cart-row {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    grid-template-columns: auto 2fr 1fr 1fr 1fr auto;
     gap: 16px;
     align-items: center;
     padding: 20px 28px;
@@ -2410,7 +2410,7 @@ ul {
 .auth-box h2 {
     font-size: 1.6rem;
     font-weight: 800;
-    color: var(--primary);
+    color: var(--text-dark);
     margin-bottom: 28px;
 }
 
@@ -2436,7 +2436,11 @@ ul {
     color: var(--text-dark);
     background: var(--light-bg);
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.form-control:hover {
+    background: #2a2a2a;
 }
 
 .form-control:focus {
@@ -2518,7 +2522,7 @@ ul {
 }
 
 .value-card {
-    background: var(--white);
+    background: var(--accent-light);
     border-radius: var(--radius-lg);
     border: 1px solid var(--border);
     padding: 32px 24px;
@@ -2896,7 +2900,7 @@ ul {
     }
 
     .cart-row {
-        grid-template-columns: 1fr 1fr auto;
+        grid-template-columns: auto 1fr 1fr auto;
     }
 
     .cart-row-header {
@@ -4530,7 +4534,7 @@ ul {
 }
 
 .resend-link {
-    color: var(--primary);
+    color: var(--accent);
     font-weight: 600;
     cursor: pointer;
     text-decoration: underline;
@@ -4558,7 +4562,7 @@ ul {
 }
 
 .step-item.active {
-    color: var(--primary);
+    color: var(--accent);
     font-weight: 600;
 }
 
@@ -4579,8 +4583,8 @@ ul {
 }
 
 .step-item.active .step-number {
-    background: var(--primary);
-    color: white;
+    background: var(--accent);
+    color: var(--primary-dark);
 }
 
 .step-item.completed .step-number {
@@ -4616,11 +4620,26 @@ ul {
 
 }
 
+.otp-inputs input:hover {
+    background: #f3f1f1;
+}
+
 .otp-inputs input:focus {
     border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
-    background: rgba(212, 175, 55, 0.05);
+    background: rgba(218, 216, 211, 0.05);
     scale: 1.1;
+}
+
+.countdown-timer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px 16px;
+    border-radius: 8px;
+    width: max-content;
+    margin: 0 auto;
 }
 
 .otp-inputs input.valid {

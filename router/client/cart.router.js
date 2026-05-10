@@ -1,5 +1,7 @@
 const cartController = require("../../controller/client/cart.controller")
 const router = require("express").Router()
-router.get("/",cartController.cart)
-router.get("/payment",cartController.payment)
+router.get("/", cartController.cart)
+router.get("/payment", cartController.payment)
+router.post("/payment", cartController.paymentPost)
+router.post("/detail", cartController.detailCart)
 module.exports = router

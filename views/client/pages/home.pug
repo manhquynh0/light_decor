@@ -117,14 +117,14 @@ block content
             .products-grid
               each item in listModernProducts
                 article.prod-card
-                  a.prod-img-wrap(href="/products")
+                  a.prod-img-wrap(href=`/products/${item.slug}`)
                     img(
                       alt=""
                       src=item.avatar
                     )
                     span.prod-badge -#{Math.round((1 - (item.priceNEW / item.priceOLD)) * 100)}%
                     .prod-overlay
-                      button.quick-add
+                      button.quick-add(onclick=`window.location.href='/products/${item.slug}'`)
                         svg(
                           stroke-width="2" 
                           stroke="currentColor" 
@@ -141,10 +141,10 @@ block content
                             x1="3"
                             )
                           path(d="M16 10a4 4 0 0 1-8 0")
-                        | Thêm giỏ hàng
+                        | Xem Chi Tiết
                   .prod-body
                     h3.prod-name
-                      a(href="/products") #{item.name}
+                      a(href=`/products/${item.slug}`) #{item.name}
                     .prod-price
                      span.price-old #{Number(item.priceOLD).toLocaleString('vi-VN')} ₫
                      span.price-new #{Number(item.priceNEW).toLocaleString('vi-VN')} ₫
@@ -155,14 +155,14 @@ block content
             .products-grid
               each item in listClassicProducts
                 article.prod-card
-                  a.prod-img-wrap(href="/products")
+                  a.prod-img-wrap(href=`/products/${item.slug}`)
                     img(
                       alt=""
                       src=item.avatar
                     )
                     span.prod-badge -#{Math.round((1 - (item.priceNEW / item.priceOLD)) * 100)}%
                     .prod-overlay
-                      button.quick-add
+                      button.quick-add(onclick=`window.location.href='/products/${item.slug}'`)
                         svg(
                           stroke-width="2" 
                           stroke="currentColor" 
@@ -179,7 +179,7 @@ block content
                             x1="3"
                             )
                           path(d="M16 10a4 4 0 0 1-8 0")
-                        | Thêm giỏ hàng
+                        | Xem Chi Tiết
                   .prod-body
                     h3.prod-name
                       a(href="/products") #{item.name}
@@ -191,14 +191,14 @@ block content
             .products-grid
               each item in listSimpleProducts
                 article.prod-card
-                  a.prod-img-wrap(href="/products")
+                  a.prod-img-wrap(href=`/products/${item.slug}`)
                     img(
                       alt=""
                       src=item.avatar
                     )
                     span.prod-badge -#{Math.round((1 - (item.priceNEW / item.priceOLD)) * 100)}%
                     .prod-overlay
-                      button.quick-add
+                      button.quick-add(onclick=`window.location.href='/products/${item.slug}'`)
                         svg(
                           stroke-width="2" 
                           stroke="currentColor" 
@@ -215,10 +215,10 @@ block content
                             x1="3"
                             )
                           path(d="M16 10a4 4 0 0 1-8 0")
-                        | Thêm giỏ hàng
+                        | Xem Chi Tiết
                   .prod-body
                     h3.prod-name
-                      a(href="/products") #{item.name}
+                      a(href=`/products/${item.slug}`) #{item.name}
                     .prod-price
                      span.price-old #{Number(item.priceOLD).toLocaleString('vi-VN')} ₫
                      span.price-new #{Number(item.priceNEW).toLocaleString('vi-VN')} ₫
@@ -227,14 +227,14 @@ block content
             .products-grid
               each item in listLuxuryProducts
                 article.prod-card
-                  a.prod-img-wrap(href="/products")
+                  a.prod-img-wrap(href=`/products/${item.slug}`)
                     img(
                       alt=""
                       src=item.avatar
                     )
                     span.prod-badge -#{Math.round((1 - (item.priceNEW / item.priceOLD)) * 100)}%
                     .prod-overlay
-                      button.quick-add
+                      button.quick-add(onclick=`window.location.href='/products/${item.slug}'`)
                         svg(
                           stroke-width="2" 
                           stroke="currentColor" 
@@ -251,10 +251,10 @@ block content
                             x1="3"
                             )
                           path(d="M16 10a4 4 0 0 1-8 0")
-                        | Thêm giỏ hàng
+                        | Xem Chi Tiết
                   .prod-body
                     h3.prod-name
-                      a(href="/products") #{item.name}
+                      a(href=`/products/${item.slug}`) #{item.name}
                     .prod-price
                      span.price-old #{Number(item.priceOLD).toLocaleString('vi-VN')} ₫
                      span.price-new #{Number(item.priceNEW).toLocaleString('vi-VN')} ₫
@@ -288,19 +288,18 @@ block content
             .showcase-prod-list
               each item in listLivingProducts
                 article.showcase-prod-card
-                  a.showcase-prod-img(href="/products")
+                  a.showcase-prod-img(href=`/products/${item.slug}`)
                     img(
                       alt="" 
                       src=item.avatar
                     )
                   .showcase-prod-info
                     h3
-                      a(href="/products") #{item.name}
+                      a(href=`/products/${item.slug}`) #{item.name}
                     .prod-price
                       span.price-old #{Number(item.priceOLD).toLocaleString('vi-VN')} ₫
                       span.price-new #{Number(item.priceNEW).toLocaleString('vi-VN')} ₫
-                    button.btn.btn-gold-outline Thêm giỏ hàng
-             
+                    button.btn.btn-gold-outline.button(onclick=`window.location.href='/products/${item.slug}'`) Xem Chi Tiết
           .showcase-banner
             .showcase-banner-inner
               img(
@@ -321,28 +320,28 @@ block content
                 )
               .showcase-banner-caption
               
-                a.showcase-link(href="/products") Xem thêm →
+                a.showcase-link(href="/products/") Xem thêm →
           .showcase-products
             .section-head
               div
                 p.section-eyebrow Phòng bếp
-                h2.section-title Bàn & Tủ bếp
+                h2.section-title Thanh Lịch & Tối Giản
               a.btn.btn-outline-dark.btn-sm(href="/products") Xem tất cả
             .showcase-prod-list
               each item in listKittchenProducts
                 article.showcase-prod-card
-                  a.showcase-prod-img(href="/products")
+                  a.showcase-prod-img(href=`/products/${item.slug}`)
                     img(
                       alt="" 
                       src=item.avatar
                       )
                   .showcase-prod-info
                     h3
-                      a(href="/products") #{item.name}
+                      a(href=`/products/${item.slug}`) #{item.name}
                     .prod-price
                       span.price-old #{Number(item.priceOLD).toLocaleString('vi-VN')} ₫
                       span.price-new #{Number(item.priceNEW).toLocaleString('vi-VN')} ₫
-                    button.btn.btn-gold-outline Thêm giỏ hàng
+                    button.btn.btn-gold-outline(onclick=`window.location.href='/products/${item.slug}'`) Xem Chi Tiết
              
     // TESTIMONIALS
     section.section.testimonials-section
@@ -403,7 +402,7 @@ block content
         #projCarousel.proj-carousel
           .proj-slide.active
             img(
-              alt="Căn hộ xanh Ecopark" 
+              alt="" 
               src="/assets/images/banner2.png"
               )
             .proj-caption
@@ -412,7 +411,7 @@ block content
               a.proj-read-more(href="/products") Xem chi tiết →
           .proj-slide
             img(
-              alt="Căn hộ 100m2" 
+              alt="" 
               src="/assets/images/banner3.png"
               )
             .proj-caption

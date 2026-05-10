@@ -631,7 +631,7 @@ document.getElementById('avatarUpload')?.addEventListener('change', function (e)
     }
 });
 
-// Load saved avatar
+
 // const savedAvatar = localStorage.getItem('userAvatar');
 // if (savedAvatar) {
 //     const img = document.getElementById('userAvatarImg');
@@ -750,14 +750,30 @@ document.getElementById('password')?.addEventListener('input', function () {
     const bar = document.getElementById('strengthBar');
     bar.className = 'password-strength-bar ' + (validCount <= 2 ? 'weak' : validCount <= 4 ? 'medium' : 'strong');
 });
-// Alert time
-const alertTime = document.querySelector("[alert-time]");
-if (alertTime) {
-    let time = alertTime.getAttribute("alert-time");
-    time = time ? parseInt(time) : 4000;
+const showPageAlert = (message, type = "success") => {
+
+    // Xóa alert cũ nếu có
+    const oldAlert = document.querySelector("[alert-time]");
+
+    if (oldAlert) {
+        oldAlert.remove();
+    }
+
+    // Tạo alert mới
+    const alert = document.createElement("div");
+
+    alert.setAttribute("alert-time", "4000");
+
+    alert.className = `alert alert-${type}`;
+
+    alert.innerHTML = message;
+
+    document.body.appendChild(alert);
+
+    // Auto remove
     setTimeout(() => {
-        alertTime.remove(); // Xóa phần tử khỏi giao diện
-    }, time);
+        alert.remove();
+    }, 4000);
 }
 
 // Filepond Image
@@ -2043,3 +2059,328 @@ if (filterReset) {
         window.location.href = url.href;
     })
 }
+// Cart
+
+
+// Produc Detail
+const quantity = document.querySelector("#pdQty")
+if (quantity) {
+    quantity.addEventListener("change", () => {
+        drawProductDetail()
+    })
+}
+const drawProductDetail = () => {
+    // lấy số lượng và giá tiền
+    const quantity = parseInt(document.querySelector("#pdQty").innerHTML)
+    const price = parseInt(document.querySelector("#pdPrice").innerHTML)
+    const totalPrice = parseInt(quantity || 0) * parseInt(price || 0)
+    document.querySelector("#pdTotalPrice").innerHTML = totalPrice.toLocaleString('vi-VN')
+}
+// ADD TO CART
+const btnAddToCart = document.querySelector(".btn-add-cart")
+if (btnAddToCart) {
+    btnAddToCart.addEventListener("click", () => {
+        const productId = btnAddToCart.getAttribute("product-id")
+        const quantity = parseInt(document.querySelector("#pdQty").innerHTML)
+        const priceText = document.querySelector(".pd-price-new").innerHTML;
+        const price = parseInt(
+            priceText.replace(/\./g, "").replace("₫", "").trim()
+        );
+
+
+        if (quantity > 0) {
+            const cartItem = {
+                productId,
+                quantity,
+                price,
+                totalPrice: quantity * price
+            }
+            const cart = localStorage.getItem("cart")
+            if (cart) {
+                const currentCart = JSON.parse(cart)
+                if (currentCart.find(item => item.productId === productId)) {
+                    currentCart.find(item => item.productId === productId).quantity += quantity
+                } else {
+                    currentCart.push(cartItem)
+                }
+                localStorage.setItem("cart", JSON.stringify(currentCart))
+                showPageAlert("Thêm vào giỏ hàng thành công!", "success");
+            } else {
+                localStorage.setItem("cart", JSON.stringify([cartItem]))
+            }
+
+
+        }
+    })
+}
+// Initial Cart
+const cart = localStorage.getItem("cart")
+if (!cart) {
+    cart = localStorage.setItem("cart", JSON.stringify([]))
+}
+console.log(cart)
+// Mini Cart
+const miniCart = document.querySelector(".cart-count")
+if (miniCart) {
+    const cart = localStorage.getItem("cart")
+    if (cart) {
+        const currentCart = JSON.parse(cart)
+        miniCart.innerHTML = currentCart.length
+    }
+}
+// PAGE Cart
+const drawCart = () => {
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    fetch(`/cart/detail`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(cart),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.code == "success") {
+                const htmlCart = data.cart.map(item =>
+                    `<div class="cart-row" data-price="${item.price}">
+                        <input type="checkbox" class="cart-item-check" value="${item.productId}" style="cursor:pointer; width:18px; height:18px;" checked>
+                        <div style="display:flex;align-items:center;gap:16px;">
+                            <img
+                                class="cart-prod-img"
+                                src="${item.avatar}"
+                                alt="Sofa"
+                            >
+
+                            <div>
+                                <strong style="display:block;font-size:0.92rem;margin-bottom:4px;">
+                                    ${item.name}
+                                </strong>
+
+                            </div>
+                        </div>
+
+                        <div class="cart-qty" style="justify-content:center;">
+                            <button class="qty-btn-minus">−</button>
+                            <span class="qty-val">${item.quantity}</span>
+                            <button class="qty-btn-plus">+</button>
+                        </div>
+
+                        <div style="text-align:center;font-size:0.92rem;font-weight:700;color:var(--accent);">
+                            ${Number(item.price).toLocaleString('vi-VN')} ₫
+                        </div>
+
+                        <div
+                            class="line-total"
+                            style="text-align:right;font-size:0.92rem;font-weight:800;color:var(--white);"
+                        >
+                            ${Number(item.totalPrice).toLocaleString('vi-VN')} ₫
+                        </div>
+
+                        <button
+                            style="color:var(--text-light);font-size:1.1rem;padding:4px 8px; cursor: pointer;"
+                            button-delete-cart
+                            productId="${item.productId}"
+                        >
+                            ✕
+                        </button>
+
+                    </div>`
+                )
+                const cartList = document.querySelector("[cart-items]")
+                if (cartList) {
+                    cartList.innerHTML = htmlCart.join("")
+                    // Delete Cart
+                    const btnDeleteCart = document.querySelectorAll("[button-delete-cart]")
+                    btnDeleteCart.forEach(button => {
+                        button.addEventListener("click", () => {
+                            console.log("da click")
+                            const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+                            const productId = button.getAttribute("productId")
+                            const indexItem = cart.findIndex(product => product.productId === productId)
+
+                            cart.splice(indexItem, 1)
+                            localStorage.setItem("cart", JSON.stringify(cart))
+                            drawCart()
+                            showPageAlert("Xóa sản phẩm khỏi giỏ hàng thành công!", "success");
+
+                        })
+                    })
+
+                    const calculateTotal = () => {
+                        const rows = document.querySelectorAll('.cart-row[data-price]');
+                        let sub = 0;
+                        rows.forEach(row => {
+                            const checkbox = row.querySelector('.cart-item-check');
+                            if (checkbox && checkbox.checked) {
+                                const price = parseInt(row.dataset.price || 0, 10);
+                                const qty = parseInt(row.querySelector('.qty-val').textContent || 1, 10);
+                                sub += price * qty;
+                            }
+                        });
+                        const ship = 150000;
+                        const subtotalEl = document.querySelector('.subtotal-val');
+                        const totalEl = document.querySelector('.total-val');
+                        if (subtotalEl) subtotalEl.textContent = sub.toLocaleString('vi-VN') + ' ₫';
+                        if (totalEl) totalEl.textContent = (sub > 0 ? sub + ship : 0).toLocaleString('vi-VN') + ' ₫';
+                    };
+
+                    cartList.querySelectorAll('.cart-item-check').forEach(checkbox => {
+                        checkbox.addEventListener('change', calculateTotal);
+                        checkbox.addEventListener('change', () => {
+                            const checkAll = document.querySelector('.cart-check-all');
+                            if (checkAll) {
+                                const allChecked = Array.from(cartList.querySelectorAll('.cart-item-check')).every(c => c.checked);
+                                checkAll.checked = allChecked;
+                            }
+                        });
+                    });
+
+                    const checkAll = document.querySelector('.cart-check-all');
+                    if (checkAll) {
+                        checkAll.checked = true;
+                        checkAll.addEventListener('change', (e) => {
+                            cartList.querySelectorAll('.cart-item-check').forEach(cb => {
+                                cb.checked = e.target.checked;
+                            });
+                            calculateTotal();
+                        });
+                    }
+                    const btnCheckout = document.querySelector("#btn-checkout");
+                    if (btnCheckout) {
+                        btnCheckout.addEventListener("click", () => {
+                            const checkedProductIds = [  // lấy danh sách id các sản phẩm được check
+                                ...document.querySelectorAll(".cart-item-check:checked")
+                            ].map(item => item.value); // chuyển thành array
+
+                            if (checkedProductIds.length === 0) {
+                                showPageAlert("Vui lòng chọn ít nhất một sản phẩm để thanh toán", "error");
+                                return;
+                            }
+
+                            const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+                            const paymentData = cart.filter(item => checkedProductIds.includes(item.productId)); // tìm những id sản phẩm được check trong giỏ hàng
+
+                            localStorage.setItem("payment", JSON.stringify(paymentData));
+                            window.location.href = "/cart/payment";
+                        });
+                    }
+
+                    cartList.querySelectorAll('.cart-qty button').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const row = btn.closest('.cart-row');
+                            const qtyEl = row.querySelector('.qty-val');
+                            const unitPrice = parseInt(row.dataset.price || 0, 10);
+                            const totalEl = row.querySelector('.line-total');
+                            let qty = parseInt(qtyEl.textContent, 10);
+                            if (btn.textContent.trim() === '−') qty = Math.max(1, qty - 1);
+                            else qty += 1;
+                            qtyEl.textContent = qty;
+
+                            const newTotalPrice = unitPrice * qty;
+                            if (totalEl && unitPrice) {
+                                totalEl.textContent = newTotalPrice.toLocaleString('vi-VN') + ' ₫';
+                            }
+                            calculateTotal();
+
+                            // Update localStorage
+                            const checkbox = row.querySelector('.cart-item-check');
+                            if (checkbox) {
+                                const productId = checkbox.value;
+                                const currentCart = JSON.parse(localStorage.getItem("cart") || "[]");
+                                const itemIndex = currentCart.findIndex(item => item.productId === productId);
+                                if (itemIndex > -1) {
+                                    currentCart[itemIndex].quantity = qty;
+                                    currentCart[itemIndex].totalPrice = newTotalPrice;
+                                    localStorage.setItem("cart", JSON.stringify(currentCart));
+                                }
+                            }
+                        });
+                    });
+                    calculateTotal();
+                }
+            }
+        })
+}
+
+const cartList = document.querySelector("[cart-items]");
+if (cartList) {
+    drawCart();
+}
+
+// Payment Render
+const drawPayment = () => {
+    const paymentList = document.querySelector(".order-summary");
+    if (paymentList) {
+        const paymentData = JSON.parse(localStorage.getItem("payment") || "[]");
+        if (paymentData.length === 0) {
+            paymentList.innerHTML = "<p>Không có sản phẩm nào để thanh toán.</p>";
+            return;
+        }
+
+        fetch("/cart/payment", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(paymentData)
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.code === "success") {
+                    const htmlPayment = data.ProductPayment.map(item =>
+                        `
+                        <div style="display:flex;gap:12px;align-items:center;">
+                            <img
+                                src="${item.avatar}"
+                                alt="${item.name}"
+                                style="width:56px;height:56px;border-radius:10px;object-fit:cover;flex-shrink:0;"
+                            >
+                            <div style="flex:1;">
+                                <p style="font-size:0.85rem;font-weight:700;margin-bottom:2px;color:var(--white);">
+                                    ${item.name}
+                                </p>
+                                <p style="font-size:0.78rem;color:var(--text-light);">
+                                    Số Lượng : ${item.quantity}
+                                </p>
+                            </div>
+                            <span style="font-size:0.88rem;font-weight:800;color:var(--accent);white-space:nowrap;">
+                                ${Number(item.totalPrice).toLocaleString('vi-VN')} ₫
+                            </span>
+                        </div>
+                        `
+                    );
+                    paymentList.innerHTML = htmlPayment.join("");
+
+                    // Tính lại tổng tiền
+                    let subTotal = 0;
+                    data.ProductPayment.forEach(item => {
+                        subTotal += item.totalPrice;
+                    });
+                    const ship = 150000;
+
+                    // Update UI (Assuming you have class payment-subtotal and payment-total in payment.pug)
+                    const subtotalEl = document.querySelector('.payment-subtotal');
+                    const totalEl = document.querySelector('.payment-total');
+                    if (subtotalEl) subtotalEl.textContent = subTotal.toLocaleString('vi-VN') + ' ₫';
+                    if (totalEl) totalEl.textContent = (subTotal > 0 ? subTotal + ship : 0).toLocaleString('vi-VN') + ' ₫';
+                }
+            });
+    }
+};
+drawPayment();
+
+// Bật tắt thông tin chuyển khoản ngân hàng
+const paymentRadios = document.querySelectorAll('input[name="payment"]');
+const bankInfo = document.getElementById('bank-transfer-info');
+if (paymentRadios.length > 0 && bankInfo) {
+    paymentRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            if (e.target.value === 'bank') {
+                bankInfo.style.display = 'block';
+            } else {
+                bankInfo.style.display = 'none';
+            }
+        });
+    });
+}
+

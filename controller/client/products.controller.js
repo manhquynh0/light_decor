@@ -104,7 +104,8 @@ module.exports.products = async (req, res) => {
         products = await Product.find(find)
             .sort(sort)
             .limit(limitItems)
-            .skip(skip);
+            .skip(skip)
+
     }
 
     const totalPage = Math.max(Math.ceil(totalRecord / limitItems), 1);
@@ -136,7 +137,20 @@ module.exports.products = async (req, res) => {
     });
 };
 module.exports.productDetail = async (req, res) => {
+    const slug = req.params.slug;
+    const product = await Product.findOne({ slug: slug }).populate("category", "name").lean();
+    const categoryIDs = product.category.map(item => (item._id ? item._id.toString() : item.toString()));
+    const productList = await Product.find({
+        _id: { $ne: product._id }, // không lấy sản phẩm hiện tại
+        deleted: false,
+        status: "stock",
+        category: {
+            $in: categoryIDs
+        },
+    }).limit(4).populate("category", "name").lean();
+    console.log(productList)
     res.render("client/pages/product-detail", {
-
+        product,
+        productList
     })
 }
