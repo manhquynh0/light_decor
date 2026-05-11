@@ -28,4 +28,6 @@ router.post("/otp-password", accountController.otpPasswordPost)
 router.get("/resetpass", accountController.resetPass)
 router.post("/resetpass/:email", accountController.resetPassPost)
 
+router.post("/setting/reset-password", authMiddleware.verifyToken, accountController.resetPasswordPost)
+
 module.exports = router

@@ -50,7 +50,7 @@ block content
               .filter-accordion-content
                 .space-tag-grid
                   each child in item.children
-                    .space-tag #{child.name}  
+                    .space-tag(data-category = child._id) #{child.name}  
 
 
         // Product grid

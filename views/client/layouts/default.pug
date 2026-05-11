@@ -35,6 +35,7 @@ html(lang="vi")
       )
     link(rel="stylesheet", href="https://unpkg.com/filepond@^4/dist/filepond.css")
     link(rel="stylesheet", href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css")
+    block head
   body
     - if (messages.success)
       div(class="alert alert-success" alert-time="3000")
@@ -49,6 +50,7 @@ html(lang="vi")
     block content
 
     include ../partials/footer.pug
+    include ../partials/chat-ai.pug
     
 
     script(src="https://cdn.jsdelivr.net/npm/just-validate@4.3.0/dist/just-validate.production.min.js")

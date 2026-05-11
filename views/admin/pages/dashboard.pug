@@ -18,7 +18,7 @@ block main
           line(y2="6" x2="21" y1="6" x1="3")
           path(d="M16 10a4 4 0 0 1-8 0")
       .stat-info
-        .stat-val 1,284
+        .stat-val #{overview.totalOrder}
         .stat-label Tổng đơn hàng
         span.stat-change.up ↑ 12% tháng này
     .admin-stat-card
@@ -34,7 +34,7 @@ block main
           line(y2="23" x2="12" y1="1" x1="12")
           path(d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6")
       .stat-info
-        .stat-val 4.8 tỷ
+        .stat-val #{overview.totalPrice.toLocaleString("vi-VN")} ₫
         .stat-label Doanh thu tháng
         span.stat-change.up ↑ 8.4% so với T3
 
@@ -51,7 +51,7 @@ block main
           path(d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2")
           circle(r="4" cy="7" cx="12")
       .stat-info
-        .stat-val 3,421
+        .stat-val #{overview.totalUser}
         .stat-label Người dùng
         span.stat-change.up ↑ 24 mới hôm nay
 
@@ -67,18 +67,20 @@ block main
         )
           path(d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z")
       .stat-info
-        .stat-val 486
+        .stat-val #{overview.totalProduct}
         .stat-label Sản phẩm
         span.stat-change.down ↓ 3 hết hàng
 
   .chart-area
     .chart-head
-      h3 Doanh thu 6 tháng gần nhất
-      .chart-legend
-        span.legend-dot.revenue Doanh thu
-        span.legend-dot.orders Đơn hàng
-    #miniChart.mini-chart
-    #chartLabels.chart-labels
+      h2.inner-title Biểu đồ doanh thu
+      .inner-filter
+        input(
+          type="month"
+          name=""
+        )
+    .inner-chart
+      canvas(id="revenue-chart")
 
   .admin-panel(style="margin-top:24px; padding:20px;")
     .panel-header(style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;")
@@ -95,30 +97,17 @@ block main
             th(style="padding:14px; text-align:left; font-size:0.85rem; color:var(--text-light); font-weight:600;") Trạng thái
             th(style="padding:14px; text-align:center; font-size:0.85rem; color:var(--text-light); font-weight:600;") Thao tác
         tbody
-          tr(style="border-top:1px solid var(--border); transition:all 0.2s ease;")
-            td(style="padding:14px; font-size:0.9rem; font-weight:700; color:var(--accent);") #ORD-8492
-            td(style="padding:14px; font-size:0.9rem; color:var(--white);") Vũ Mạnh Quỳnh
-            td(style="padding:14px; font-size:0.9rem; color:var(--text-mid);") 10/05/2026
-            td(style="padding:14px; font-size:0.9rem; font-weight:700; color:var(--white);") 45.000.000 ₫
-            td(style="padding:14px;")
-              span(style="padding:4px 10px; border-radius:999px; font-size:0.75rem; background:rgba(212,175,55,0.1); color:var(--accent); font-weight:700;") Chờ xác nhận
-            td(style="padding:14px; text-align:center;")
-              a.action-btn.action-btn-edit(href="/admin/orders" style="padding:6px 12px; font-size:0.8rem; background:transparent; border:1px solid var(--border); color:var(--text-mid); border-radius:6px; cursor:pointer; text-decoration:none; display:inline-block;") Chi tiết
-          tr(style="border-top:1px solid var(--border); transition:all 0.2s ease;")
-            td(style="padding:14px; font-size:0.9rem; font-weight:700; color:var(--accent);") #ORD-8491
-            td(style="padding:14px; font-size:0.9rem; color:var(--white);") Nguyễn Trà My
-            td(style="padding:14px; font-size:0.9rem; color:var(--text-mid);") 09/05/2026
-            td(style="padding:14px; font-size:0.9rem; font-weight:700; color:var(--white);") 12.500.000 ₫
-            td(style="padding:14px;")
-              span(style="padding:4px 10px; border-radius:999px; font-size:0.75rem; background:rgba(40,167,69,0.1); color:#28a745; font-weight:700;") Đã thanh toán
-            td(style="padding:14px; text-align:center;")
-              a.action-btn.action-btn-edit(href="/admin/orders" style="padding:6px 12px; font-size:0.8rem; background:transparent; border:1px solid var(--border); color:var(--text-mid); border-radius:6px; cursor:pointer; text-decoration:none; display:inline-block;") Chi tiết
-          tr(style="border-top:1px solid var(--border); transition:all 0.2s ease;")
-            td(style="padding:14px; font-size:0.9rem; font-weight:700; color:var(--accent);") #ORD-8490
-            td(style="padding:14px; font-size:0.9rem; color:var(--white);") Lê Khắc Việt
-            td(style="padding:14px; font-size:0.9rem; color:var(--text-mid);") 08/05/2026
-            td(style="padding:14px; font-size:0.9rem; font-weight:700; color:var(--white);") 134.000.000 ₫
-            td(style="padding:14px;")
-              span(style="padding:4px 10px; border-radius:999px; font-size:0.75rem; background:rgba(23,162,184,0.1); color:#17a2b8; font-weight:700;") Đang giao hàng
-            td(style="padding:14px; text-align:center;")
-              a.action-btn.action-btn-edit(href="/admin/orders" style="padding:6px 12px; font-size:0.8rem; background:transparent; border:1px solid var(--border); color:var(--text-mid); border-radius:6px; cursor:pointer; text-decoration:none; display:inline-block;") Chi tiết
+          each item in ordersNew
+            tr(style="border-top:1px solid var(--border); transition:all 0.2s ease;")
+              td(style="padding:14px; font-size:0.9rem; font-weight:700; color:var(--accent);") #{item.orderCode}
+              td(style="padding:14px; font-size:0.9rem; color:var(--white);") #{item.firstName + " " + item.lastName}
+              td(style="padding:14px; font-size:0.9rem; color:var(--text-mid);") #{item.createdAtFormat}
+              td(style="padding:14px; font-size:0.9rem; font-weight:700; color:var(--white);") #{item.total.toLocaleString("vi-VN")} ₫
+              td(style="padding:14px;")
+                if(item.paymentStatus =="paid")
+                  span(style=" border-radius:999px; font-size:0.75rem; background:rgba(144, 238, 144, 0.1); color:green; font-weight:700;") | Đã thanh toán
+                else
+                  span(style=" border-radius:999px; font-size:0.75rem; background:rgba(255, 99, 71, 0.1); color:red; font-weight:700;") | Chưa thanh toán
+
+              td(style="padding:5px; text-align:center;")
+                a.action-btn.action-btn-edit(href="/admin/orders" style=" font-size:0.8rem; background:transparent; border:1px solid var(--border); color:var(--text-mid); border-radius:6px; cursor:pointer; text-decoration:none; display:inline-block;") ->

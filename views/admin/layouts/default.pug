@@ -1,4 +1,10 @@
-extend ../../client/layouts/default
+extends ../../client/layouts/default
+
+block head
+  style.
+    .ai-chat-toggle { z-index: 100001 !important; }
+    .ai-chat-window { z-index: 100002 !important; }
+
 block content
   #pan.page-hero(style="padding:36px 0;")
     .container
@@ -13,106 +19,40 @@ block content
       .settings-layout
         // SIDEBAR
         aside.settings-sidebar
-          // User Card
           .user-card
             .user-avatar-wrap
               img#userAvatarImg.user-avatar-img(style=(user.avatar ? "display:flex;" : "display:none;") alt="Avatar" src=user.avatar)
               #avatarInitials.avatar-initials(style=(user.avatar ? "display:none;" : "display:flex;")) #{user.fullname ? user.fullname.charAt(0).toUpperCase() : 'U'}
-              input#avatarUpload.avatar-upload-input(
-                accept="image/*"
-                type="file"
-              )
-              button.avatar-edit-btn(
-                onclick="document.getElementById('avatarUpload').click()"
-                title="Đổi ảnh đại diện"
-              )
-                svg(
-                  stroke-width="2.5"
-                  stroke="white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  height="12"
-                  width="12"
-                )
+              input#avatarUpload.avatar-upload-input(accept="image/*" type="file")
+              button.avatar-edit-btn(onclick="document.getElementById('avatarUpload').click()" title="Đổi ảnh đại diện")
+                svg(stroke-width="2.5" stroke="white" fill="none" viewBox="0 0 24 24" height="12" width="12")
                   path(d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7")
                   path(d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z")
             #sidebar-name.user-card-name #{user.fullname}
             .user-card-email #{user.email}
             span.user-role-badge.role-admin #{user.roleName}
         
-           
         main.settings-main
           .settings-card
             .settings-card-body(style="padding: 28px 28px 0;")
               #adminTabs.admin-tabs
                 button.admin-tab(data-sub="orders" onclick="window.location.href='/admin/orders'")
-                  svg(
-                    stroke-width="2"
-                    stroke="currentColor"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    height="14"
-                    width="14"
-                  )
-                    path(d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z")
-                    line(y2="6" x2="21" y1="6" x1="3")
                   | Đơn hàng
-                  span.admin-tab-badge 28
                 button.admin-tab(data-sub="products" onclick="window.location.href='/admin/products'")
-                  svg(
-                    stroke-width="2"
-                    stroke="currentColor"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    height="14"
-                    width="14"
-                  )
-                    path(d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z")
                   | Sản phẩm
                 button.admin-tab(data-sub="users" onclick="window.location.href='/admin/users'")
-                  svg(
-                    stroke-width="2"
-                    stroke="currentColor"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    height="14"
-                    width="14"
-                  )
-                    path(d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2")
-                    circle(r="4" cy="7" cx="9")
-                    path(d="M23 21v-2a4 4 0 0 0-3-3.87")
-                    path(d="M16 3.13a4 4 0 0 1 0 7.75")
                   | Người dùng
-                  span.admin-tab-badge 2
                 button.admin-tab(data-sub="roles" onclick="window.location.href='/admin/roles'")
-                  svg(
-                    stroke-width="2"
-                    stroke="currentColor"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    height="14"
-                    width="14"
-                  )
-                    path(d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z")
                   | Phân quyền
                 button.admin-tab(data-sub="categories" onclick="window.location.href='/admin/categories'")
-                  svg(
-                    stroke-width="2"
-                    stroke="currentColor"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    height="14"
-                    width="14"
-                  )
-                    rect(height="7" width="7" y="3" x="3")
-                    rect(height="7" width="7" y="3" x="14")
-                    rect(height="7" width="7" y="14" x="14")
-                    rect(height="7" width="7" y="14" x="3")
                   | Danh mục
           block main   
+
+  // Đưa tất cả Script vào cuối block content để đảm bảo chúng được chạy
   script(src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js") 
   script(src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js") 
   script(src="https://unpkg.com/filepond@^4/dist/filepond.js")
+  script(src="https://cdn.jsdelivr.net/npm/chart.js") 
   script(src="https://cdn.jsdelivr.net/npm/just-validate@4.3.0/dist/just-validate.production.min.js")
   script(src="/assets/js/script.js")
   script.
@@ -122,11 +62,9 @@ block content
       adminTabs.forEach(tab => {
         const onclickAttr = tab.getAttribute("onclick");
         if (onclickAttr) {
-          // Trích xuất path từ chuỗi 'window.location.href='/admin/...'
           const match = onclickAttr.match(/'([^']+)'/);
           if (match && match[1]) {
             const targetPath = match[1];
-            // So sánh linh hoạt: /admin/products sẽ khớp với /admin/products?status=...
             if (currentPath === targetPath || currentPath.startsWith(targetPath + '/')) {
               tab.classList.add("active");
             }

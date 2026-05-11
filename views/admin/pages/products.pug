@@ -24,7 +24,7 @@ block main
       )
     .toolbar-actions
       select.btn-admin.btn-admin-outline(filter-status)
-        option(value="all") Tất cả
+        option(value="") Tất cả
         option(value="stock") Đang bán
         option(value="out stock") Hết hàng
       button.btn-admin.btn-admin-primary(onclick="openModal('addProductModal', '/admin/products/add')")
@@ -69,9 +69,9 @@ block main
               div(style="color: white;font-weight: bold;") #{item.stock}
             td
               span
-                if (item.status == "stock")
+                if (item.stock > 0)
                   .status-badge.status-active Còn hàng
-                else if (item.status == "out stock")
+                else if (item.stock == 0)
                   .status-badge.status-inactive Hết hàng
             td
               .action-btns

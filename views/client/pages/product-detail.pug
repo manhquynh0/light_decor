@@ -34,7 +34,7 @@ block content
         .pd-price-wrap
           span.pd-price-new #{Number(product.priceNEW).toLocaleString('vi-VN')} ₫
           span.pd-price-old #{Number(product.priceOLD).toLocaleString('vi-VN')} ₫
-          span.pd-save - #{Math.floor(((Number(product.priceOLD) - Number(product.priceNEW)) / Number(product.priceOLD)) * 100)}%
+          span.pd-save - #{Number(product.priceOLD) > 0 ? Math.floor(((Number(product.priceOLD) - Number(product.priceNEW)) / Number(product.priceOLD)) * 100) : 0}%
         p(style="font-size:.9rem;color:var(--text-mid);line-height:1.8;")
           | #{product.description}
         .pd-divider
@@ -90,7 +90,8 @@ block content
               path(
                 d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
                 )
-        a.btn.btn-outline-dark(
+        a.btn.btn-outline-dark.btn-add-cart(
+          product-id = product._id
           style="justify-content:center;padding:14px 28px;font-size:.95rem;" 
           href="/cart"
           ) Mua ngay →

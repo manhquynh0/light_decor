@@ -3,7 +3,14 @@ const categoryHelper = require("../../helpers/categoryTree.helper")
 
 module.exports.home = async (req, res) => {
     try {
-        const products = await Product.find().limit(8)
+        const ProdHead = await Product.find({
+            deleted: false,
+            status: "stock"
+        }).sort({ createdAt: "desc" }).limit(4)
+        const products = await Product.find({
+            deleted: false,
+            status: "stock"
+        }).limit(8)
 
         const modernID = "69fc3cc39d07cbe3f31df98a"
         const listCateID = await categoryHelper.getAllSubcateId(modernID)
@@ -59,7 +66,8 @@ module.exports.home = async (req, res) => {
             listSimpleProducts: listSimpleProducts || [],
             listLuxuryProducts: listLuxuryProducts || [],
             listLivingProducts: listLivingProducts || [],
-            listKittchenProducts: listKittchenProducts || []
+            listKittchenProducts: listKittchenProducts || [],
+            ProdHead: ProdHead || []
         })
     } catch (error) {
         console.error("Error in home controller:", error)

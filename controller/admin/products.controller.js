@@ -27,7 +27,7 @@ module.exports.index = async (req, res) => {
     }
   }
 
-  const totalRecord = await Category.countDocuments(find);
+  const totalRecord = await Product.countDocuments(find);
   const totalPage = Math.max(Math.ceil(totalRecord / limitItems), 1); // nếu total page < 1 thì = 1 >  1 thì giữ nguyên
   if (page > totalPage) {
     page = totalPage;
@@ -94,7 +94,7 @@ module.exports.add = async (req, res) => {
     }
     const newRecord = new Product(req.body)
     await newRecord.save()
-    req.flash("success", "Thêm thành công")
+
     res.json({
       code: "success"
     })

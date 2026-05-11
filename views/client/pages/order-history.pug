@@ -1,5 +1,5 @@
 extends ./setting.pug
-
+include ../mixins/pagination
 block main
   .page-hero(style="padding:40px 0;")
     .container
@@ -26,53 +26,56 @@ block main
             style="width:220px;padding:12px 16px;" 
             placeholder="Tìm theo số đơn hàng..." 
             type="text"
+            search
             )
-          button.btn.btn-outline-dark(style="padding:12px 20px;") Tìm kiếm
+          button.btn.btn-outline-dark(style="padding:12px 20px;" search) Tìm kiếm
       // Orders List
       div(style="display:grid;gap:24px;")
-        // Order 1: Delivered
-        .order-card
-          .order-card-header
-            div(style="display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:20px;flex:1;")
-              div
-                p.order-meta-label Số đơn hàng
-                p.order-meta-val MANHQUYNH-2024-001245
-              div
-                p.order-meta-label Ngày đặt hàng
-                p.order-meta-val 15/04/2024
-              div
-                p.order-meta-label Tổng tiền
-                p(style="font-size:1.1rem;font-weight:800;color:var(--accent);") 69.150.000 ₫
-              div
-                p.order-meta-label Trạng thái
-                span.badge.badge-success ✓ Đã giao hàng
-            a.btn.btn-outline-dark.btn-sm(
-              style="padding:10px 16px;white-space:nowrap;color:white;border-color:rgba(255,255,255,0.2);" 
-              href="/account/order-details"
-              ) Xem chi tiết
-          .order-items
-            .order-item
-              img(src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/mau-ghe-sofa-vang-hien-dai-boc-da-han-quoc-sf360_thumb_350.jpg" alt="Sofa")
-              .order-item-info
-                h4 Ghế sofa văng da Hàn Quốc
-                p Màu: Vàng × 1
-              p(style="font-size:0.9rem;font-weight:700;color:var(--white);margin-left:auto;") 34.000.000 ₫
-            .order-item
-              img(src="https://cdn3729.cdn-template-4s.com/thumbs/san-pham/sf618011-123-1666x1250_1_thumb_350.jpg" alt="Sofa Mỹ")
-              .order-item-info
-                h4 Sofa Phong Cách Mỹ SF007-123
-                p Màu: Beige × 1
-              p(style="font-size:0.9rem;font-weight:700;color:var(--white);margin-left:auto;") 35.000.000 ₫
-          .order-card-footer
-            button.btn.btn-outline-dark.btn-sm(style="padding:10px 16px;color:white;border-color:rgba(255,255,255,0.2);") Mua lại
-            button.btn.btn-outline-dark.btn-sm(style="padding:10px 16px;color:white;border-color:rgba(255,255,255,0.2);") Để lại đánh giá
+      
+         each item in orderList
+          .order-card
+         
+              .order-card-header
+                div(style="display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:20px;flex:1;")
+                  div
+                    p.order-meta-label  Mã đơn hàng
+                    p.order-meta-val #{item.orderCode}
+                  div
+                    p.order-meta-label Ngày đặt hàng
+                    p.order-meta-val #{item.createdAtFormat}
+                  div
+                    p.order-meta-label Tổng tiền
+                    p(style="font-size:1.1rem;font-weight:800;color:var(--accent);") #{Number(item.total).toLocaleString('vi-VN')} ₫
+                  div
+                    p.order-meta-label Thanh Toán
+                    if item.paymentStatus == "paid"
+                      span.badge.badge-light Đã thanh toán
+                    else if item.paymentStatus == "unpaid"
+                      span.badge.badge-danger Chưa thanh toán
+
+                  div
+                    p.order-meta-label Trạng thái
+                    if item.status == "initial"
+                      span.badge.badge-light Cửa hàng đã nhận đơn
+                    else if item.status == "success"
+                      span.badge.badge-success Đã giao hàng
+                    else if item.status == "cancelled"
+                      span.badge.badge-danger Đã hủy
+              each product in item.items
+                .order-items
+                  .order-item
+
+                    img(src=product.avatar alt="")
+                    .order-item-info
+                      h4 #{product.name}
+                      p Số Lượng × #{product.quantity}
+                    p(style="font-size:0.9rem;font-weight:700;color:var(--white);margin-left:auto;") #{Number(product.price).toLocaleString('vi-VN')} ₫
+                  
+                .order-card-footer
+                  button.btn.btn-outline-dark.btn-sm(onclick=`window.location.href='/products/${product.slug}'` style="padding:10px 16px;color:white;border-color:rgba(255,255,255,0.2);") Mua lại
+                  button.btn.btn-outline-dark.btn-sm(onclick=`window.location.href='/products/${product.slug}'` style="padding:10px 16px;color:white;border-color:rgba(255,255,255,0.2);") Để lại đánh giá
       // Pagination
-      div(style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:48px;")
-        button.page-btn ←
-        button.page-btn.active 1
-        button.page-btn 2
-        button.page-btn 3
-        button.page-btn →
+      +pagination(pagination, orderList.length)
   // Help Section
   section.section(style="background:var(--off-white);")
     .container
@@ -86,14 +89,14 @@ block main
             button.btn.btn-outline-dark(style="padding:14px 28px;") 💬 Chat trực tuyến
         div(style="display:grid;gap:20px;")
           div(
-            style="background:white;padding:24px;border-radius:var(--radius-xl);border:1px solid var(--border);"
+            style="background:var(--primary);padding:24px;border-radius:var(--radius-xl);border:1px solid var(--border);"
             )
-            h3(style="font-weight:800;margin-bottom:8px;color:var(--primary);") Hotline
-            p(style="font-size:1.1rem;font-weight:700;color:var(--accent-dark);")
+            h3(style="font-weight:800;margin-bottom:8px;color:var(--accent);") Hotline
+            p(style="font-size:1.1rem;font-weight:700;color:var(--accent);")
               a(href="tel:0901191616") 0373382805
           div(
-            style="background:white;padding:24px;border-radius:var(--radius-xl);border:1px solid var(--border);"
+            style="background:var(--primary);padding:24px;border-radius:var(--radius-xl);border:1px solid var(--border);"
             )
-            h3(style="font-weight:800;margin-bottom:8px;color:var(--primary);") Email
-            p(style="font-size:1rem;font-weight:600;color:var(--text-mid);")
+            h3(style="font-weight:800;margin-bottom:8px;color:var(--accent);") Email
+            p(style="font-size:1rem;font-weight:600;color:var(---accent);")
               a(href="mailto:support@MANHQUYNHdecor.vn") vmquynh.dhti17a3@sv.uneti.edu.vn

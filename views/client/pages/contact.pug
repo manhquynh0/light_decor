@@ -95,44 +95,47 @@ block content
           p(style="font-size:0.9rem;color:var(--text-light);margin-bottom:28px;")
             | Điền thông tin bên dưới và chúng tôi
             |   sẽ liên hệ lại sớm nhất có thể.
-          form#contactForm(style="display:grid;gap:18px;")
+          form#contact-form(style="display:grid;gap:18px;")
             div(style="display:grid;grid-template-columns:1fr 1fr;gap:16px;")
               .form-group(style="margin:0;")
-                label(for="ctName") Họ và tên *
-                input#ctName.form-control(
+                label(for="name") Họ và tên *
+                input#name.form-control(
                   required="" 
                   placeholder="Nguyễn Văn A" 
                   type="text"
+                  name="name"
+                  i
                   )
               .form-group(style="margin:0;")
-                label(for="ctPhone") Số điện thoại *
-                input#ctPhone.form-control(
+                label(for="phone") Số điện thoại *
+                input#phone.form-control(
                   required="" 
                   placeholder="0373382805" 
                   type="tel"
+                  name="phone"
                   )
             .form-group(style="margin:0;")
-              label(for="ctEmail") Email
-              input#ctEmail.form-control(
+              label(for="email") Email
+              input#email.form-control(
                 placeholder="example@email.com" 
                 type="email"
+                name="email"
                 )
             .form-group(style="margin:0;")
-              label(for="ctSubject") Chủ đề
-              select#ctSubject.form-control(style="cursor:pointer;")
-                option Tư vấn sản phẩm
-                option Thiết kế nội thất
-                option Báo giá dự án
-                option Khác
+              label(for="option") Chủ đề
+              select#option.form-control(style="cursor:pointer;")
+                option(value="Tư vấn sản phẩm") Tư vấn sản phẩm
+                option(value="Thiết kế nội thất") Thiết kế nội thất
+                option(value="Khác") Khác
             .form-group(style="margin:0;")
-              label(for="ctMsg") Nội dung tin nhắn *
-              textarea#ctMsg.form-control(
+              label(for="note") Nội dung tin nhắn *
+              textarea#note.form-control(
                 style="resize:vertical;min-height:120px;" 
                 required="" 
                 placeholder="Mô tả nhu cầu của bạn..." 
                 rows="5"
                 )
-            button.btn.btn-gold(
+            button.btn.btn-gold.submit-contact(
               style="justify-content:center;padding:16px;font-size:1rem;" 
               type="submit"
               )

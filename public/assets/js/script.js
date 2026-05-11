@@ -1,4 +1,4 @@
-
+﻿
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -319,11 +319,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const totalEl = row.querySelector('.line-total');
             if (!qtyEl) return;
             let qty = parseInt(qtyEl.textContent, 10);
-            if (btn.textContent.trim() === '−') qty = Math.max(1, qty - 1);
+            if (btn.textContent.trim() === 'Ă¢Ë†â€™') qty = Math.max(1, qty - 1);
             else qty += 1;
             qtyEl.textContent = qty;
             if (totalEl && unitPrice) {
-                totalEl.textContent = (unitPrice * qty).toLocaleString('vi-VN') + ' ₫';
+                totalEl.textContent = (unitPrice * qty).toLocaleString('vi-VN') + ' Ă¢â€Â«';
             }
             updateCartTotal();
         });
@@ -341,8 +341,8 @@ document.addEventListener('DOMContentLoaded', function () {
             sub += price * qty;
         });
         const ship = 150000;
-        subtotalEl.textContent = sub.toLocaleString('vi-VN') + ' ₫';
-        totalEl.textContent = (sub + ship).toLocaleString('vi-VN') + ' ₫';
+        subtotalEl.textContent = sub.toLocaleString('vi-VN') + ' Ă¢â€Â«';
+        totalEl.textContent = (sub + ship).toLocaleString('vi-VN') + ' Ă¢â€Â«';
     }
 
 
@@ -352,7 +352,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const tgt = document.getElementById(btn.dataset.showPass);
             if (!tgt) return;
             tgt.type = tgt.type === 'password' ? 'text' : 'password';
-            btn.textContent = tgt.type === 'text' ? 'Ẩn' : 'Hiện';
+            btn.textContent = tgt.type === 'text' ? 'Ă¡ÂºÂ¨n' : 'HiĂ¡Â»â€¡n';
         });
     });
 
@@ -459,12 +459,12 @@ function openModal(id, url = null) {
     if (modal) {
         modal.classList.add('open');
         if (url) {
-            // 👉 chỉ lưu URL khi sắp đổi URL
+            // Ä‘Å¸â€˜â€° chĂ¡Â»â€° lĂ†Â°u URL khi sĂ¡ÂºÂ¯p Ă„â€˜Ă¡Â»â€¢i URL
             previousUrl = window.location.pathname;
             history.pushState({ modal: id }, '', url);
         }
     } else if (url) {
-        // Modal không có trong DOM → chuyển trang để server render
+        // Modal khÄ‚Â´ng cÄ‚Â³ trong DOM Ă¢â€ â€™ chuyĂ¡Â»Æ’n trang Ă„â€˜Ă¡Â»Æ’ server render
         window.location.href = url;
     }
 }
@@ -472,26 +472,26 @@ function openModal(id, url = null) {
 function closeModal(id) {
     const modal = document.getElementById(id);
     modal?.classList.remove('open');
-    // 👉 quay lại URL trước đó
-    if (previousUrl !== window.location.pathname) {
-        // URL đã thay đổi qua pushState → pushState lại
+    // Ä‘Å¸â€˜â€° quay lĂ¡ÂºÂ¡i URL trĂ†Â°Ă¡Â»â€ºc Ă„â€˜Ä‚Â³
+    if (previousUrl && previousUrl !== window.location.pathname) {
+        // URL Ă„â€˜Ä‚Â£ thay Ă„â€˜Ă¡Â»â€¢i qua pushState Ă¢â€ â€™ pushState lĂ¡ÂºÂ¡i
         history.pushState({}, '', previousUrl);
     } else {
-        // Trang load trực tiếp (full navigation) → chuyển về trang list
-        const basePath = window.location.pathname.replace(/\/(edit|add)(\/.*)?$/, '');
+        // Trang load trĂ¡Â»Â±c tiĂ¡ÂºÂ¿p (full navigation) Ă¢â€ â€™ chuyĂ¡Â»Æ’n vĂ¡Â»Â trang list
+        const basePath = window.location.pathname.replace(/\/(edit|add|detail)(\/.*)?$/, '');
         window.location.href = basePath;
     }
 }
 
-// click ra ngoài để đóng
+// click ra ngoÄ‚Â i Ă„â€˜Ă¡Â»Æ’ Ă„â€˜Ä‚Â³ng
 document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
     backdrop.addEventListener('click', e => {
         if (e.target === backdrop) {
             backdrop.classList.remove('open');
-            if (previousUrl !== window.location.pathname) {
+            if (previousUrl && previousUrl !== window.location.pathname) {
                 history.pushState({}, '', previousUrl);
             } else {
-                const basePath = window.location.pathname.replace(/\/(edit|add)(\/.*)?$/, '');
+                const basePath = window.location.pathname.replace(/\/(edit|add|detail)(\/.*)?$/, '');
                 window.location.href = basePath;
             }
         }
@@ -540,10 +540,10 @@ document.getElementById('newPass')?.addEventListener('input', function () {
     if (/[0-9]/.test(val)) score++;
     if (/[^A-Za-z0-9]/.test(val)) score++;
     const levels = [
-        { w: '25%', bg: '#e84040', label: 'Rất yếu' },
-        { w: '50%', bg: '#f39c12', label: 'Yếu' },
-        { w: '75%', bg: '#3498db', label: 'Trung bình' },
-        { w: '100%', bg: '#27ae60', label: 'Mạnh' },
+        { w: '25%', bg: '#e84040', label: 'RĂ¡ÂºÂ¥t yĂ¡ÂºÂ¿u' },
+        { w: '50%', bg: '#f39c12', label: 'YĂ¡ÂºÂ¿u' },
+        { w: '75%', bg: '#3498db', label: 'Trung bÄ‚Â¬nh' },
+        { w: '100%', bg: '#27ae60', label: 'MĂ¡ÂºÂ¡nh' },
     ];
     const lv = levels[Math.max(0, score - 1)];
     fill.style.width = lv.w;
@@ -555,53 +555,11 @@ document.getElementById('newPass')?.addEventListener('input', function () {
 // ========== LOGOUT ==========
 function confirmLogout() {
     const btn = document.getElementById('logoutConfirmBtn');
-    btn.textContent = 'Đang đăng xuất...';
+    btn.textContent = 'Ă„Âang Ă„â€˜Ă„Æ’ng xuĂ¡ÂºÂ¥t...';
     btn.disabled = true;
     setTimeout(() => { window.location.href = '/account/logout'; }, 1500);
 }
 
-// ========== ORDER STATUS VISUAL ==========
-function updateOrderStatus(select) {
-    // Visual feedback when status changes
-    const row = select.closest('tr');
-    row.style.transition = 'background 0.3s';
-    row.style.background = 'rgba(234,191,132,0.08)';
-    setTimeout(() => row.style.background = '', 800);
-}
-
-// ========== MINI CHART ==========
-const months = ['T11', 'T12', 'T1', 'T2', 'T3', 'T4'];
-const revenueData = [68, 82, 55, 90, 75, 100];
-const ordersData = [45, 60, 40, 70, 65, 85];
-
-const chartEl = document.getElementById('miniChart');
-const labelsEl = document.getElementById('chartLabels');
-
-if (chartEl) {
-    months.forEach((m, i) => {
-        const group = document.createElement('div');
-        group.className = 'chart-bar-group';
-
-        const revBar = document.createElement('div');
-        revBar.className = 'chart-bar revenue';
-        revBar.style.height = revenueData[i] + '%';
-        revBar.title = m + ': ' + revenueData[i] + '%';
-
-        const ordBar = document.createElement('div');
-        ordBar.className = 'chart-bar orders';
-        ordBar.style.height = ordersData[i] + '%';
-        ordBar.title = m + ': ' + ordersData[i] + '%';
-
-        group.appendChild(revBar);
-        group.appendChild(ordBar);
-        chartEl.appendChild(group);
-
-        const label = document.createElement('div');
-        label.className = 'chart-label';
-        label.textContent = m;
-        labelsEl.appendChild(label);
-    });
-}
 
 // ========== PAGE NUM BTNS ==========
 document.querySelectorAll('.pagination-btns').forEach(wrap => {
@@ -624,7 +582,7 @@ document.getElementById('avatarUpload')?.addEventListener('change', function (e)
             img.src = event.target.result;
             img.style.display = 'block';
             initials.style.display = 'none';
-            // Lưu vào localStorage để giữ khi reload
+            // LĂ†Â°u vÄ‚Â o localStorage Ă„â€˜Ă¡Â»Æ’ giĂ¡Â»Â¯ khi reload
             localStorage.setItem('userAvatar', event.target.result);
         };
         reader.readAsDataURL(file);
@@ -706,7 +664,7 @@ function selectSize(btn) {
 }
 
 
-// OTP input tự động nhảy ô
+// OTP input tĂ¡Â»Â± Ă„â€˜Ă¡Â»â„¢ng nhĂ¡ÂºÂ£y Ä‚Â´
 document.querySelectorAll('.otp-digit').forEach((input, index, inputs) => {
     input.addEventListener('input', function () {
         this.value = this.value.replace(/[^0-9]/g, '');
@@ -731,7 +689,7 @@ document.querySelectorAll('.otp-digit').forEach((input, index, inputs) => {
 });
 
 
-// Password strength (frontend only - hiển thị)
+// Password strength (frontend only - hiĂ¡Â»Æ’n thĂ¡Â»â€¹)
 document.getElementById('password')?.addEventListener('input', function () {
     const pwd = this.value;
     const requirements = {
@@ -752,14 +710,14 @@ document.getElementById('password')?.addEventListener('input', function () {
 });
 const showPageAlert = (message, type = "success") => {
 
-    // Xóa alert cũ nếu có
+    // XÄ‚Â³a alert cĂ…Â© nĂ¡ÂºÂ¿u cÄ‚Â³
     const oldAlert = document.querySelector("[alert-time]");
 
     if (oldAlert) {
         oldAlert.remove();
     }
 
-    // Tạo alert mới
+    // TĂ¡ÂºÂ¡o alert mĂ¡Â»â€ºi
     const alert = document.createElement("div");
 
     alert.setAttribute("alert-time", "4000");
@@ -775,7 +733,21 @@ const showPageAlert = (message, type = "success") => {
         alert.remove();
     }, 4000);
 }
+document.querySelectorAll("[alert-time]").forEach(alert => {
 
+    const time = parseInt(alert.getAttribute("alert-time")) || 3000;
+
+    setTimeout(() => {
+
+        alert.style.opacity = "0";
+
+        setTimeout(() => {
+            alert.remove();
+        }, 300);
+
+    }, time);
+
+});
 // Filepond Image
 const listFilepondImage = document.querySelectorAll("[filepond-image]");
 let filePond = {};
@@ -790,7 +762,7 @@ if (listFilepondImage.length > 0) {
             const imageDefault = elementImageDefault.getAttribute("image-default");
             if (imageDefault) {
                 files = [{
-                    source: imageDefault, // Đường dẫn ảnh
+                    source: imageDefault, // Ă„ÂĂ†Â°Ă¡Â»Âng dĂ¡ÂºÂ«n Ă¡ÂºÂ£nh
                 },]
             }
         }
@@ -820,7 +792,7 @@ if (listFilepondImageMulti.length > 0) {
                 files = [];
                 listImageDefault.forEach(image => {
                     files.push({
-                        source: image, // Đường dẫn ảnh
+                        source: image, // Ă„ÂĂ†Â°Ă¡Â»Âng dĂ¡ÂºÂ«n Ă¡ÂºÂ£nh
                     });
                 })
             }
@@ -839,37 +811,17 @@ if (loginForm) {
     validation
         .addField('#email', [{
             rule: 'required',
-            errorMessage: 'Vui lòng nhập email của bạn!',
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p email cĂ¡Â»Â§a bĂ¡ÂºÂ¡n!',
         },
         {
             rule: 'email',
-            errorMessage: 'Email không đúng định dạng!',
+            errorMessage: 'Email khÄ‚Â´ng Ă„â€˜Ä‚Âºng Ă„â€˜Ă¡Â»â€¹nh dĂ¡ÂºÂ¡ng!',
         },
         ])
         .addField('#password', [{
             rule: 'required',
-            errorMessage: 'Vui lòng nhập mật khẩu!',
-        },
-        {
-            validator: (value) => value.length >= 8,
-            errorMessage: 'Mật khẩu phải chứa ít nhất 8 ký tự!',
-        },
-        {
-            validator: (value) => /[A-Z]/.test(value),
-            errorMessage: 'Mật khẩu phải chứa ít nhất một chữ cái in hoa!',
-        },
-        {
-            validator: (value) => /[a-z]/.test(value),
-            errorMessage: 'Mật khẩu phải chứa ít nhất một chữ cái thường!',
-        },
-        {
-            validator: (value) => /\d/.test(value),
-            errorMessage: 'Mật khẩu phải chứa ít nhất một chữ số!',
-        },
-        {
-            validator: (value) => /[@$!%*?&]/.test(value),
-            errorMessage: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt!',
-        },
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p mĂ¡ÂºÂ­t khĂ¡ÂºÂ©u!',
+        }
         ])
         .onSuccess((event) => {
             const email = event.target.email.value;
@@ -910,85 +862,85 @@ if (registerForm) {
     validation
         .addField('#firstname', [{
             rule: 'required',
-            errorMessage: 'Vui lòng nhập tên của bạn!',
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p tÄ‚Âªn cĂ¡Â»Â§a bĂ¡ÂºÂ¡n!',
         },
         {
             validator: (value) => value.length >= 2,
-            errorMessage: 'Tên phải chứa ít nhất 2 ký tự!',
+            errorMessage: 'TÄ‚Âªn phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t 2 kÄ‚Â½ tĂ¡Â»Â±!',
         },
         ])
         .addField('#lastname', [{
             rule: 'required',
-            errorMessage: 'Vui lòng nhập họ của bạn!',
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p hĂ¡Â»Â cĂ¡Â»Â§a bĂ¡ÂºÂ¡n!',
         },
         {
             validator: (value) => value.length >= 2,
-            errorMessage: 'Họ phải chứa ít nhất 2 ký tự!',
+            errorMessage: 'HĂ¡Â»Â phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t 2 kÄ‚Â½ tĂ¡Â»Â±!',
         },
         ])
         .addField('#email', [{
             rule: 'required',
-            errorMessage: 'Vui lòng nhập email của bạn!',
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p email cĂ¡Â»Â§a bĂ¡ÂºÂ¡n!',
         },
         {
             rule: 'email',
-            errorMessage: 'Email không đúng định dạng!',
+            errorMessage: 'Email khÄ‚Â´ng Ă„â€˜Ä‚Âºng Ă„â€˜Ă¡Â»â€¹nh dĂ¡ÂºÂ¡ng!',
         },
         ])
         .addField('#phone', [{
             rule: 'required',
-            errorMessage: 'Vui lòng nhập số điện thoại của bạn!',
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p sĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i cĂ¡Â»Â§a bĂ¡ÂºÂ¡n!',
         },
         {
             validator: (value) => value.length >= 10,
-            errorMessage: 'Số điện thoại phải chứa ít nhất 10 ký tự!',
+            errorMessage: 'SĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t 10 kÄ‚Â½ tĂ¡Â»Â±!',
         },
         {
             validator: (value) => value.length <= 11,
-            errorMessage: 'Số điện thoại phải chứa tối đa 11 ký tự!',
+            errorMessage: 'SĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i phĂ¡ÂºÂ£i chĂ¡Â»Â©a tĂ¡Â»â€˜i Ă„â€˜a 11 kÄ‚Â½ tĂ¡Â»Â±!',
         },
         {
             validator: (value) => /^0[0-9]{9}$/.test(value),
-            errorMessage: 'Số điện thoại không đúng định dạng!',
+            errorMessage: 'SĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i khÄ‚Â´ng Ă„â€˜Ä‚Âºng Ă„â€˜Ă¡Â»â€¹nh dĂ¡ÂºÂ¡ng!',
         },
         ])
         .addField('#password', [{
             rule: 'required',
-            errorMessage: 'Vui lòng nhập mật khẩu của bạn!',
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p mĂ¡ÂºÂ­t khĂ¡ÂºÂ©u cĂ¡Â»Â§a bĂ¡ÂºÂ¡n!',
         },
         {
             validator: (value) => value.length >= 8,
-            errorMessage: 'Mật khẩu phải chứa ít nhất 8 ký tự!',
+            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t 8 kÄ‚Â½ tĂ¡Â»Â±!',
         },
         {
             validator: (value) => /[A-Z]/.test(value),
-            errorMessage: 'Mật khẩu phải chứa ít nhất một chữ cái in hoa!',
+            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t chĂ¡Â»Â¯ cÄ‚Â¡i in hoa!',
         },
         {
             validator: (value) => /[a-z]/.test(value),
-            errorMessage: 'Mật khẩu phải chứa ít nhất một chữ cái thường!',
+            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t chĂ¡Â»Â¯ cÄ‚Â¡i thĂ†Â°Ă¡Â»Âng!',
         },
         {
             validator: (value) => /\d/.test(value),
-            errorMessage: 'Mật khẩu phải chứa ít nhất một chữ số!',
+            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t chĂ¡Â»Â¯ sĂ¡Â»â€˜!',
         },
         {
             validator: (value) => /[@$!%*?&]/.test(value),
-            errorMessage: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt!',
+            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t kÄ‚Â½ tĂ¡Â»Â± Ă„â€˜Ă¡ÂºÂ·c biĂ¡Â»â€¡t!',
         },
         ])
         .addField('#confirmPassword', [{
             rule: 'required',
-            errorMessage: 'Vui lòng nhập lại mật khẩu của bạn!',
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p lĂ¡ÂºÂ¡i mĂ¡ÂºÂ­t khĂ¡ÂºÂ©u cĂ¡Â»Â§a bĂ¡ÂºÂ¡n!',
         },
         {
             validator: (value) => value === document.querySelector("#password").value,
-            errorMessage: 'Mật khẩu không khớp!',
+            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u khÄ‚Â´ng khĂ¡Â»â€ºp!',
         },
         ])
         .addField('#terms', [{
             rule: 'required',
-            errorMessage: 'Bạn phải đồng ý với điều khoản và điều kiện!',
+            errorMessage: 'BĂ¡ÂºÂ¡n phĂ¡ÂºÂ£i Ă„â€˜Ă¡Â»â€œng Ä‚Â½ vĂ¡Â»â€ºi Ă„â€˜iĂ¡Â»Âu khoĂ¡ÂºÂ£n vÄ‚Â  Ă„â€˜iĂ¡Â»Âu kiĂ¡Â»â€¡n!',
         }])
         .onSuccess((event) => {
             const firstName = event.target.firstname.value;
@@ -1036,11 +988,11 @@ if (forgotPasswordForm) {
     validation
         .addField('#email', [{
             rule: 'required',
-            errorMessage: 'Vui lòng nhập email của bạn!',
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p email cĂ¡Â»Â§a bĂ¡ÂºÂ¡n!',
         },
         {
             rule: 'email',
-            errorMessage: 'Email không đúng định dạng!',
+            errorMessage: 'Email khÄ‚Â´ng Ă„â€˜Ä‚Âºng Ă„â€˜Ă¡Â»â€¹nh dĂ¡ÂºÂ¡ng!',
         },
         ])
         .onSuccess((event) => {
@@ -1100,7 +1052,7 @@ if (otpPasswordForm) {
 
             if (timeLeft <= 0) {
                 clearInterval(interval);
-                countdownEl.textContent = "Hết hạn";
+                countdownEl.textContent = "HĂ¡ÂºÂ¿t hĂ¡ÂºÂ¡n";
                 countdownBlock.classList.remove("warning");
                 otpPasswordForm.querySelector(".btn-gold").disabled = true;
             }
@@ -1118,7 +1070,7 @@ if (otpPasswordForm) {
     }
 
     otpInputs.forEach((input, index) => {
-        // chỉ cho nhập số + 1 ký tự
+        // chĂ¡Â»â€° cho nhĂ¡ÂºÂ­p sĂ¡Â»â€˜ + 1 kÄ‚Â½ tĂ¡Â»Â±
         input.addEventListener("input", () => {
             input.value = input.value.replace(/\D/g, "").slice(-1);
 
@@ -1129,7 +1081,7 @@ if (otpPasswordForm) {
             updateOTP();
         });
 
-        // backspace quay lại ô trước
+        // backspace quay lĂ¡ÂºÂ¡i Ä‚Â´ trĂ†Â°Ă¡Â»â€ºc
         input.addEventListener("keydown", (e) => {
             if (e.key === "Backspace" && !input.value && index > 0) {
                 otpInputs[index - 1].focus();
@@ -1153,7 +1105,7 @@ if (otpPasswordForm) {
         updateOTP();
     });
 
-    // focus ô đầu
+    // focus Ä‚Â´ Ă„â€˜Ă¡ÂºÂ§u
     otpInputs[0].focus();
 
     /* ================== VALIDATION ================== */
@@ -1162,11 +1114,11 @@ if (otpPasswordForm) {
         .addField('#otp', [
             {
                 rule: 'required',
-                errorMessage: 'Vui lòng nhập mã OTP!'
+                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p mÄ‚Â£ OTP!'
             },
             {
                 validator: (value) => /^\d{6}$/.test(value),
-                errorMessage: 'OTP phải đủ 6 chữ số!'
+                errorMessage: 'OTP phĂ¡ÂºÂ£i Ă„â€˜Ă¡Â»Â§ 6 chĂ¡Â»Â¯ sĂ¡Â»â€˜!'
             }
         ])
         .onSuccess((event) => {
@@ -1200,24 +1152,39 @@ const resetPasswordForm = document.querySelector("#resetPasswordForm");
 if (resetPasswordForm) {
     const validation = new JustValidate("#resetPasswordForm");
     validation
-        .addField('#newPassword', [
-            {
-                rule: 'required',
-                errorMessage: 'Vui lòng nhập mật khẩu mới!',
-            },
-            {
-                rule: 'password',
-                errorMessage: 'Mật khẩu không đúng định dạng!',
-            },
+        .addField('#newPassword', [{
+            rule: 'required',
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p mĂ¡ÂºÂ­t khĂ¡ÂºÂ©u!',
+        },
+        {
+            validator: (value) => value.length >= 8,
+            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t 8 kÄ‚Â½ tĂ¡Â»Â±!',
+        },
+        {
+            validator: (value) => /[A-Z]/.test(value),
+            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t chĂ¡Â»Â¯ cÄ‚Â¡i in hoa!',
+        },
+        {
+            validator: (value) => /[a-z]/.test(value),
+            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t chĂ¡Â»Â¯ cÄ‚Â¡i thĂ†Â°Ă¡Â»Âng!',
+        },
+        {
+            validator: (value) => /\d/.test(value),
+            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t chĂ¡Â»Â¯ sĂ¡Â»â€˜!',
+        },
+        {
+            validator: (value) => /[@$!%*?&]/.test(value),
+            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t kÄ‚Â½ tĂ¡Â»Â± Ă„â€˜Ă¡ÂºÂ·c biĂ¡Â»â€¡t!',
+        },
         ])
         .addField('#confirmPassword', [
             {
                 rule: 'required',
-                errorMessage: 'Vui lòng nhập lại mật khẩu mới!',
+                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p lĂ¡ÂºÂ¡i mĂ¡ÂºÂ­t khĂ¡ÂºÂ©u mĂ¡Â»â€ºi!',
             },
             {
                 validator: (value) => value === document.querySelector("#newPassword").value,
-                errorMessage: 'Mật khẩu không khớp!',
+                errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u khÄ‚Â´ng khĂ¡Â»â€ºp!',
             },
         ])
         .onSuccess((event) => {
@@ -1239,6 +1206,82 @@ if (resetPasswordForm) {
                 .then(data => {
                     if (data.code === "success") {
                         window.location.href = "/account/login";
+                    }
+                    if (data.code === "error") {
+                        window.location.reload();
+                    }
+                })
+                .catch(err => console.error(err));
+        });
+}
+const resetPassword = document.querySelector("#resetPassword");
+if (resetPassword) {
+    const validation = new JustValidate("#resetPassword");
+    validation
+        .addField('#currentPass', [
+            {
+                rule: 'required',
+                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p mĂ¡ÂºÂ­t khĂ¡ÂºÂ©u hiĂ¡Â»â€¡n tĂ¡ÂºÂ¡i!',
+            },
+            {
+                rule: 'password',
+                errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u khÄ‚Â´ng Ă„â€˜Ä‚Âºng Ă„â€˜Ă¡Â»â€¹nh dĂ¡ÂºÂ¡ng!',
+            },
+        ])
+        .addField('#newPass', [{
+            rule: 'required',
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p mĂ¡ÂºÂ­t khĂ¡ÂºÂ©u!',
+        },
+        {
+            validator: (value) => value.length >= 8,
+            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t 8 kÄ‚Â½ tĂ¡Â»Â±!',
+        },
+        {
+            validator: (value) => /[A-Z]/.test(value),
+            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t chĂ¡Â»Â¯ cÄ‚Â¡i in hoa!',
+        },
+        {
+            validator: (value) => /[a-z]/.test(value),
+            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t chĂ¡Â»Â¯ cÄ‚Â¡i thĂ†Â°Ă¡Â»Âng!',
+        },
+        {
+            validator: (value) => /\d/.test(value),
+            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t chĂ¡Â»Â¯ sĂ¡Â»â€˜!',
+        },
+        {
+            validator: (value) => /[@$!%*?&]/.test(value),
+            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t kÄ‚Â½ tĂ¡Â»Â± Ă„â€˜Ă¡ÂºÂ·c biĂ¡Â»â€¡t!',
+        },
+        ])
+        .addField('#confirmPass', [
+            {
+                rule: 'required',
+                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p lĂ¡ÂºÂ¡i mĂ¡ÂºÂ­t khĂ¡ÂºÂ©u mĂ¡Â»â€ºi!',
+            },
+            {
+                validator: (value) => value === document.querySelector("#confirmPass").value,
+                errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u khÄ‚Â´ng khĂ¡Â»â€ºp!',
+            },
+        ])
+        .onSuccess((event) => {
+            event.preventDefault();
+
+            const currentPass = event.target.currentPass.value;
+            const newPass = event.target.newPass.value;
+            const confirmPass = event.target.confirmPass.value;
+
+
+            fetch(`/account/setting/reset-password`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ currentPass, newPass }),
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.code === "success") {
+                        window.location.reload();
                     }
                     if (data.code === "error") {
                         window.location.reload();
@@ -1275,7 +1318,7 @@ if (googleLogin) {
                 }
             })
             .catch(err => {
-                console.error("Lỗi Google Login:", err);
+                console.error("LĂ¡Â»â€”i Google Login:", err);
             });
     };
 
@@ -1287,7 +1330,7 @@ if (categoryCreate) {
     validation
         .addField('#name', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập tên danh mục'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p tÄ‚Âªn danh mĂ¡Â»Â¥c'
         }])
         .onSuccess((event) => {
             event.preventDefault();
@@ -1331,49 +1374,49 @@ if (productCreate) {
     validation
         .addField('#name', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập tên sản phẩm'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p tÄ‚Âªn sĂ¡ÂºÂ£n phĂ¡ÂºÂ©m'
         }])
         .addField('#priceOLD', [{
             rule: "number",
-            errorMessage: 'Giá cũ phải là số'
+            errorMessage: 'GiÄ‚Â¡ cĂ…Â© phĂ¡ÂºÂ£i lÄ‚Â  sĂ¡Â»â€˜'
         }])
         .addField('#priceNEW', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập giá mới'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p giÄ‚Â¡ mĂ¡Â»â€ºi'
         }, {
             rule: "number",
-            errorMessage: 'Giá mới phải là số'
+            errorMessage: 'GiÄ‚Â¡ mĂ¡Â»â€ºi phĂ¡ÂºÂ£i lÄ‚Â  sĂ¡Â»â€˜'
         }])
         .addField('#stock', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập số lượng'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p sĂ¡Â»â€˜ lĂ†Â°Ă¡Â»Â£ng'
         }, {
             rule: "number",
-            errorMessage: 'Số lượng phải là số'
+            errorMessage: 'SĂ¡Â»â€˜ lĂ†Â°Ă¡Â»Â£ng phĂ¡ÂºÂ£i lÄ‚Â  sĂ¡Â»â€˜'
         }])
         .addField('#description', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập mô tả'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p mÄ‚Â´ tĂ¡ÂºÂ£'
         }])
         .addField('#material', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập chất liệu'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p chĂ¡ÂºÂ¥t liĂ¡Â»â€¡u'
         }])
         .addField('#made', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập xuất xứ'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p xuĂ¡ÂºÂ¥t xĂ¡Â»Â©'
         }])
         .addField('#size', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập kích thước'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p kÄ‚Â­ch thĂ†Â°Ă¡Â»â€ºc'
         }])
         .addField('#colorIndex', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập chỉ số màu'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p chĂ¡Â»â€° sĂ¡Â»â€˜ mÄ‚Â u'
         }])
         .addField('#power', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập công suất'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p cÄ‚Â´ng suĂ¡ÂºÂ¥t'
         }])
         .onSuccess((event) => {
             event.preventDefault();
@@ -1438,7 +1481,7 @@ if (productCreate) {
                     }
 
                     if (data.code == "success") {
-                        window.location.href = `/admin/products`;
+                        showPageAlert("ThÄ‚Âªm thÄ‚Â nh cÄ‚Â´ng", "success")
                     }
 
                 })
@@ -1451,34 +1494,34 @@ if (userCreate) {
     validation
         .addField('#firstname', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập tên'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p tÄ‚Âªn'
         }])
         .addField('#lastname', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập họ'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p hĂ¡Â»Â'
         }])
         .addField('#phone', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập số điện thoại'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p sĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i'
         }, {
             rule: "minLength",
             value: 10,
-            errorMessage: 'Số điện thoại phải có ít nhất 10 số'
+            errorMessage: 'SĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i phĂ¡ÂºÂ£i cÄ‚Â³ Ä‚Â­t nhĂ¡ÂºÂ¥t 10 sĂ¡Â»â€˜'
         }, {
             rule: "maxLength",
             value: 11,
-            errorMessage: 'Số điện thoại phải có nhiều nhất 11 số'
+            errorMessage: 'SĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i phĂ¡ÂºÂ£i cÄ‚Â³ nhiĂ¡Â»Âu nhĂ¡ÂºÂ¥t 11 sĂ¡Â»â€˜'
         }])
         .addField('#email', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập email'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p email'
         }, {
             rule: "email",
-            errorMessage: 'Email không đúng định dạng'
+            errorMessage: 'Email khÄ‚Â´ng Ă„â€˜Ä‚Âºng Ă„â€˜Ă¡Â»â€¹nh dĂ¡ÂºÂ¡ng'
         }])
         .addField('#password', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập mật khẩu'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p mĂ¡ÂºÂ­t khĂ¡ÂºÂ©u'
         }])
         .onSuccess((event) => {
             event.preventDefault();
@@ -1531,11 +1574,11 @@ if (roleCreate) {
     validation
         .addField('#name', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập tên vai trò'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p tÄ‚Âªn vai trÄ‚Â²'
         }])
         .addField('#description', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập mô tả'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p mÄ‚Â´ tĂ¡ÂºÂ£'
         }])
         .onSuccess((event) => {
             event.preventDefault();
@@ -1580,7 +1623,7 @@ if (categoryEdit) {
     validation
         .addField('#name', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập tên danh mục'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p tÄ‚Âªn danh mĂ¡Â»Â¥c'
         }])
         .onSuccess((event) => {
             event.preventDefault();
@@ -1627,21 +1670,21 @@ function closeConfirmModal() {
 }
 let deleteUrl = null;
 
-// mở confirm
+// mĂ¡Â»Å¸ confirm
 document.addEventListener("click", function (e) {
-    const btn = e.target.closest("[button-delete]"); // tìm nút gần nhất có button-delete
+    const btn = e.target.closest("[button-delete]"); // tÄ‚Â¬m nÄ‚Âºt gĂ¡ÂºÂ§n nhĂ¡ÂºÂ¥t cÄ‚Â³ button-delete
     if (!btn) return;
 
     deleteUrl = btn.getAttribute("data-url");
 
     document.getElementById("confirmModal").classList.add("open");
 });
-// DELETE CATEGORY
+// DELETE 
 document.getElementById("confirmYes")?.addEventListener("click", () => {
     if (!deleteUrl) return;
 
     fetch(deleteUrl, {
-        method: "PATCH" // hoặc DELETE tuỳ backend bạn
+        method: "PATCH" // hoĂ¡ÂºÂ·c DELETE tuĂ¡Â»Â³ backend bĂ¡ÂºÂ¡n
     })
         .then(res => res.json())
         .then(data => {
@@ -1649,10 +1692,12 @@ document.getElementById("confirmYes")?.addEventListener("click", () => {
                 closeConfirmModal();
                 window.location.reload();
             } else {
-                alert("Xoá thất bại");
+                alert("XoÄ‚Â¡ thĂ¡ÂºÂ¥t bĂ¡ÂºÂ¡i");
             }
         });
 });
+
+
 // Edit USER
 const userEdit = document.querySelector("#user-edit-form")
 if (userEdit) {
@@ -1660,19 +1705,19 @@ if (userEdit) {
     validation
         .addField('#firstname', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập họ'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p hĂ¡Â»Â'
         }])
         .addField('#lastname', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập tên'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p tÄ‚Âªn'
         }])
         .addField('#email', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập email'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p email'
         }])
         .addField('#phone', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập số điện thoại'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p sĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i'
         }])
         .onSuccess((event) => {
             event.preventDefault();
@@ -1698,11 +1743,11 @@ if (userEdit) {
 
             let avatar = null;
 
-            //  lấy ảnh từ filepond
+            //  lĂ¡ÂºÂ¥y Ă¡ÂºÂ£nh tĂ¡Â»Â« filepond
             if (avatars.length > 0 && avatars[0].file) {
                 avatar = avatars[0].file;
 
-                //  check nếu là ảnh cũ thì bỏ
+                //  check nĂ¡ÂºÂ¿u lÄ‚Â  Ă¡ÂºÂ£nh cĂ…Â© thÄ‚Â¬ bĂ¡Â»Â
                 const wrapper = avatarInput.closest("[image-default]");
                 const imageDefault = wrapper?.getAttribute("image-default");
 
@@ -1740,7 +1785,7 @@ if (productEdit) {
         try {
             const id = event.target._id?.value;
             if (!id) {
-                console.error("Không tìm thấy ID sản phẩm");
+                console.error("KhÄ‚Â´ng tÄ‚Â¬m thĂ¡ÂºÂ¥y ID sĂ¡ÂºÂ£n phĂ¡ÂºÂ©m");
                 return;
             }
 
@@ -1776,7 +1821,7 @@ if (productEdit) {
                 formData.append('category', catId);
             });
 
-            // Xử lý Avatar
+            // XĂ¡Â»Â­ lÄ‚Â½ Avatar
             const avatarPond = filePond.avatar;
             if (avatarPond) {
                 const avatars = avatarPond.getFiles();
@@ -1793,7 +1838,7 @@ if (productEdit) {
                 }
             }
 
-            // Xử lý Multi Images
+            // XĂ¡Â»Â­ lÄ‚Â½ Multi Images
             const imagesPond = filePondMulti.images;
             if (imagesPond) {
                 const files = imagesPond.getFiles();
@@ -1814,15 +1859,15 @@ if (productEdit) {
                         closeModal('editProductModal');
                         window.location.reload();
                     } else {
-                        alert("Cập nhật thất bại: " + (data.message || "Lỗi không xác định"));
+                        alert("CĂ¡ÂºÂ­p nhĂ¡ÂºÂ­t thĂ¡ÂºÂ¥t bĂ¡ÂºÂ¡i: " + (data.message || "LĂ¡Â»â€”i khÄ‚Â´ng xÄ‚Â¡c Ă„â€˜Ă¡Â»â€¹nh"));
                     }
                 })
                 .catch(err => {
-                    console.error("Lỗi Fetch:", err);
-                    alert("Có lỗi xảy ra khi kết nối với máy chủ.");
+                    console.error("LĂ¡Â»â€”i Fetch:", err);
+                    alert("CÄ‚Â³ lĂ¡Â»â€”i xĂ¡ÂºÂ£y ra khi kĂ¡ÂºÂ¿t nĂ¡Â»â€˜i vĂ¡Â»â€ºi mÄ‚Â¡y chĂ¡Â»Â§.");
                 });
         } catch (err) {
-            console.error("Lỗi thực thi script:", err);
+            console.error("LĂ¡Â»â€”i thĂ¡Â»Â±c thi script:", err);
         }
     })
 }
@@ -1833,11 +1878,11 @@ if (roleEdit) {
     validation
         .addField('#name', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập tên vai trò'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p tÄ‚Âªn vai trÄ‚Â²'
         }])
         .addField('#description', [{
             rule: "required",
-            errorMessage: 'Vui lòng nhập mô tả vai trò'
+            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p mÄ‚Â´ tĂ¡ÂºÂ£ vai trÄ‚Â²'
         }])
         .onSuccess((event) => {
             event.preventDefault();
@@ -1881,7 +1926,7 @@ const filterStatus = document.querySelector("[filter-status]");
 if (filterStatus) {
     const url = new URL(window.location.href);
 
-    // Lắng nghe thay đổi lựa chọn
+    // LĂ¡ÂºÂ¯ng nghe thay Ă„â€˜Ă¡Â»â€¢i lĂ¡Â»Â±a chĂ¡Â»Ân
     filterStatus.addEventListener("change", () => {
         const value = filterStatus.value;
         if (value) {
@@ -1893,7 +1938,7 @@ if (filterStatus) {
         window.location.href = url.href;
     })
 
-    // Hiển thị lựa chọn mặc định
+    // HiĂ¡Â»Æ’n thĂ¡Â»â€¹ lĂ¡Â»Â±a chĂ¡Â»Ân mĂ¡ÂºÂ·c Ă„â€˜Ă¡Â»â€¹nh
     const valueCurrent = url.searchParams.get("status");
     if (valueCurrent) {
         filterStatus.value = valueCurrent;
@@ -1904,7 +1949,7 @@ const search = document.querySelector("[search]");
 if (search) {
     const url = new URL(window.location.href);
 
-    // Lắng nghe phím đang gõ
+    // LĂ¡ÂºÂ¯ng nghe phÄ‚Â­m Ă„â€˜ang gÄ‚Âµ
     search.addEventListener("keyup", (event) => {
         if (event.code == "Enter") {
             const value = search.value;
@@ -1928,7 +1973,7 @@ const filterRole = document.querySelector("[filter-role]");
 if (filterRole) {
     const url = new URL(window.location.href);
 
-    // Lắng nghe thay đổi lựa chọn
+    // LĂ¡ÂºÂ¯ng nghe thay Ă„â€˜Ă¡Â»â€¢i lĂ¡Â»Â±a chĂ¡Â»Ân
     filterRole.addEventListener("change", () => {
         const value = filterRole.value;
         if (value) {
@@ -1940,7 +1985,7 @@ if (filterRole) {
         window.location.href = url.href;
     })
 
-    // Hiển thị lựa chọn mặc định
+    // HiĂ¡Â»Æ’n thĂ¡Â»â€¹ lĂ¡Â»Â±a chĂ¡Â»Ân mĂ¡ÂºÂ·c Ă„â€˜Ă¡Â»â€¹nh
     const valueCurrent = url.searchParams.get("role");
     if (valueCurrent) {
         filterRole.value = valueCurrent;
@@ -1967,7 +2012,7 @@ if (pagination) {
     const currentPage = parseInt(valueCurrent) || 1;
     const totalPages = parseInt(pagination.dataset.totalPages) || 1;
 
-    // Lắng nghe thay đổi lựa chọn (cho các nút số trang)
+    // LĂ¡ÂºÂ¯ng nghe thay Ă„â€˜Ă¡Â»â€¢i lĂ¡Â»Â±a chĂ¡Â»Ân (cho cÄ‚Â¡c nÄ‚Âºt sĂ¡Â»â€˜ trang)
     const pageButtons = pagination.querySelectorAll("[button-pagination]");
     pageButtons.forEach(button => {
         button.addEventListener("click", () => {
@@ -1979,7 +2024,7 @@ if (pagination) {
         });
     });
 
-    // Hiển thị lựa chọn mặc định
+    // HiĂ¡Â»Æ’n thĂ¡Â»â€¹ lĂ¡Â»Â±a chĂ¡Â»Ân mĂ¡ÂºÂ·c Ă„â€˜Ă¡Â»â€¹nh
     pagination.value = currentPage;
 
     if (prevButton) {
@@ -2019,7 +2064,7 @@ if (filterPrice) {
         window.location.href = url.href;
     })
 
-    // set lại value khi reload
+    // set lĂ¡ÂºÂ¡i value khi reload
     const valueCurrentMin = url.searchParams.get("priceMin");
     const valueCurrentMax = url.searchParams.get("priceMax");
     if (valueCurrentMin !== null && valueCurrentMax !== null) {
@@ -2027,8 +2072,8 @@ if (filterPrice) {
     }
 
 }
-// Filter Status
-const listStatus = document.querySelectorAll("[name='status']");
+// Filter Status (Radio Buttons Legacy)
+const listStatus = document.querySelectorAll("input[type='radio'][name='status']");
 if (listStatus.length > 0) {
     const url = new URL(window.location.href);
     listStatus.forEach(radio => {
@@ -2043,7 +2088,7 @@ if (listStatus.length > 0) {
         });
     });
 
-    // set lại value khi reload
+    // set lĂ¡ÂºÂ¡i value khi reload
     const statusCurrent = url.searchParams.get("status") || "";
     const activeRadio = document.querySelector(`[name='status'][value='${statusCurrent}']`);
     if (activeRadio) {
@@ -2070,47 +2115,61 @@ if (quantity) {
     })
 }
 const drawProductDetail = () => {
-    // lấy số lượng và giá tiền
+    // lĂ¡ÂºÂ¥y sĂ¡Â»â€˜ lĂ†Â°Ă¡Â»Â£ng vÄ‚Â  giÄ‚Â¡ tiĂ¡Â»Ân
     const quantity = parseInt(document.querySelector("#pdQty").innerHTML)
     const price = parseInt(document.querySelector("#pdPrice").innerHTML)
     const totalPrice = parseInt(quantity || 0) * parseInt(price || 0)
     document.querySelector("#pdTotalPrice").innerHTML = totalPrice.toLocaleString('vi-VN')
 }
 // ADD TO CART
-const btnAddToCart = document.querySelector(".btn-add-cart")
-if (btnAddToCart) {
-    btnAddToCart.addEventListener("click", () => {
-        const productId = btnAddToCart.getAttribute("product-id")
-        const quantity = parseInt(document.querySelector("#pdQty").innerHTML)
-        const priceText = document.querySelector(".pd-price-new").innerHTML;
-        const price = parseInt(
-            priceText.replace(/\./g, "").replace("₫", "").trim()
-        );
+const btnsAddToCart = document.querySelectorAll(".btn-add-cart")
+if (btnsAddToCart.length > 0) {
+    btnsAddToCart.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const productId = btn.getAttribute("product-id")
+            const qtyEl = document.querySelector("#pdQty");
+            const quantity = qtyEl ? parseInt(qtyEl.innerHTML) : 1;
 
+            const priceTextEl = document.querySelector(".pd-price-new");
+            const priceText = priceTextEl ? priceTextEl.innerHTML : "0";
+            const price = parseInt(
+                priceText.replace(/\./g, "").replace("Ă¢â€Â«", "").trim()
+            );
 
-        if (quantity > 0) {
-            const cartItem = {
-                productId,
-                quantity,
-                price,
-                totalPrice: quantity * price
-            }
-            const cart = localStorage.getItem("cart")
-            if (cart) {
-                const currentCart = JSON.parse(cart)
-                if (currentCart.find(item => item.productId === productId)) {
-                    currentCart.find(item => item.productId === productId).quantity += quantity
-                } else {
-                    currentCart.push(cartItem)
+            if (quantity > 0) {
+                const cartItem = {
+                    productId,
+                    quantity,
+                    price,
+                    totalPrice: quantity * price,
+                    checked: true
                 }
-                localStorage.setItem("cart", JSON.stringify(currentCart))
-                showPageAlert("Thêm vào giỏ hàng thành công!", "success");
-            } else {
-                localStorage.setItem("cart", JSON.stringify([cartItem]))
+                let currentCart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+                const existingItem = currentCart.find(item => item.productId === productId);
+                if (existingItem) {
+                    existingItem.quantity += quantity;
+                    existingItem.totalPrice = existingItem.quantity * existingItem.price;
+                } else {
+                    currentCart.push(cartItem);
+                }
+
+                localStorage.setItem("cart", JSON.stringify(currentCart));
+                showPageAlert("ThÄ‚Âªm vÄ‚Â o giĂ¡Â»Â hÄ‚Â ng thÄ‚Â nh cÄ‚Â´ng!", "success");
+
+                // CĂ¡ÂºÂ­p nhĂ¡ÂºÂ­t sĂ¡Â»â€˜ lĂ†Â°Ă¡Â»Â£ng mini cart
+                const miniCart = document.querySelector(".cart-count");
+                if (miniCart) {
+                    miniCart.innerHTML = currentCart.length;
+                }
+
+                // NĂ¡ÂºÂ¿u lÄ‚Â  nÄ‚Âºt "Mua ngay" (cÄ‚Â³ href="/cart"), chuyĂ¡Â»Æ’n hĂ†Â°Ă¡Â»â€ºng ngay
+                if (btn.getAttribute("href") === "/cart") {
+                    window.location.href = "/cart";
+                }
             }
-
-
-        }
+        })
     })
 }
 // Initial Cart
@@ -2118,7 +2177,7 @@ const cart = localStorage.getItem("cart")
 if (!cart) {
     cart = localStorage.setItem("cart", JSON.stringify([]))
 }
-console.log(cart)
+
 // Mini Cart
 const miniCart = document.querySelector(".cart-count")
 if (miniCart) {
@@ -2141,9 +2200,28 @@ const drawCart = () => {
         .then(response => response.json())
         .then(data => {
             if (data.code == "success") {
+                // Ă„ÂĂ¡ÂºÂ£m bĂ¡ÂºÂ£o tĂ¡ÂºÂ¥t cĂ¡ÂºÂ£ item Ă„â€˜Ă¡Â»Âu cÄ‚Â³ thuĂ¡Â»â„¢c tÄ‚Â­nh checked (mĂ¡ÂºÂ·c Ă„â€˜Ă¡Â»â€¹nh true)
+                const cartStorage = JSON.parse(localStorage.getItem("cart") || "[]");
+                let changed = false;
+                data.cart.forEach(item => {
+                    const storageItem = cartStorage.find(s => s.productId === item.productId);
+                    if (storageItem) {
+                        if (storageItem.checked === undefined) {
+                            storageItem.checked = true;
+                            changed = true;
+                        }
+                        item.checked = storageItem.checked;
+                    } else {
+                        item.checked = true;
+                    }
+                });
+                if (changed) {
+                    localStorage.setItem("cart", JSON.stringify(cartStorage));
+                }
+
                 const htmlCart = data.cart.map(item =>
                     `<div class="cart-row" data-price="${item.price}">
-                        <input type="checkbox" class="cart-item-check" value="${item.productId}" style="cursor:pointer; width:18px; height:18px;" checked>
+                        <input type="checkbox" ${item.checked ? "checked" : ""} class="cart-item-check" value="${item.productId}" style="cursor:pointer; width:18px; height:18px;" >
                         <div style="display:flex;align-items:center;gap:16px;">
                             <img
                                 class="cart-prod-img"
@@ -2160,20 +2238,20 @@ const drawCart = () => {
                         </div>
 
                         <div class="cart-qty" style="justify-content:center;">
-                            <button class="qty-btn-minus">−</button>
+                            <button class="qty-btn-minus">Ă¢Ë†â€™</button>
                             <span class="qty-val">${item.quantity}</span>
                             <button class="qty-btn-plus">+</button>
                         </div>
 
                         <div style="text-align:center;font-size:0.92rem;font-weight:700;color:var(--accent);">
-                            ${Number(item.price).toLocaleString('vi-VN')} ₫
+                            ${Number(item.price).toLocaleString('vi-VN')} Ă¢â€Â«
                         </div>
 
                         <div
                             class="line-total"
                             style="text-align:right;font-size:0.92rem;font-weight:800;color:var(--white);"
                         >
-                            ${Number(item.totalPrice).toLocaleString('vi-VN')} ₫
+                            ${Number(item.totalPrice).toLocaleString('vi-VN')} Ă¢â€Â«
                         </div>
 
                         <button
@@ -2181,7 +2259,7 @@ const drawCart = () => {
                             button-delete-cart
                             productId="${item.productId}"
                         >
-                            ✕
+                            Ă¢Å“â€¢
                         </button>
 
                     </div>`
@@ -2201,8 +2279,13 @@ const drawCart = () => {
                             cart.splice(indexItem, 1)
                             localStorage.setItem("cart", JSON.stringify(cart))
                             drawCart()
-                            showPageAlert("Xóa sản phẩm khỏi giỏ hàng thành công!", "success");
+                            showPageAlert("XÄ‚Â³a sĂ¡ÂºÂ£n phĂ¡ÂºÂ©m khĂ¡Â»Âi giĂ¡Â»Â hÄ‚Â ng thÄ‚Â nh cÄ‚Â´ng!", "success");
 
+                            // CĂ¡ÂºÂ­p nhĂ¡ÂºÂ­t sĂ¡Â»â€˜ lĂ†Â°Ă¡Â»Â£ng mini cart
+                            const miniCart = document.querySelector(".cart-count");
+                            if (miniCart) {
+                                miniCart.innerHTML = cart.length;
+                            }
                         })
                     })
 
@@ -2220,12 +2303,21 @@ const drawCart = () => {
                         const ship = 150000;
                         const subtotalEl = document.querySelector('.subtotal-val');
                         const totalEl = document.querySelector('.total-val');
-                        if (subtotalEl) subtotalEl.textContent = sub.toLocaleString('vi-VN') + ' ₫';
-                        if (totalEl) totalEl.textContent = (sub > 0 ? sub + ship : 0).toLocaleString('vi-VN') + ' ₫';
+                        if (subtotalEl) subtotalEl.textContent = sub.toLocaleString('vi-VN') + ' Ă¢â€Â«';
+                        if (totalEl) totalEl.textContent = (sub > 0 ? sub + ship : 0).toLocaleString('vi-VN') + ' Ă¢â€Â«';
                     };
 
                     cartList.querySelectorAll('.cart-item-check').forEach(checkbox => {
-                        checkbox.addEventListener('change', calculateTotal);
+                        checkbox.addEventListener('change', () => {
+                            const productId = checkbox.value;
+                            const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+                            const item = cart.find(p => p.productId === productId);
+                            if (item) {
+                                item.checked = checkbox.checked;
+                                localStorage.setItem("cart", JSON.stringify(cart));
+                            }
+                            calculateTotal();
+                        });
                         checkbox.addEventListener('change', () => {
                             const checkAll = document.querySelector('.cart-check-all');
                             if (checkAll) {
@@ -2239,26 +2331,33 @@ const drawCart = () => {
                     if (checkAll) {
                         checkAll.checked = true;
                         checkAll.addEventListener('change', (e) => {
+                            const isChecked = e.target.checked;
+                            const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
                             cartList.querySelectorAll('.cart-item-check').forEach(cb => {
-                                cb.checked = e.target.checked;
+                                cb.checked = isChecked;
+                                const item = cart.find(p => p.productId === cb.value);
+                                if (item) item.checked = isChecked;
                             });
+
+                            localStorage.setItem("cart", JSON.stringify(cart));
                             calculateTotal();
                         });
                     }
                     const btnCheckout = document.querySelector("#btn-checkout");
                     if (btnCheckout) {
                         btnCheckout.addEventListener("click", () => {
-                            const checkedProductIds = [  // lấy danh sách id các sản phẩm được check
+                            const checkedProductIds = [  // lĂ¡ÂºÂ¥y danh sÄ‚Â¡ch id cÄ‚Â¡c sĂ¡ÂºÂ£n phĂ¡ÂºÂ©m Ă„â€˜Ă†Â°Ă¡Â»Â£c check
                                 ...document.querySelectorAll(".cart-item-check:checked")
-                            ].map(item => item.value); // chuyển thành array
+                            ].map(item => item.value); // chuyĂ¡Â»Æ’n thÄ‚Â nh array
 
                             if (checkedProductIds.length === 0) {
-                                showPageAlert("Vui lòng chọn ít nhất một sản phẩm để thanh toán", "error");
+                                showPageAlert("Vui lÄ‚Â²ng chĂ¡Â»Ân Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t sĂ¡ÂºÂ£n phĂ¡ÂºÂ©m Ă„â€˜Ă¡Â»Æ’ thanh toÄ‚Â¡n", "error");
                                 return;
                             }
 
                             const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-                            const paymentData = cart.filter(item => checkedProductIds.includes(item.productId)); // tìm những id sản phẩm được check trong giỏ hàng
+                            const paymentData = cart.filter(item => checkedProductIds.includes(item.productId)); // tÄ‚Â¬m nhĂ¡Â»Â¯ng id sĂ¡ÂºÂ£n phĂ¡ÂºÂ©m Ă„â€˜Ă†Â°Ă¡Â»Â£c check trong giĂ¡Â»Â hÄ‚Â ng
 
                             localStorage.setItem("payment", JSON.stringify(paymentData));
                             window.location.href = "/cart/payment";
@@ -2272,13 +2371,13 @@ const drawCart = () => {
                             const unitPrice = parseInt(row.dataset.price || 0, 10);
                             const totalEl = row.querySelector('.line-total');
                             let qty = parseInt(qtyEl.textContent, 10);
-                            if (btn.textContent.trim() === '−') qty = Math.max(1, qty - 1);
+                            if (btn.textContent.trim() === 'Ă¢Ë†â€™') qty = Math.max(1, qty - 1);
                             else qty += 1;
                             qtyEl.textContent = qty;
 
                             const newTotalPrice = unitPrice * qty;
                             if (totalEl && unitPrice) {
-                                totalEl.textContent = newTotalPrice.toLocaleString('vi-VN') + ' ₫';
+                                totalEl.textContent = newTotalPrice.toLocaleString('vi-VN') + ' Ă¢â€Â«';
                             }
                             calculateTotal();
 
@@ -2313,7 +2412,7 @@ const drawPayment = () => {
     if (paymentList) {
         const paymentData = JSON.parse(localStorage.getItem("payment") || "[]");
         if (paymentData.length === 0) {
-            paymentList.innerHTML = "<p>Không có sản phẩm nào để thanh toán.</p>";
+            paymentList.innerHTML = "<p>KhÄ‚Â´ng cÄ‚Â³ sĂ¡ÂºÂ£n phĂ¡ÂºÂ©m nÄ‚Â o Ă„â€˜Ă¡Â»Æ’ thanh toÄ‚Â¡n.</p>";
             return;
         }
 
@@ -2336,51 +2435,756 @@ const drawPayment = () => {
                                 style="width:56px;height:56px;border-radius:10px;object-fit:cover;flex-shrink:0;"
                             >
                             <div style="flex:1;">
-                                <p style="font-size:0.85rem;font-weight:700;margin-bottom:2px;color:var(--white);">
+                                <p style="font-size:0.85rem;font-weight:700;margin-bottom:2px;color:var(--white);" class="nameProduct">
                                     ${item.name}
                                 </p>
                                 <p style="font-size:0.78rem;color:var(--text-light);">
-                                    Số Lượng : ${item.quantity}
+                                    SĂ¡Â»â€˜ LĂ†Â°Ă¡Â»Â£ng : ${item.quantity}
                                 </p>
                             </div>
                             <span style="font-size:0.88rem;font-weight:800;color:var(--accent);white-space:nowrap;">
-                                ${Number(item.totalPrice).toLocaleString('vi-VN')} ₫
+                                ${Number(item.totalPrice).toLocaleString('vi-VN')} Ă¢â€Â«
                             </span>
                         </div>
                         `
                     );
                     paymentList.innerHTML = htmlPayment.join("");
 
-                    // Tính lại tổng tiền
+                    // TÄ‚Â­nh lĂ¡ÂºÂ¡i tĂ¡Â»â€¢ng tiĂ¡Â»Ân
                     let subTotal = 0;
                     data.ProductPayment.forEach(item => {
                         subTotal += item.totalPrice;
                     });
-                    const ship = 150000;
+                    const ship = 0;
 
                     // Update UI (Assuming you have class payment-subtotal and payment-total in payment.pug)
                     const subtotalEl = document.querySelector('.payment-subtotal');
                     const totalEl = document.querySelector('.payment-total');
-                    if (subtotalEl) subtotalEl.textContent = subTotal.toLocaleString('vi-VN') + ' ₫';
-                    if (totalEl) totalEl.textContent = (subTotal > 0 ? subTotal + ship : 0).toLocaleString('vi-VN') + ' ₫';
+                    if (subtotalEl) subtotalEl.textContent = subTotal.toLocaleString('vi-VN') + ' Ă¢â€Â«';
+                    if (totalEl) totalEl.textContent = (subTotal > 0 ? subTotal + ship : 0).toLocaleString('vi-VN') + ' Ă¢â€Â«';
                 }
             });
     }
 };
 drawPayment();
 
-// Bật tắt thông tin chuyển khoản ngân hàng
-const paymentRadios = document.querySelectorAll('input[name="payment"]');
-const bankInfo = document.getElementById('bank-transfer-info');
-if (paymentRadios.length > 0 && bankInfo) {
-    paymentRadios.forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            if (e.target.value === 'bank') {
-                bankInfo.style.display = 'block';
-            } else {
-                bankInfo.style.display = 'none';
+
+// BiĂ¡Â»Æ’u Ă„â€˜Ă¡Â»â€œ doanh thu
+const revenueChart = document.querySelector("#revenue-chart");
+if (revenueChart) {
+    let chart = null;
+    const drawChart = (date) => {
+        // LĂ¡ÂºÂ¥y thÄ‚Â¡ng vÄ‚Â  nĂ„Æ’m hiĂ¡Â»â€¡n tĂ¡ÂºÂ¡i
+        const currentMonth = date.getMonth() + 1; // getMonth() trĂ¡ÂºÂ£ vĂ¡Â»Â giÄ‚Â¡ trĂ¡Â»â€¹ tĂ¡Â»Â« 0 Ă„â€˜Ă¡ÂºÂ¿n 11, nÄ‚Âªn cĂ¡ÂºÂ§n +1
+        const currentYear = date.getFullYear();
+
+        // TĂ¡ÂºÂ¡o mĂ¡Â»â„¢t Ă„â€˜Ă¡Â»â€˜i tĂ†Â°Ă¡Â»Â£ng Date mĂ¡Â»â€ºi cho thÄ‚Â¡ng trĂ†Â°Ă¡Â»â€ºc
+        // NĂ¡ÂºÂ¿u hiĂ¡Â»â€¡n tĂ¡ÂºÂ¡i lÄ‚Â  thÄ‚Â¡ng 1 thÄ‚Â¬ new Date(currentYear, 0 - 1, 1) sĂ¡ÂºÂ½ tĂ¡Â»Â± Ă„â€˜Ă¡Â»â„¢ng chuyĂ¡Â»Æ’n thÄ‚Â nh thÄ‚Â¡ng 12 cĂ¡Â»Â§a nĂ„Æ’m trĂ†Â°Ă¡Â»â€ºc.
+        const previousMonthDate = new Date(currentYear, date.getMonth() - 1, 1);
+
+        // LĂ¡ÂºÂ¥y thÄ‚Â¡ng vÄ‚Â  nĂ„Æ’m tĂ¡Â»Â« Ă„â€˜Ă¡Â»â€˜i tĂ†Â°Ă¡Â»Â£ng previousMonthDate
+        const previousMonth = previousMonthDate.getMonth() + 1;
+        const previousYear = previousMonthDate.getFullYear();
+
+        // LĂ¡ÂºÂ¥y ra tĂ¡Â»â€¢ng sĂ¡Â»â€˜ ngÄ‚Â y
+        const daysInMonthCurrent = new Date(currentYear, currentMonth, 0).getDate();
+        const daysInMonthPrevious = new Date(previousYear, previousMonth, 0).getDate();
+        const days = daysInMonthCurrent > daysInMonthPrevious ? daysInMonthCurrent : daysInMonthPrevious;
+        const arrayDay = [];
+        for (let i = 1; i <= days; i++) {
+            arrayDay.push(i);
+        }
+
+        const dataFinal = {
+            currentMonth: currentMonth,
+            currentYear: currentYear,
+            previousMonth: previousMonth,
+            previousYear: previousYear,
+            arrayDay: arrayDay
+        };
+
+        fetch(`/admin/dashboard/revenue-chart`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(dataFinal),
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.code == "error") {
+                    alert(data.message);
+                }
+
+                if (data.code == "success") {
+                    if (chart) {
+                        chart.destroy();
+                    }
+                    chart = new Chart(revenueChart, {
+                        type: 'line',
+                        data: {
+                            labels: arrayDay,
+                            datasets: [
+                                {
+                                    label: `ThÄ‚Â¡ng ${currentMonth}/${currentYear}`, // NhÄ‚Â£n cĂ¡Â»Â§a dataset
+                                    data: data.dataMonthCurrent, // DĂ¡Â»Â¯ liĂ¡Â»â€¡u
+                                    borderColor: '#4379EE', // MÄ‚Â u viĂ¡Â»Ân
+                                    borderWidth: 1.5, // Ă„ÂĂ¡Â»â„¢ dÄ‚Â y cĂ¡Â»Â§a Ă„â€˜Ă†Â°Ă¡Â»Âng
+                                },
+                                {
+                                    label: `ThÄ‚Â¡ng ${previousMonth}/${previousYear}`, // NhÄ‚Â£n cĂ¡Â»Â§a dataset
+                                    data: data.dataMonthPrevious, // DĂ¡Â»Â¯ liĂ¡Â»â€¡u
+                                    borderColor: '#EF3826', // MÄ‚Â u viĂ¡Â»Ân
+                                    borderWidth: 1.5, // Ă„ÂĂ¡Â»â„¢ dÄ‚Â y cĂ¡Â»Â§a Ă„â€˜Ă†Â°Ă¡Â»Âng
+                                }
+                            ]
+                        },
+                        options: {
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'NgÄ‚Â y'
+                                    }
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: 'Doanh thu (VND)'
+                                    }
+                                }
+                            },
+                            maintainAspectRatio: false, // KhÄ‚Â´ng giĂ¡Â»Â¯ tĂ¡Â»Â· lĂ¡Â»â€¡ khung hÄ‚Â¬nh mĂ¡ÂºÂ·c Ă„â€˜Ă¡Â»â€¹nh
+                        }
+                    });
+                }
+            })
+    }
+
+    // LĂ¡ÂºÂ¥y ngÄ‚Â y hiĂ¡Â»â€¡n tĂ¡ÂºÂ¡i
+    const now = new Date();
+    drawChart(now);
+
+    const inputMonth = document.querySelector(".chart-head input[type='month']");
+    inputMonth.addEventListener("change", () => {
+        const value = inputMonth.value;
+        drawChart(new Date(value));
+    })
+}
+// HĂ¡ÂºÂ¿t BiĂ¡Â»Æ’u Ă„â€˜Ă¡Â»â€œ doanh thu
+// Order Form
+const orderForm = document.querySelector("#order-form");
+if (orderForm) {
+    const validation = new JustValidate("#order-form");
+    validation
+        .addField('#firstName', [
+            {
+                rule: 'required',
+                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p hĂ¡Â»Â tÄ‚Âªn!'
+            },
+            {
+                rule: 'minLength',
+                value: 4,
+                errorMessage: 'HĂ¡Â»Â tÄ‚Âªn phĂ¡ÂºÂ£i cÄ‚Â³ Ä‚Â­t nhĂ¡ÂºÂ¥t 4 kÄ‚Â½ tĂ¡Â»Â±!',
+            },
+            {
+                rule: 'maxLength',
+                value: 50,
+                errorMessage: 'HĂ¡Â»Â tÄ‚Âªn khÄ‚Â´ng Ă„â€˜Ă†Â°Ă¡Â»Â£c vĂ†Â°Ă¡Â»Â£t quÄ‚Â¡ 50 kÄ‚Â½ tĂ¡Â»Â±!',
+            },
+        ])
+        .addField('#lastName', [
+            {
+                rule: 'required',
+                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p hĂ¡Â»Â tÄ‚Âªn!'
+            },
+            {
+                rule: 'minLength',
+                value: 5,
+                errorMessage: 'HĂ¡Â»Â tÄ‚Âªn phĂ¡ÂºÂ£i cÄ‚Â³ Ä‚Â­t nhĂ¡ÂºÂ¥t 5 kÄ‚Â½ tĂ¡Â»Â±!',
+            },
+            {
+                rule: 'maxLength',
+                value: 50,
+                errorMessage: 'HĂ¡Â»Â tÄ‚Âªn khÄ‚Â´ng Ă„â€˜Ă†Â°Ă¡Â»Â£c vĂ†Â°Ă¡Â»Â£t quÄ‚Â¡ 50 kÄ‚Â½ tĂ¡Â»Â±!',
+            },
+        ])
+        .addField('#email', [
+            {
+                rule: 'required',
+                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p email!'
+            },
+            {
+                rule: 'email',
+                errorMessage: 'Email khÄ‚Â´ng Ă„â€˜Ä‚Âºng Ă„â€˜Ă¡Â»â€¹nh dĂ¡ÂºÂ¡ng!',
+            },
+        ])
+        .addField('#phone', [
+            {
+                rule: 'required',
+                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p sĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i!'
+            },
+            {
+                rule: 'customRegexp',
+                value: /(84|0[3|5|7|8|9])+([0-9]{8})\b/g,
+                errorMessage: 'SĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i khÄ‚Â´ng Ă„â€˜Ä‚Âºng Ă„â€˜Ă¡Â»â€¹nh dĂ¡ÂºÂ¡ng!'
+            },
+        ])
+        .addField('#address', [
+            {
+                rule: 'required',
+                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p Ă„â€˜Ă¡Â»â€¹a chĂ¡Â»â€°!'
+            },
+            {
+                rule: 'minLength',
+                value: 5,
+                errorMessage: 'Ă„ÂĂ¡Â»â€¹a chĂ¡Â»â€° phĂ¡ÂºÂ£i cÄ‚Â³ Ä‚Â­t nhĂ¡ÂºÂ¥t 5 kÄ‚Â½ tĂ¡Â»Â±!',
+            },
+            {
+                rule: 'maxLength',
+                value: 100,
+                errorMessage: 'Ă„ÂĂ¡Â»â€¹a chĂ¡Â»â€° khÄ‚Â´ng Ă„â€˜Ă†Â°Ă¡Â»Â£c vĂ†Â°Ă¡Â»Â£t quÄ‚Â¡ 100 kÄ‚Â½ tĂ¡Â»Â±!',
+            },
+        ])
+
+
+        .onSuccess((event) => {
+            event.preventDefault();
+            const submitBtn = document.querySelector("#submit-order");
+
+            // chĂ¡ÂºÂ·n spam
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = "Ă„Âang xĂ¡Â»Â­ lÄ‚Â½...";
+            const firstName = event.target.firstName.value;
+            const lastName = event.target.lastName.value;
+            const email = event.target.email.value;
+            const phone = event.target.phone.value;
+            const address = event.target.address.value;
+            const note = event.target.note.value;
+            const method = document.querySelector('input[name="method"]:checked').value;
+
+            let paymentCart = JSON.parse(localStorage.getItem("payment"));
+
+            if (paymentCart && paymentCart.length > 0) {
+                const dataFinal = {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    phone: phone,
+                    address: address,
+                    note: note,
+                    items: paymentCart,
+                    method: method,
+                };
+
+                if (method !== "bank") {
+                    fetch("/cart/order", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(dataFinal),
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.code == "error") {
+                                submitBtn.disabled = false;
+                                submitBtn.innerHTML = "Ä‘Å¸â€â€™ Ă„ÂĂ¡ÂºÂ·t hÄ‚Â ng ngay";
+                                window.location.reload();
+
+                            }
+                            if (data.code == "success") {
+                                submitBtn.disabled = true;
+                                submitBtn.innerHTML = "Ă„ÂĂ¡ÂºÂ·t hÄ‚Â ng thÄ‚Â nh cÄ‚Â´ng";
+
+                                showPageAlert("Ă„ÂĂ¡ÂºÂ·t hÄ‚Â ng thÄ‚Â nh cÄ‚Â´ng!", "success");
+
+                                // CĂ¡ÂºÂ­p nhĂ¡ÂºÂ­t lĂ¡ÂºÂ¡i giĂ¡Â»Â hÄ‚Â ng chÄ‚Â­nh
+                                let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+                                cart = cart.filter(item => item.checked == false);
+                                localStorage.setItem("cart", JSON.stringify(cart));
+
+                                // XÄ‚Â³a dĂ¡Â»Â¯ liĂ¡Â»â€¡u thanh toÄ‚Â¡n tĂ¡ÂºÂ¡m thĂ¡Â»Âi
+                                localStorage.removeItem("payment");
+
+                                // CĂ¡ÂºÂ­p nhĂ¡ÂºÂ­t sĂ¡Â»â€˜ lĂ†Â°Ă¡Â»Â£ng mini cart
+                                const miniCart = document.querySelector(".cart-count");
+                                if (miniCart) {
+                                    miniCart.innerHTML = cart.length;
+                                }
+
+                            }
+                        })
+                }
+                else if (method == "bank") {
+                    const myBank = {
+                        BANK_ID: "MB",
+                        ACCOUNT_NO: "0522115385"
+                    }
+                    // BĂ¡ÂºÂ­t tĂ¡ÂºÂ¯t thÄ‚Â´ng tin chuyĂ¡Â»Æ’n khoĂ¡ÂºÂ£n ngÄ‚Â¢n hÄ‚Â ng
+                    const paymentRadios = document.querySelectorAll('input[name="method"]');
+                    const bankInfo = document.getElementById('bank-transfer-info');
+                    let isSuccess = false
+                    const transferCode = Date.now();
+                    const totalEl = document.querySelector(".payment-total");
+                    const pricePayment = totalEl ? totalEl.textContent.replace(/[^\d]/g, "") : "0";
+
+                    if (paymentRadios.length > 0 && bankInfo) {
+                        const updateBankInfo = () => {
+                            if (!totalEl) return;
+
+                            const qrUrl = `https://img.vietqr.io/image/${myBank.BANK_ID}-${myBank.ACCOUNT_NO}-compact.png?amount=${pricePayment}&addInfo=${transferCode}`;
+
+                            const bankHtml = `
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap;">
+                <div style="flex:1; min-width:200px;">
+                    <p style="margin-bottom:8px; color:var(--text-light); font-size:0.85rem;">
+                        TÄ‚Âªn chĂ¡Â»Â§ tÄ‚Â i khoĂ¡ÂºÂ£n:
+                        <strong style="color:var(--white);">VU MANH QUYNH</strong>
+                    </p>
+                    <p style="margin-bottom:8px; color:var(--text-light); font-size:0.85rem;">
+                        SĂ¡Â»â€˜ tÄ‚Â i khoĂ¡ÂºÂ£n:
+                        <strong style="color:var(--white); font-size:1.1rem;">0522115385</strong>
+                    </p>
+                    <p style="margin-bottom:8px; color:var(--text-light); font-size:0.85rem;">
+                        NgÄ‚Â¢n hÄ‚Â ng:
+                        <strong style="color:var(--white);">MB Bank</strong>
+                    </p>
+                    <p style="margin-bottom:0; color:var(--text-light); font-size:0.85rem;">
+                        SĂ¡Â»â€˜ tiĂ¡Â»Ân thanh toÄ‚Â¡n:
+                        <strong style="color:var(--accent); font-size:1rem;">${Number(pricePayment).toLocaleString("vi-VN")} Ă¢â€Â«</strong>
+                    </p>
+                    <p style="margin-bottom:0; color:var(--text-light); font-size:0.85rem;">
+                        NĂ¡Â»â„¢i dung chuyĂ¡Â»Æ’n khoĂ¡ÂºÂ£n: 
+                        <strong class ="content" style="color:var(--accent); font-size:1rem;">  ${transferCode}</strong>
+                    </p>
+                </div>
+                <div style="text-align:center;">
+                    <img src="${qrUrl}" alt="QR Code" style="width:100%; height:auto; border-radius:8px; border:2px solid var(--border); background:#fff; padding:4px;">
+                    <p style="font-size:0.75rem; color:var(--text-light); margin-top:6px; margin-bottom:0;">
+                        QuÄ‚Â©t mÄ‚Â£ thanh toÄ‚Â¡n
+                    </p>
+                </div>
+            </div>
+        
+        `;
+
+                            bankInfo.innerHTML = bankHtml;
+                        };
+
+
+
+                        // TrĂ¡ÂºÂ¡ng thÄ‚Â¡i ban Ă„â€˜Ă¡ÂºÂ§u
+                        const initialChecked = document.querySelector('input[name="method"]:checked');
+                        if (initialChecked && initialChecked.value === 'bank') {
+                            updateBankInfo();
+                            bankInfo.style.display = "block";
+                        }
+                        const interval = setInterval(async () => {
+
+                            const isPaid = await CheckPaid(
+                                pricePayment,
+                                transferCode
+                            );
+
+                            if (isPaid && !isSuccess) {
+                                isSuccess = true;
+                                clearInterval(interval);
+
+                                // CHĂ¡Â»Ë† KHI THANH TOÄ‚ÂN THÄ‚â‚¬NH CÄ‚â€NG
+                                // mĂ¡Â»â€ºi tĂ¡ÂºÂ¡o order
+
+                                fetch("/cart/order", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                    },
+                                    body: JSON.stringify({
+                                        ...dataFinal,
+                                        transferCode,
+                                        status: "paid"
+                                    }),
+                                })
+                                    .then(res => res.json())
+                                    .then(data => {
+
+                                        if (data.code == "success") {
+                                            submitBtn.disabled = true;
+                                            submitBtn.innerHTML = "Thanh toÄ‚Â¡n thÄ‚Â nh cÄ‚Â´ng";
+                                            showPageAlert(
+                                                "Thanh toÄ‚Â¡n thÄ‚Â nh cÄ‚Â´ng! Xem trĂ¡ÂºÂ¡ng thÄ‚Â¡i Ă„â€˜Ă†Â¡n hÄ‚Â ng Ă¡Â»Å¸ lĂ¡Â»â€¹ch sĂ¡Â»Â­ Ă„â€˜Ă†Â¡n hÄ‚Â ng",
+                                                "success"
+                                            );
+
+                                            let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+                                            cart = cart.filter(item => item.checked == false);
+                                            localStorage.setItem("cart", JSON.stringify(cart));
+
+                                            // XÄ‚Â³a dĂ¡Â»Â¯ liĂ¡Â»â€¡u thanh toÄ‚Â¡n tĂ¡ÂºÂ¡m thĂ¡Â»Âi
+                                            localStorage.removeItem("payment");
+
+                                            // CĂ¡ÂºÂ­p nhĂ¡ÂºÂ­t sĂ¡Â»â€˜ lĂ†Â°Ă¡Â»Â£ng mini cart
+                                            const miniCart = document.querySelector(".cart-count");
+                                            if (miniCart) {
+                                                miniCart.innerHTML = cart.length;
+                                            }
+
+
+                                        }
+
+                                    });
+
+                            }
+
+                        }, 1000);
+
+                    }
+                }
             }
         });
-    });
 }
 
+
+
+// Filter Category
+const filterCategory = document.querySelectorAll(".space-tag");
+
+if (filterCategory.length > 0) {
+
+    // LĂ¡ÂºÂ¥y category hiĂ¡Â»â€¡n tĂ¡ÂºÂ¡i trÄ‚Âªn URL
+    const currentCategories =
+        new URLSearchParams(window.location.search)
+            .get("category");
+
+    let selectedCategories = [];
+
+    if (currentCategories) {
+        selectedCategories = currentCategories.split(",");
+    }
+
+    // Active khi reload
+    filterCategory.forEach(tag => {
+
+        const category = tag.dataset.category;
+
+        if (selectedCategories.includes(category)) {
+            tag.classList.add("active");
+        }
+
+        tag.addEventListener("click", () => {
+
+            tag.classList.toggle("active");
+
+            const activeTags =
+                document.querySelectorAll(".space-tag.active");
+
+            const categories = [...activeTags].map(item => {
+                return item.dataset.category;
+            });
+
+            const url = new URL(window.location.href);
+
+            if (categories.length > 0) {
+
+                url.searchParams.set(
+                    "category",
+                    categories.join(",")
+                );
+
+            } else {
+
+                url.searchParams.delete("category");
+
+            }
+
+            window.location.href = url.href;
+
+        });
+
+    });
+
+}
+//  Contact
+const contact = document.querySelector("#contact-form");
+if (contact) {
+    const validation = new JustValidate("#contact-form");
+    validation
+        .addField('#name', [
+            {
+                rule: 'required',
+                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p hĂ¡Â»Â tÄ‚Âªn!'
+            },
+            {
+                rule: 'minLength',
+                value: 2,
+                errorMessage: 'HĂ¡Â»Â tÄ‚Âªn phĂ¡ÂºÂ£i cÄ‚Â³ Ä‚Â­t nhĂ¡ÂºÂ¥t 5 kÄ‚Â½ tĂ¡Â»Â±!',
+            },
+            {
+                rule: 'maxLength',
+                value: 50,
+                errorMessage: 'HĂ¡Â»Â tÄ‚Âªn khÄ‚Â´ng Ă„â€˜Ă†Â°Ă¡Â»Â£c vĂ†Â°Ă¡Â»Â£t quÄ‚Â¡ 50 kÄ‚Â½ tĂ¡Â»Â±!',
+            },
+        ])
+        .addField('#email', [
+            {
+                rule: 'required',
+                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p email!'
+            },
+            {
+                rule: 'email',
+                errorMessage: 'Email khÄ‚Â´ng Ă„â€˜Ä‚Âºng Ă„â€˜Ă¡Â»â€¹nh dĂ¡ÂºÂ¡ng!',
+            },
+        ])
+        .addField('#phone', [
+            {
+                rule: 'required',
+                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p sĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i!'
+            },
+            {
+                rule: 'customRegexp',
+                value: /(84|0[3|5|7|8|9])+([0-9]{8})\b/g,
+                errorMessage: 'SĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i khÄ‚Â´ng Ă„â€˜Ä‚Âºng Ă„â€˜Ă¡Â»â€¹nh dĂ¡ÂºÂ¡ng!'
+            },
+        ])
+
+
+
+        .onSuccess((event) => {
+            event.preventDefault();
+            const submitBtn = document.querySelector(".submit-contact");
+
+            // chĂ¡ÂºÂ·n spam
+
+            submitBtn.innerHTML = "Ă„Âang xĂ¡Â»Â­ lÄ‚Â½...";
+            const name = event.target.name.value;
+            const email = event.target.email.value;
+            const phone = event.target.phone.value;
+
+            const note = event.target.note.value;
+            const option = event.target.option.value;
+
+
+
+            const dataFinal = {
+                name: name,
+                email: email,
+                phone: phone,
+                note: note,
+                option: option,
+
+            };
+            fetch("/contact/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(dataFinal),
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.code == "error") {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = "Ä‘Å¸â€â€™ GĂ¡Â»Â­i";
+
+
+                    }
+                    if (data.code == "success") {
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = "GĂ¡Â»Â­i thÄ‚Â nh cÄ‚Â´ng";
+                        showPageAlert("GĂ¡Â»Â­i thÄ‚Â nh cÄ‚Â´ng! ChÄ‚Âºng tÄ‚Â´i sĂ¡ÂºÂ½ liÄ‚Âªn hĂ¡Â»â€¡ lĂ¡ÂºÂ¡i sĂ¡Â»â€ºm nhĂ¡ÂºÂ¥t cÄ‚Â³ thĂ¡Â»Æ’.", "success");
+
+
+                    }
+                })
+        })
+}
+
+
+async function CheckPaid(pricePayment, transferCode) {
+    try {
+        const response = await fetch("https://script.google.com/macros/s/AKfycbxsVeo16PF7qaRl_cHF5s3VhU6EuyjFX5mbBo8_f9aywxOZeQSWh7vInld1SQ0nEgFl/exec");
+        const json = await response.json();
+
+        // Google Apps Script thĂ†Â°Ă¡Â»Âng trĂ¡ÂºÂ£ vĂ¡Â»Â { data: [...] } hoĂ¡ÂºÂ·c trĂ¡Â»Â±c tiĂ¡ÂºÂ¿p [...]
+        const data = json.data || json;
+
+        if (!Array.isArray(data) || data.length === 0) {
+            return false;
+        }
+
+        const lastPaid = data[data.length - 1];
+        if (!lastPaid) return false;
+
+        const lastPrice = lastPaid["GiÄ‚Â¡ trĂ¡Â»â€¹"];
+        const lastContent = lastPaid["MÄ‚Â´ tĂ¡ÂºÂ£"];
+
+        if (
+            lastPrice >= pricePayment &&
+            String(lastContent).includes(transferCode)
+        ) {
+            return true;
+        }
+
+        return false;
+
+    } catch (error) {
+        console.log("LĂ¡Â»â€”i kiĂ¡Â»Æ’m tra thanh toÄ‚Â¡n:", error);
+        return false;
+    }
+}
+const paymentRadios = document.querySelectorAll(
+    'input[name="method"]'
+);
+
+paymentRadios.forEach(radio => {
+
+    radio.addEventListener("change", () => {
+
+        paymentRadios.forEach(item => {
+
+            const label = item.closest("label");
+
+            if (!label) return;
+
+            // active
+            if (item.checked) {
+                label.style.borderColor =
+                    "var(--accent)";
+                label.style.background =
+                    "rgba(212,175,55,0.05)";
+                label.style.borderRadius =
+                    "var(--radius-md)";
+
+                label.style.transform =
+                    "translateY(-2px)";
+
+                label.style.boxShadow =
+                    "0 4px 12px rgba(212,175,55,0.15)";
+
+            }
+
+            // normal
+            else {
+
+                label.style.borderColor =
+                    "var(--border)";
+
+                label.style.background =
+                    "transparent";
+
+                label.style.transform =
+                    "translateY(0px)";
+
+                label.style.boxShadow =
+                    "none";
+
+            }
+
+        });
+
+    });
+
+});
+// ========== AI CHAT LOGIC ==========
+const initAiChat = () => {
+    const aiChatToggle = document.getElementById('aiChatToggle');
+    const aiChatWindow = document.getElementById('aiChatWindow');
+    const closeChat = document.getElementById('closeChat');
+    const aiChatInput = document.getElementById('aiChatInput');
+    const aiChatSend = document.getElementById('aiChatSend');
+    const aiChatMessages = document.getElementById('aiChatMessages');
+
+    if (aiChatToggle && aiChatWindow) {
+        // Xóa listener cũ nếu có (để tránh lặp)
+        aiChatToggle.onclick = null; 
+        aiChatToggle.addEventListener('click', () => {
+            aiChatWindow.classList.toggle('active');
+        });
+
+        if (closeChat) {
+            closeChat.addEventListener('click', () => {
+                aiChatWindow.classList.remove('active');
+            });
+        }
+
+        const sendMessage = async () => {
+            const text = aiChatInput.value.trim();
+            if (!text) return;
+
+            const userMsg = document.createElement('div');
+            userMsg.className = 'chat-msg user';
+            userMsg.textContent = text;
+            aiChatMessages.appendChild(userMsg);
+            
+            aiChatInput.value = '';
+            aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+
+            const loadingMsg = document.createElement('div');
+            loadingMsg.className = 'chat-msg ai loading';
+            loadingMsg.textContent = "AI đang suy nghĩ...";
+            aiChatMessages.appendChild(loadingMsg);
+            aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+
+            const isAdmin = window.location.pathname.startsWith('/admin');
+            const endpoint = isAdmin ? "/admin/chat" : "/chat";
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: text })
+                });
+                const data = await response.json();
+                
+                if (aiChatMessages.contains(loadingMsg)) {
+                    aiChatMessages.removeChild(loadingMsg);
+                }
+
+                if (data.code === "success") {
+                    const aiMsg = document.createElement('div');
+                    aiMsg.className = 'chat-msg ai';
+                    aiMsg.innerHTML = data.message
+                        .replace(/\*\*(.*?)\*\*/g, '<strong></strong>')
+                        .replace(/\*(.*?)\*/g, '<em></em>')
+                        .replace(/\n/g, '<br>');
+                    aiChatMessages.appendChild(aiMsg);
+                } else {
+                    const errorMsg = document.createElement('div');
+                    errorMsg.className = 'chat-msg ai error';
+                    errorMsg.textContent = data.message || "Lỗi hệ thống.";
+                    aiChatMessages.appendChild(errorMsg);
+                }
+            } catch (error) {
+                if (aiChatMessages.contains(loadingMsg)) {
+                    aiChatMessages.removeChild(loadingMsg);
+                }
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'chat-msg ai error';
+                errorMsg.textContent = "Lỗi kết nối.";
+                aiChatMessages.appendChild(errorMsg);
+            }
+            aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+        };
+
+        if (aiChatSend) {
+            aiChatSend.addEventListener('click', sendMessage);
+        }
+        if (aiChatInput) {
+            aiChatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+        }
+    }
+};
+
+// Đảm bảo chạy dù trang đã load hay chưa
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAiChat);
+} else {
+    initAiChat();
+}

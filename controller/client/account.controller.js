@@ -6,6 +6,8 @@ const Account = require("../../models/account.model")
 const ForgotPassword = require("../../models/forgot-password.model")
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const Order = require("../../models/order.model")
+const Product = require("../../models/products.model")
 module.exports.login = async (req, res) => {
     res.render("client/pages/login", {
         title: "Dang nhap"
@@ -203,8 +205,63 @@ module.exports.notification = async (req, res) => {
 }
 
 module.exports.ordersHistory = async (req, res) => {
+    const find = {
+        deleted: false,
+        userId: req.user._id
+    }
+    if (req.query.keyword) {
+        find.orderCode = {
+            $regex: req.query.keyword,
+            $options: "i"
+        }
+    }
+    // Lọc theo trạng thái
+    if (req.query.status) {
+        find.status = req.query.status
+    }
+
+    // Phân trang
+
+    const limitItems = 5;
+    let page = 1;
+
+    if (req.query.page) {
+        const currentPage = parseInt(req.query.page);
+        if (!isNaN(currentPage) && currentPage > 0) {
+            page = currentPage;
+        }
+    }
+
+    const totalRecord = await Order.countDocuments(find);
+    const totalPage = Math.max(Math.ceil(totalRecord / limitItems), 1); // nếu total page < 1 thì = 1 >  1 thì giữ nguyên
+    if (page > totalPage) {
+        page = totalPage;
+    }
+
+    const skip = (page - 1) * limitItems; // bỏ qua bao nhiêu record
+    const orderList = await Order.find(find)
+        .sort({ createdAt: "desc" })
+        .limit(limitItems)
+        .skip(skip);
+
+    const pagination = {
+        currentPage: page,
+        totalPage: totalPage,
+        skip: skip,
+        totalRecord: totalRecord
+    };
+
+    for (let item of orderList) {
+        item.createdAtFormat = item.createdAt.toLocaleString('vi-VN')
+    }
+    const products = await Product.find({
+        deleted: false
+    })
     res.render("client/pages/order-history", {
-        title: "Lich su don hang"
+        title: "Lich su don hang",
+        orderList: orderList,
+        pagination: pagination,
+        products: products
     })
 }
 
@@ -301,6 +358,38 @@ module.exports.resetPassPost = async (req, res) => {
     const hashPassword = await bcrypt.hashSync(newPassword, salt);
     await Account.updateOne({
         email: email
+    }, {
+        password: hashPassword
+    })
+    req.flash("success", "Đã đặt lại mật khẩu thành công")
+    res.json({
+        code: "success",
+    })
+}
+
+module.exports.resetPasswordPost = async (req, res) => {
+    const { currentPass, newPass } = req.body
+    const account = await Account.findOne({
+        email: req.user.email
+    })
+    if (!account) {
+        req.flash("error", "Tài khoản không tồn tại")
+        res.json({
+            code: "error",
+        })
+        return
+    }
+    if (!bcrypt.compareSync(currentPass, account.password)) {
+        req.flash("error", "Mật khẩu hiện tại không chính xác")
+        res.json({
+            code: "error",
+        })
+        return
+    }
+    const salt = await bcrypt.genSaltSync(10);
+    const hashPassword = await bcrypt.hashSync(newPass, salt);
+    await Account.updateOne({
+        email: req.user.email
     }, {
         password: hashPassword
     })

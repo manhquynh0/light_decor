@@ -50,25 +50,25 @@ block content
             .hero-slides
               .hero-slide.active
                 img(
-                  alt="Nội thất hiện đại" 
-                  src="https://i.pinimg.com/736x/78/11/16/7811160ca96d44a845ec1dfd8da1b4ed.jpg"
+                  alt="" 
+                  src="https://i.pinimg.com/736x/48/e9/74/48e97488e3f256f694b973ad9a58236a.jpg"
                   )
                 .slide-badge Bộ sưu tập mới
               .hero-slide
                 img(
-                  alt="Ghế sofa vàng" 
-                  src="https://i.pinimg.com/736x/78/11/16/7811160ca96d44a845ec1dfd8da1b4ed.jpg"
+                  alt="" 
+                  src="https://i.pinimg.com/1200x/8f/05/e7/8f05e7608b91cef91fcd60a32b7674af.jpg"
                   )
                 .slide-badge Nổi bật
               .hero-slide
                 img(
-                  alt="Sofa phong cách Mỹ" 
-                  src="https://i.pinimg.com/736x/78/11/16/7811160ca96d44a845ec1dfd8da1b4ed.jpg"
+                  alt="" 
+                  src="https://i.pinimg.com/1200x/67/06/c9/6706c9c92eb50c40758fa6f7de6e54af.jpg"
                   )
                 .slide-badge Ưu đãi
               .hero-slide
                 img(
-                  alt="Không gian phòng khách" 
+                  alt="" 
                   src="https://i.pinimg.com/736x/78/11/16/7811160ca96d44a845ec1dfd8da1b4ed.jpg"
                   )
                 .slide-badge Hot
@@ -122,7 +122,7 @@ block content
                       alt=""
                       src=item.avatar
                     )
-                    span.prod-badge -#{Math.round((1 - (item.priceNEW / item.priceOLD)) * 100)}%
+                    span.prod-badge - #{Number(item.priceOLD) > 0 ? Math.floor(((Number(item.priceOLD) - Number(item.priceNEW)) / Number(item.priceOLD)) * 100) : 0}%
                     .prod-overlay
                       button.quick-add(onclick=`window.location.href='/products/${item.slug}'`)
                         svg(
@@ -160,7 +160,7 @@ block content
                       alt=""
                       src=item.avatar
                     )
-                    span.prod-badge -#{Math.round((1 - (item.priceNEW / item.priceOLD)) * 100)}%
+                    span.prod-badge - #{Number(item.priceOLD) > 0 ? Math.floor(((Number(item.priceOLD) - Number(item.priceNEW)) / Number(item.priceOLD)) * 100) : 0}%
                     .prod-overlay
                       button.quick-add(onclick=`window.location.href='/products/${item.slug}'`)
                         svg(
@@ -196,7 +196,7 @@ block content
                       alt=""
                       src=item.avatar
                     )
-                    span.prod-badge -#{Math.round((1 - (item.priceNEW / item.priceOLD)) * 100)}%
+                    span.prod-badge - #{Number(item.priceOLD) > 0 ? Math.floor(((Number(item.priceOLD) - Number(item.priceNEW)) / Number(item.priceOLD)) * 100) : 0}%
                     .prod-overlay
                       button.quick-add(onclick=`window.location.href='/products/${item.slug}'`)
                         svg(
@@ -232,7 +232,7 @@ block content
                       alt=""
                       src=item.avatar
                     )
-                    span.prod-badge -#{Math.round((1 - (item.priceNEW / item.priceOLD)) * 100)}%
+                    span.prod-badge - #{Number(item.priceOLD) > 0 ? Math.floor(((Number(item.priceOLD) - Number(item.priceNEW)) / Number(item.priceOLD)) * 100) : 0}%
                     .prod-overlay
                       button.quick-add(onclick=`window.location.href='/products/${item.slug}'`)
                         svg(
@@ -456,7 +456,7 @@ block content
             a.news-img-link(href="/news")
               img(
                 alt="Design Talk" 
-                src="https://cdn3729.cdn-template-4s.com/thumbs/tin-tuc/1_1_thumb_350.webp"
+                src="https://i.pinimg.com/736x/da/d3/14/dad3149171dfe6677b48d1094d8c91d1.jpg"
                 )
               span.news-cat Xu hướng
             .news-body
@@ -471,8 +471,8 @@ block content
           article.news-card
             a.news-img-link(href="/news")
               img(
-                alt="Làn gió Lagom" 
-                src="https://cdn3729.cdn-template-4s.com/thumbs/tin-tuc/2_1_thumb_350.webp"
+                alt="" 
+                src="https://i.pinimg.com/1200x/dc/66/ad/dc66ad86dacc9623e95cece2ed3e44a5.jpg"
                 )
               span.news-cat Phong cách sống
             .news-body
@@ -486,8 +486,8 @@ block content
           article.news-card
             a.news-img-link(href="/news")
               img(
-                alt="Gỗ sồi" 
-                src="https://cdn3729.cdn-template-4s.com/thumbs/tin-tuc/3_1_thumb_350.webp"
+                alt="" 
+                src="https://i.pinimg.com/736x/9d/09/99/9d099908f1874a14d247ddb99df7079a.jpg"
                 )
               span.news-cat Vật liệu
             .news-body

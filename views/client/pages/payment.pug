@@ -39,8 +39,7 @@ block content
                 style="width:28px;height:28px;background:var(--accent);color:var(--primary-dark);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:800;"
                 ) 1
               | Thông tin giao hàng
-            form(style="display:grid;gap:16px;"
-              class="form-payment")
+            form(style="display:grid;gap:16px;" id="order-form")
               div(style="display:grid;grid-template-columns:1fr 1fr;gap:16px;")
                 .form-group(style="margin:0;")
                   label Họ *
@@ -48,6 +47,7 @@ block content
                     placeholder="Nguyễn" 
                     type="text"
                     id = "firstName"
+                    name = "firstName"
                     )
                 .form-group(style="margin:0;")
                   label Tên *
@@ -55,6 +55,7 @@ block content
                     placeholder="Văn A" 
                     type="text"
                     id = "lastName"
+                    name = "lastName"
                     )
               .form-group(style="margin:0;")
                 label Email *
@@ -62,6 +63,7 @@ block content
                   placeholder="example@email.com" 
                   type="email"
                   id = "email"
+                  name = "email"
                   )
               .form-group(style="margin:0;")
                 label Số điện thoại *
@@ -69,6 +71,7 @@ block content
                   placeholder="0901 191 616" 
                   type="tel"
                   id = "phone"
+                  name = "phone"
                   )
               .form-group(style="margin:0;")
                 label Địa chỉ *
@@ -76,25 +79,9 @@ block content
                   placeholder="Số nhà, tên đường..." 
                   type="text"
                   id = "address"
+                  name = "address"
                   )
-              div(style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;")
-                .form-group(style="margin:0;")
-                  label Tỉnh/Thành
-                  select.form-control(style="cursor:pointer;")
-                    option Hà Nội
-                    option TP. Hồ Chí Minh
-                    option Đà Nẵng
-                .form-group(style="margin:0;")
-                  label Quận/Huyện
-                  select.form-control(style="cursor:pointer;")
-                    option Đống Đa
-                    option Ba Đình
-                    option Hoàn Kiếm
-                .form-group(style="margin:0;")
-                  label Phường/Xã
-                  select.form-control(style="cursor:pointer;")
-                    option Láng Hạ
-                    option Láng Thượng
+             
               .form-group(style="margin:0;")
                 label Ghi chú
                 textarea.form-control(
@@ -102,6 +89,7 @@ block content
                   placeholder="Ghi chú về đơn hàng (không bắt buộc)" 
                   rows="3"
                   id = "note"
+                  name = "note"
                   )
           // Payment method
           div(
@@ -120,7 +108,8 @@ block content
                 )
                 input(
                   checked="" 
-                  name="payment" 
+                  name="method" 
+                  form="order-form" 
                   type="radio"
                   value = "money"
                   )
@@ -132,31 +121,21 @@ block content
                 style="display:flex;align-items:center;gap:14px;padding:16px;border:2px solid var(--border);border-radius:var(--radius-md);cursor:pointer;"
                 )
                 input(
-                  name="payment" 
+                  name="method" 
+                  form="order-form" 
                   type="radio"
                   value = "bank"
                   )
                 span(style="font-weight:700;font-size:0.9rem;color:var(--text-mid);") Chuyển khoản ngân hàng
               
               div#bank-transfer-info(style="display:none; padding:20px; background:var(--light-bg); border:1px dashed var(--border); border-radius:var(--radius-md); margin-top:-8px; margin-bottom:10px;")
-                div(style="display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap;")
-                  div(style="flex:1; min-width:200px;")
-                    p(style="margin-bottom:8px; color:var(--text-light); font-size:0.85rem;") Tên chủ tài khoản: 
-                      strong(style="color:var(--white);") VU MANH QUYNH
-                    p(style="margin-bottom:8px; color:var(--text-light); font-size:0.85rem;") Số tài khoản: 
-                      strong(style="color:var(--white); font-size:1.1rem;") 0522115385
-                    p(style="margin-bottom:8px; color:var(--text-light); font-size:0.85rem;") Ngân hàng: 
-                      strong(style="color:var(--white);") MB Bank
-                    p(style="margin-bottom:0; color:var(--text-light); font-size:0.85rem;") Nội dung chuyển khoản: 
-                      strong(style="color:var(--accent);") [MÃ ĐƠN HÀNG]
-                  div(style="text-align:center;")
-                    img(src="/assets/images/qr.jpg" alt="QR Code" style="width:110px; height:110px; border-radius:8px; border:2px solid var(--border); background:#fff; padding:4px;")
-                    p(style="font-size:0.75rem; color:var(--text-light); margin-top:6px; margin-bottom:0;") Quét mã thanh toán
+               
               label(
                 style="display:flex;align-items:center;gap:14px;padding:16px;border:2px solid var(--border);border-radius:var(--radius-md);cursor:pointer;"
                 )
                 input(
-                  name="payment" 
+                  name="method" 
+                  form="order-form" 
                   type="radio"
                   value = "vnpay"
                   )
@@ -165,7 +144,8 @@ block content
                 style="display:flex;align-items:center;gap:14px;padding:16px;border:2px solid var(--border);border-radius:var(--radius-md);cursor:pointer;"
                 )
                 input(
-                  name="payment" 
+                  name="method" 
+                  form="order-form" 
                   type="radio"
                   value = "momo"
                   )
@@ -196,7 +176,7 @@ block content
                 )
                 span Tổng cộng
                 span(style="color:var(--accent);" class="payment-total") 0 ₫
-            button.btn.btn-gold(style="width:100%;justify-content:center;margin-top:20px;padding:16px;font-size:1rem;") 🔒 Đặt hàng ngay
+            button.btn.btn-gold(type="submit" form="order-form" style="width:100%;justify-content:center;margin-top:20px;padding:16px;font-size:1rem;"   id="submit-order") 🔒 Đặt hàng ngay
             p(style="text-align:center;font-size:0.75rem;color:var(--text-light);margin-top:12px;")
               | Bằng cách đặt hàng, bạn đồng ý với 
               a(

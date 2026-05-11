@@ -1,5 +1,5 @@
 extend ../layouts/default
-
+include ../mixins/pagination
 block main
   // TABLE
   .data-table-wrap(style="border-radius:0;border:none;border-top:1px solid var(--border);")
@@ -8,14 +8,13 @@ block main
         svg(stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="14" width="14")
           circle(r="8" cy="11" cx="11")
           line(y2="16.65" x2="16.65" y1="21" x1="21")
-        input(placeholder="Tìm sản phẩm..." type="text")
+        input(placeholder="Tìm sản phẩm..." type="text" search)
 
       .toolbar-actions
-        select.btn-admin.btn-admin-outline
-          option(value="all") Tất cả
-          option(value="active") Đang bán
-          option(value="hidden") Ẩn
-          option(value="out") Hết hàng
+        select.btn-admin.btn-admin-outline(filter-status)
+          option(value="") Tất cả
+          option(value="paid") Đã thanh toán
+          option(value="unpaid") Chưa thanh toán
 
     table#ordersTable.data-table
       thead
@@ -28,76 +27,97 @@ block main
           th Trạng thái
           th Thao tác
       tbody#ordersTableBody
-        tr
-          td.td-bold #ORD-1284
-          td
-            .td-name
-              .td-avatar TL
-              | Trần Linh
-          td 14/04/2024
-          td Sofa góc L Velvet
-          td.td-bold 56.800.000 ₫
-          td
-            .status-badge.status-active Đang hoạt động
-          td
-            .action-btns
-              button.action-btn.action-btn-view(
-                onclick="openModal('orderDetailModal')"
-                title="Xem chi tiết"
-              ) 👁
-              button.action-btn.action-btn-delete(title="Xóa đơn") 🗑
+        each item in orderList
+          each product in item.items
+            tr
+              td.td-bold #{item.orderCode}
+              td
+                .td-name
+                  | #{item.firstName} #{item.lastName}
+              td #{item.createdAtFormat}
+              td 
+                span #{product.name} X 
+                span #{product.quantity}
+              td.td-bold #{product.totalPrice.toLocaleString("vi-VN")} ₫
+              td
+                if(item.paymentStatus == "paid")
+                  .status-badge.status-active Đã thanh toán
+                else
+                  .status-badge.status-unpaid Chưa thanh toán
+              td
+                .action-btns
+                  button.action-btn.action-btn-view(
+                    onclick=`openModal('orderDetailModal', '/admin/orders/detail/${item._id}')`
+                    title="Xem chi tiết"
+                  ) 👁
+                  button.action-btn.action-btn-delete(data-url=`/admin/orders/delete/${item._id}`,
+                    button-delete) 🗑
 
   // PAGINATION (tách riêng)
-  .table-pagination
-    span Hiển thị 1–5 / 1.284 đơn hàng
-    .pagination-btns
-      button.page-num.active 1
-      button.page-num 2
-      button.page-num 3
-      span(style="padding:0 6px;color:var(--text-light);font-size:0.85rem;") ...
-      button.page-num 257
+  +pagination(pagination, orderList.length)
   // MODAL
-  #orderDetailModal.modal-backdrop
+  if orderDetail
+    #orderDetailModal.modal-backdrop
+      .modal-box
+        .modal-header
+          h3 Chi tiết đơn hàng #{orderDetail.orderCode}
+          button.modal-close(onclick="closeModal('orderDetailModal')") ✕
+
+        div(style="display:flex;flex-direction:column;gap:16px;")
+          div(style="padding:16px;background:var(--off-white);border-radius:var(--radius-md);")
+            div(style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:0.85rem;")
+              div
+                span(style="color:var(--text-light);") Khách hàng:
+                br
+                strong #{orderDetail.firstName} #{orderDetail.lastName}
+              div
+                span(style="color:var(--text-light);") SĐT:
+                br
+                strong #{orderDetail.phone}
+              div
+                span(style="color:var(--text-light);") Ngày đặt:
+                br
+                strong #{orderDetail.createdAtFormat}
+              div
+                span(style="color:var(--text-light);") Phương thức TT:
+                br
+                strong #{orderDetail.method}
+              div(style="grid-column:1/-1;")
+                span(style="color:var(--text-light);") Địa chỉ giao:
+                br
+                strong #{orderDetail.address}
+
+          div
+            p(style="font-size:0.78rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-light);margin-bottom:10px;") Sản phẩm
+            div(style="display:flex;flex-direction:column;gap:10px;")
+              each product in orderDetail.items
+                div(style="display:flex;align-items:center;gap:12px;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);")
+                  div(style="width:44px;height:44px;background:var(--light-bg);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;")   
+                    img(src = product.avatar)
+                  div(style="flex:1;font-size:0.85rem;")
+                    strong #{product.name}
+                    br
+                    span(style="color:var(--text-light);") SL: #{product.quantity}
+                  strong(style="white-space:nowrap;") #{product.totalPrice.toLocaleString("vi-VN")} ₫
+
+          div(style="border-top:1px solid var(--border);padding-top:12px;display:flex;justify-content:space-between;")
+            strong Tổng thanh toán
+            strong(style="color:var(--accent);") #{orderDetail.total.toLocaleString("vi-VN")} ₫
+
+  #confirmModal.modal-backdrop
     .modal-box
       .modal-header
-        h3 Chi tiết đơn hàng #ORD-1284
-        button.modal-close(onclick="closeModal('orderDetailModal')") ✕
+        h3 Xác nhận xoá
+        button.modal-close(onclick="closeConfirmModal()") ✕
 
-      div(style="display:flex;flex-direction:column;gap:16px;")
-        div(style="padding:16px;background:var(--off-white);border-radius:var(--radius-md);")
-          div(style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:0.85rem;")
-            div
-              span(style="color:var(--text-light);") Khách hàng:
-              br
-              strong Trần Linh
-            div
-              span(style="color:var(--text-light);") SĐT:
-              br
-              strong 0912 345 678
-            div
-              span(style="color:var(--text-light);") Ngày đặt:
-              br
-              strong 14/04/2024
-            div
-              span(style="color:var(--text-light);") Phương thức TT:
-              br
-              strong Chuyển khoản
-            div(style="grid-column:1/-1;")
-              span(style="color:var(--text-light);") Địa chỉ giao:
-              br
-              strong 123 Điện Biên Phủ, Bình Thạnh
+      p(style="margin:12px 0;") Bạn có chắc chắn muốn xoá mục này không?
 
-        div
-          p(style="font-size:0.78rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-light);margin-bottom:10px;") Sản phẩm
-          div(style="display:flex;flex-direction:column;gap:10px;")
-            div(style="display:flex;align-items:center;gap:12px;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);")
-              div(style="width:44px;height:44px;background:var(--light-bg);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;") 🛋
-              div(style="flex:1;font-size:0.85rem;")
-                strong Sofa góc L Velvet Teal
-                br
-                span(style="color:var(--text-light);") Màu: Xanh ngọc • SL: 1
-              strong(style="white-space:nowrap;") 56.800.000 ₫
+      .form-group(style="display:flex;gap:12px;justify-content:center;")
+        button.btn.btn-gold#confirmYes Xoá
+        button.btn.btn-outline-dark(onclick="closeConfirmModal()") Huỷ
 
-        div(style="border-top:1px solid var(--border);padding-top:12px;display:flex;justify-content:space-between;")
-          strong Tổng thanh toán
-          strong(style="color:var(--primary);") 57.950.000 ₫
+  if openOrderDetail
+    script.
+      document.addEventListener('DOMContentLoaded', function () {
+        openModal('orderDetailModal');
+      });

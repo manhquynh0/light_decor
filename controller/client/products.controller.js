@@ -7,6 +7,9 @@ module.exports.products = async (req, res) => {
         deleted: false,
         status: "stock"
     }
+    if (req.query.category) {
+        find.category = req.query.category;
+    }
     //loc theo gia
     const priceFilter = {}
     if (req.query.priceMin || req.query.priceMax) {

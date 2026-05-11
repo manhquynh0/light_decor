@@ -64,6 +64,16 @@ module.exports.verifyTokenOptional = async (req, res, next) => {
             req.user = account
             res.locals.user = account
         }
+        if (account.role) {
+            const role = await Role.findOne({
+                _id: account.role
+            })
+            account.roleName = role.name;
+            req.permissions = role.permissions
+            res.locals.permissions = role.permissions
+        } else {
+            account.roleName = "Quyền chưa xác định"
+        }
         next()
     }
     catch (error) {
