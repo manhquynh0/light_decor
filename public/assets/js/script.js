@@ -2570,8 +2570,8 @@ const drawCart = () => {
                     })
 
                     const calculateTotal = () => {
-                        const rows = document.querySelectorAll('.cart-row[data-price]');
                         let sub = 0;
+                        const rows = cartList.querySelectorAll('.cart-row:not(.cart-row-header)');
                         rows.forEach(row => {
                             const checkbox = row.querySelector('.cart-item-check');
                             if (checkbox && checkbox.checked) {
@@ -2580,11 +2580,11 @@ const drawCart = () => {
                                 sub += price * qty;
                             }
                         });
-                        const ship = 150000;
-                        const subtotalEl = document.querySelector('.subtotal-val');
-                        const totalEl = document.querySelector('.total-val');
-                        if (subtotalEl) subtotalEl.textContent = sub.toLocaleString('vi-VN') + ' ₫';
-                        if (totalEl) totalEl.textContent = (sub > 0 ? sub + ship : 0).toLocaleString('vi-VN') + ' ₫';
+                        
+                        const savedCoupon = getAppliedCoupon();
+                        const discount = savedCoupon ? savedCoupon.discount : 0;
+                        updateSummaryUI(sub, discount, "cart");
+                        handleCouponLogic(sub, "cart");
                     };
 
                     cartList.querySelectorAll('.cart-item-check').forEach(checkbox => {
@@ -2686,6 +2686,130 @@ if (cartList) {
     drawCart();
 }
 
+// Coupon Helper Functions
+const getAppliedCoupon = () => JSON.parse(localStorage.getItem("appliedCoupon") || "null");
+const saveAppliedCoupon = (coupon) => localStorage.setItem("appliedCoupon", JSON.stringify(coupon));
+const clearAppliedCoupon = () => localStorage.removeItem("appliedCoupon");
+
+const updateSummaryUI = (subTotal, discount = 0, page = "payment") => {
+    const selectors = {
+        payment: {
+            subtotal: '.payment-subtotal',
+            total: '.payment-total',
+            discountRow: '#discount-row',
+            discountVal: '.payment-discount'
+        },
+        cart: {
+            subtotal: '.subtotal-val',
+            total: '.total-val',
+            discountRow: null, // Always visible in cart summary
+            discountVal: '.summary-line strong[style*="color:#e84040"]'
+        }
+    };
+
+    const s = selectors[page];
+    const ship = 0;
+    const total = subTotal - discount + ship;
+
+    const subtotalEl = document.querySelector(s.subtotal);
+    const totalEl = document.querySelector(s.total);
+    const discountEl = document.querySelector(s.discountVal);
+
+    if (subtotalEl) subtotalEl.textContent = subTotal.toLocaleString('vi-VN') + ' ₫';
+    if (totalEl) totalEl.textContent = (total > 0 ? total : 0).toLocaleString('vi-VN') + ' ₫';
+    
+    if (discountEl) {
+        discountEl.textContent = (discount > 0 ? "-" : "") + discount.toLocaleString('vi-VN') + ' ₫';
+    }
+
+    if (s.discountRow) {
+        const row = document.querySelector(s.discountRow);
+        if (row) row.style.display = discount > 0 ? "flex" : "none";
+    }
+};
+
+const handleCouponLogic = (subTotal, page = "payment") => {
+    const inputId = page === "cart" ? "#cart-coupon-input" : "#coupon-input";
+    const btnId = page === "cart" ? "#cart-apply-coupon-btn" : "#apply-coupon-btn";
+    const msgId = page === "cart" ? "#cart-coupon-message" : "#coupon-message";
+
+    const input = document.querySelector(inputId);
+    const btn = document.querySelector(btnId);
+    const msgBox = document.querySelector(msgId);
+
+    if (!btn || !input) return;
+
+    // Auto Re-validate if saved
+    const saved = getAppliedCoupon();
+    if (saved && !input.dataset.validating) {
+        input.value = saved.code;
+        // prevent infinite loop if calculateTotal calls this
+        input.dataset.validating = "true";
+        
+        fetch("/cart/apply-coupon", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code: saved.code, subTotal })
+        })
+        .then(res => res.json())
+        .then(result => {
+            input.removeAttribute("data-validating");
+            if (result.code === "success") {
+                saveAppliedCoupon({ code: saved.code, discount: result.discount });
+                updateSummaryUI(subTotal, result.discount, page);
+            } else {
+                clearAppliedCoupon();
+                showMsg(result.message, "error", msgBox);
+                updateSummaryUI(subTotal, 0, page);
+            }
+        });
+    }
+
+    // prevent duplicate listeners
+    if (btn.dataset.listener) return;
+    btn.dataset.listener = "true";
+
+    btn.addEventListener("click", () => {
+        const code = input.value.trim().toUpperCase();
+        if (!code) {
+            showMsg("Vui lòng nhập mã!", "error", msgBox);
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = "...";
+
+        fetch("/cart/apply-coupon", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code, subTotal })
+        })
+        .then(res => res.json())
+        .then(result => {
+            btn.disabled = false;
+            btn.innerHTML = "Áp dụng";
+
+            if (result.code === "success") {
+                const couponData = { code, discount: result.discount };
+                saveAppliedCoupon(couponData);
+                showMsg(result.message, "success", msgBox);
+                updateSummaryUI(subTotal, result.discount, page);
+            } else {
+                clearAppliedCoupon();
+                showMsg(result.message, "error", msgBox);
+                updateSummaryUI(subTotal, 0, page);
+            }
+        });
+    });
+};
+
+const showMsg = (msg, type, el) => {
+    if (!el) return;
+    el.innerHTML = msg;
+    el.style.display = "block";
+    el.style.color = type === "success" ? "#4ade80" : "#f87171";
+};
+
 // Payment Render
 const drawPayment = () => {
     const paymentList = document.querySelector(".order-summary");
@@ -2698,54 +2822,34 @@ const drawPayment = () => {
 
         fetch("/cart/payment", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(paymentData)
         })
-            .then(res => res.json())
-            .then(data => {
-                if (data.code === "success") {
-                    const htmlPayment = data.ProductPayment.map(item =>
-                        `
-                        <div style="display:flex;gap:12px;align-items:center;">
-                            <img
-                                src="${item.avatar}"
-                                alt="${item.name}"
-                                style="width:56px;height:56px;border-radius:10px;object-fit:cover;flex-shrink:0;"
-                            >
-                            <div style="flex:1;">
-                                <p style="font-size:0.85rem;font-weight:700;margin-bottom:2px;color:var(--white);" class="nameProduct">
-                                    ${item.name}
-                                </p>
-                                <p style="font-size:0.78rem;color:var(--text-light);">
-                                    Số lượng: ${item.quantity}
-                                </p>
-                            </div>
-                            <span style="font-size:0.88rem;font-weight:800;color:var(--accent);white-space:nowrap;">
-                                ${Number(item.totalPrice).toLocaleString('vi-VN')} ₫
-                            </span>
+        .then(res => res.json())
+        .then(data => {
+            if (data.code === "success") {
+                const htmlPayment = data.ProductPayment.map(item => `
+                    <div style="display:flex;gap:12px;align-items:center;">
+                        <img src="${item.avatar}" alt="${item.name}" style="width:56px;height:56px;border-radius:10px;object-fit:cover;flex-shrink:0;">
+                        <div style="flex:1;">
+                            <p style="font-size:0.85rem;font-weight:700;margin-bottom:2px;color:var(--white);" class="nameProduct">${item.name}</p>
+                            <p style="font-size:0.78rem;color:var(--text-light);">Số lượng: ${item.quantity}</p>
                         </div>
-                        `
-                    );
-                    paymentList.innerHTML = htmlPayment.join("");
+                        <span style="font-size:0.88rem;font-weight:800;color:var(--accent);white-space:nowrap;">
+                            ${Number(item.totalPrice).toLocaleString('vi-VN')} ₫
+                        </span>
+                    </div>
+                `);
+                paymentList.innerHTML = htmlPayment.join("");
 
-                    // Tính lại tổng tiền
-                    let subTotal = 0;
-                    data.ProductPayment.forEach(item => {
-                        subTotal += item.totalPrice;
-                    });
-                    const ship = 0;
-
-                    // Update UI (Assuming you have class payment-subtotal and payment-total in payment.pug)
-                    const subtotalEl = document.querySelector('.payment-subtotal');
-                    const totalEl = document.querySelector('.payment-total');
-                    if (subtotalEl) subtotalEl.textContent = subTotal.toLocaleString('vi-VN') + ' ₫';
-                    if (totalEl) totalEl.textContent = (subTotal > 0 ? subTotal + ship : 0).toLocaleString('vi-VN') + ' ₫';
-                }
-            });
+                let subTotal = data.ProductPayment.reduce((sum, item) => sum + item.totalPrice, 0);
+                updateSummaryUI(subTotal, 0, "payment");
+                handleCouponLogic(subTotal, "payment");
+            }
+        });
     }
 };
+
 drawPayment();
 
 
@@ -3038,6 +3142,7 @@ if (orderForm) {
                     note: note,
                     items: paymentCart,
                     method: method,
+                    couponCode: getAppliedCoupon()?.code || "",
                 };
 
                 if (method !== "bank") {
@@ -3069,6 +3174,7 @@ if (orderForm) {
 
                                 // Xóa dữ liệu thanh toán tạm thời
                                 localStorage.removeItem("payment");
+                                clearAppliedCoupon();
 
                                 // Cập nhật số lượng mini cart
                                 const miniCart = document.querySelector(".cart-count");
@@ -3165,7 +3271,8 @@ if (orderForm) {
                                     body: JSON.stringify({
                                         ...dataFinal,
                                         transferCode,
-                                        status: "paid"
+                                        status: "paid",
+                                        couponCode: getAppliedCoupon()?.code || "",
                                     }),
                                 })
                                     .then(res => res.json())
@@ -3185,6 +3292,7 @@ if (orderForm) {
 
                                             // Xóa dữ liệu thanh toán tạm thời
                                             localStorage.removeItem("payment");
+                                            clearAppliedCoupon();
 
                                             // Cập nhật số lượng mini cart
                                             const miniCart = document.querySelector(".cart-count");
@@ -3573,4 +3681,47 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initAiChat);
 } else {
     initAiChat();
+}
+
+// ========== COUPON COPY ==========
+function copyCouponCode(code, btn) {
+    navigator.clipboard.writeText(code).then(() => {
+        // Đổi icon sang check
+        const copyIcon = btn.querySelector('.copy-icon');
+        const checkIcon = btn.querySelector('.check-icon');
+        const copyText = btn.querySelector('.copy-text');
+
+        if (copyIcon) copyIcon.style.display = 'none';
+        if (checkIcon) checkIcon.style.display = 'inline-block';
+        if (copyText) copyText.textContent = 'Đã sao chép!';
+
+        btn.classList.add('copied');
+
+        setTimeout(() => {
+            if (copyIcon) copyIcon.style.display = '';
+            if (checkIcon) checkIcon.style.display = 'none';
+            if (copyText) copyText.textContent = 'Sao chép';
+            btn.classList.remove('copied');
+        }, 2000);
+    }).catch(() => {
+        // Fallback cho trình duyệt cũ
+        const el = document.createElement('textarea');
+        el.value = code;
+        el.style.position = 'fixed';
+        el.style.opacity = '0';
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+
+        const copyText = btn.querySelector('.copy-text');
+        if (copyText) {
+            copyText.textContent = 'Đã sao chép!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                copyText.textContent = 'Sao chép';
+                btn.classList.remove('copied');
+            }, 2000);
+        }
+    });
 }

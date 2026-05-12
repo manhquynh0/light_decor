@@ -1,0 +1,340 @@
+extend ../layouts/default
+include ../mixins/pagination.pug
+block main
+  .table-toolbar
+    .toolbar-search
+      svg(stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="14" width="14")
+        circle(r="8" cy="11" cx="11")
+        line(y2="16.65" x2="16.65" y1="21" x1="21")
+      input(
+        placeholder="Tìm mã coupon..."
+        type="text"
+        search
+      )
+    .toolbar-actions
+      select.btn-admin.btn-admin-outline(filter-status)
+        option(value="") Tất cả
+        option(value="active") Đang hoạt động
+        option(value="inactive") Tạm dừng
+    button.btn-admin.btn-admin-primary(onclick="openModal('addCouponModal')")
+      svg(stroke-width="2.5" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="13" width="13")
+        line(y2="19" x2="12" y1="5" x1="12")
+        line(y2="12" x2="19" y1="12" x1="5")
+      | Thêm mã giảm giá
+
+  .data-table-wrap(style="border-radius:0;border:none;border-top:1px solid var(--border);")
+    table.data-table
+      thead
+        tr
+          th Mã Coupon
+          th Loại
+          th Giá trị
+          th Đơn tối thiểu
+          th Hạn dùng
+          th Đã dùng
+          th Trạng thái
+          th Thao tác
+
+      tbody
+        each item in coupons
+          tr
+            td
+              span.coupon-code-admin #{item.code}
+            td
+              if item.discountType === "percent"
+                span.badge.badge-blue Phần trăm
+              else
+                span.badge.badge-purple Cố định
+            td.td-bold
+              if item.discountType === "percent"
+                | #{item.discountValue}%
+              else
+                | #{item.discountValue.toLocaleString()}đ
+            td
+              if item.minOrderValue > 0
+                | #{item.minOrderValue.toLocaleString()}đ
+              else
+                span.text-muted —
+            td
+              if item.expireAt
+                span(class=(new Date(item.expireAt) < new Date() ? "text-danger" : ""))
+                  | #{new Date(item.expireAt).toLocaleDateString("vi-VN")}
+              else
+                span.text-muted Không giới hạn
+            td
+              | #{item.usedCount}
+              if item.usageLimit
+                |  / #{item.usageLimit}
+              else
+                |  / ∞
+            td
+              if item.isActive
+                .status-badge.status-active Hoạt động
+              else
+                .status-badge.status-inactive Tạm dừng
+            td
+              .action-btns
+                button.action-btn.action-btn-toggle(
+                  title=(item.isActive ? "Tạm dừng" : "Kích hoạt")
+                  data-id=`${item._id}`
+                  data-active=`${item.isActive}`
+                  onclick=`toggleCoupon('${item._id}', this)`
+                ) #{item.isActive ? "⏸" : "▶"}
+                button.action-btn.action-btn-edit(
+                  onclick=`openModal('editCouponModal', '/admin/coupons/edit/${item._id}')`
+                ) ✏
+                button.action-btn.action-btn-delete(
+                  data-url=`/admin/coupons/delete/${item._id}`
+                  button-delete
+                ) 🗑
+
+    +pagination(pagination, coupons.length)
+
+  //- ===== MODAL THÊM MÃ GIẢM GIÁ =====
+  #addCouponModal.modal-backdrop
+    .modal-box(style="max-width:520px;")
+      .modal-header
+        h3 Thêm mã giảm giá
+        button.modal-close(onclick="closeModal('addCouponModal')") ✕
+      form#coupon-add-form
+        .form-row-2
+          .form-group
+            label Mã Coupon *
+            input.form-control(
+              type="text"
+              name="code"
+              id="coupon-code"
+              placeholder="VD: SUMMER20"
+              style="text-transform:uppercase;"
+            )
+          .form-group
+            label Trạng thái
+            select.form-control(name="isActive" id="coupon-isActive")
+              option(value="true") Hoạt động
+              option(value="false") Tạm dừng
+
+        .form-row-2
+          .form-group
+            label Loại giảm giá
+            select.form-control(name="discountType" id="coupon-discountType")
+              option(value="percent") Phần trăm (%)
+              option(value="fixed") Cố định (đ)
+          .form-group
+            label Giá trị giảm *
+            input.form-control(
+              type="number"
+              name="discountValue"
+              id="coupon-discountValue"
+              placeholder="VD: 20"
+              min="0"
+            )
+
+        .form-row-2
+          .form-group
+            label Đơn tối thiểu (đ)
+            input.form-control(
+              type="number"
+              name="minOrderValue"
+              id="coupon-minOrderValue"
+              placeholder="0 = không giới hạn"
+              min="0"
+            )
+          .form-group
+            label Giảm tối đa (đ)
+            input.form-control(
+              type="number"
+              name="maxDiscount"
+              id="coupon-maxDiscount"
+              placeholder="Để trống = không giới hạn"
+              min="0"
+            )
+
+        .form-row-2
+          .form-group
+            label Hạn sử dụng
+            input.form-control(
+              type="datetime-local"
+              name="expireAt"
+              id="coupon-expireAt"
+            )
+          .form-group
+            label Giới hạn lượt dùng
+            input.form-control(
+              type="number"
+              name="usageLimit"
+              id="coupon-usageLimit"
+              placeholder="Để trống = không giới hạn"
+              min="1"
+            )
+
+        .form-group
+          label Mô tả
+          input.form-control(
+            type="text"
+            name="description"
+            id="coupon-description"
+            placeholder="VD: Ưu đãi cho khách hàng mới"
+          )
+
+        div(style="display:flex;gap:12px;margin-top:8px;")
+          button.btn.btn-gold(style="flex:1;justify-content:center;" type="submit") Lưu mã giảm giá
+          button.btn.btn-outline-dark(type="button" onclick="closeModal('addCouponModal')") Hủy
+
+  //- ===== MODAL CHỈNH SỬA MÃ GIẢM GIÁ =====
+  if couponDetail
+    #editCouponModal.modal-backdrop
+      .modal-box(style="max-width:520px;")
+        .modal-header
+          h3 Chỉnh sửa mã giảm giá
+          button.modal-close(onclick="closeModal('editCouponModal')") ✕
+        form#coupon-edit-form
+          input(type="hidden" name="_id" value=couponDetail._id)
+
+          .form-row-2
+            .form-group
+              label Mã Coupon *
+              input.form-control(
+                type="text"
+                name="code"
+                value=couponDetail.code
+                style="text-transform:uppercase;"
+              )
+            .form-group
+              label Trạng thái
+              select.form-control(name="isActive")
+                option(value="true" selected=couponDetail.isActive) Hoạt động
+                option(value="false" selected=!couponDetail.isActive) Tạm dừng
+
+          .form-row-2
+            .form-group
+              label Loại giảm giá
+              select.form-control(name="discountType")
+                option(value="percent" selected=couponDetail.discountType === "percent") Phần trăm (%)
+                option(value="fixed" selected=couponDetail.discountType === "fixed") Cố định (đ)
+            .form-group
+              label Giá trị giảm *
+              input.form-control(
+                type="number"
+                name="discountValue"
+                value=couponDetail.discountValue
+                min="0"
+              )
+
+          .form-row-2
+            .form-group
+              label Đơn tối thiểu (đ)
+              input.form-control(
+                type="number"
+                name="minOrderValue"
+                value=couponDetail.minOrderValue
+                min="0"
+              )
+            .form-group
+              label Giảm tối đa (đ)
+              input.form-control(
+                type="number"
+                name="maxDiscount"
+                value=couponDetail.maxDiscount || ""
+                min="0"
+              )
+
+          .form-row-2
+            .form-group
+              label Hạn sử dụng
+              input.form-control(
+                type="datetime-local"
+                name="expireAt"
+                value=couponDetail.expireAt ? new Date(couponDetail.expireAt).toISOString().slice(0,16) : ""
+              )
+            .form-group
+              label Giới hạn lượt dùng
+              input.form-control(
+                type="number"
+                name="usageLimit"
+                value=couponDetail.usageLimit || ""
+                min="1"
+              )
+
+          .form-group
+            label Mô tả
+            input.form-control(
+              type="text"
+              name="description"
+              value=couponDetail.description
+            )
+
+          div(style="display:flex;gap:12px;margin-top:8px;")
+            button.btn.btn-gold(style="flex:1;justify-content:center;" type="submit") Lưu thay đổi
+            button.btn.btn-outline-dark(type="button" onclick="closeModal('editCouponModal')") Hủy
+
+  //- ===== CONFIRM DELETE MODAL =====
+  #confirmModal.modal-backdrop
+    .modal-box
+      .modal-header
+        h3 Xác nhận xoá
+        button.modal-close(onclick="closeConfirmModal()") ✕
+      p(style="margin:12px 0;") Bạn có chắc chắn muốn xoá mã giảm giá này không?
+      .form-group(style="display:flex;gap:12px;justify-content:center;")
+        button.btn.btn-gold#confirmYes Xoá
+        button.btn.btn-outline-dark(onclick="closeConfirmModal()") Huỷ
+
+  if openAddModal
+    script.
+      document.addEventListener('DOMContentLoaded', function() { openModal('addCouponModal'); });
+  if openEditModal
+    script.
+      document.addEventListener('DOMContentLoaded', function() { openModal('editCouponModal'); });
+
+  script.
+    // Form thêm coupon
+    const couponAddForm = document.querySelector('#coupon-add-form');
+    if (couponAddForm) {
+      couponAddForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const fd = new FormData(this);
+        const data = Object.fromEntries(fd.entries());
+        const res = await fetch('/admin/coupons/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if (result.code === 'success') {
+          window.location.href = '/admin/coupons';
+        } else {
+          alert(result.message || 'Có lỗi xảy ra!');
+        }
+      });
+    }
+
+    // Form chỉnh sửa coupon
+    const couponEditForm = document.querySelector('#coupon-edit-form');
+    if (couponEditForm) {
+      couponEditForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const fd = new FormData(this);
+        const data = Object.fromEntries(fd.entries());
+        const id = data._id;
+        delete data._id;
+        const res = await fetch(`/admin/coupons/edit/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if (result.code === 'success') {
+          window.location.href = '/admin/coupons';
+        } else {
+          alert(result.message || 'Có lỗi xảy ra!');
+        }
+      });
+    }
+
+    // Toggle trạng thái coupon
+    async function toggleCoupon(id, btn) {
+      const res = await fetch(`/admin/coupons/toggle/${id}`, { method: 'PATCH' });
+      const result = await res.json();
+      if (result.code === 'success') {
+        window.location.reload();
+      }
+    }

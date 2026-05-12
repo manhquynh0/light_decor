@@ -28,9 +28,11 @@ block content
 
 
           div(style="margin-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;")
-            div(style="display:flex;gap:10px;")
-              input.form-control(type="text" placeholder="Nhập mã giảm giá" style="width:220px;padding:12px 16px;")
-              button.btn.btn-outline-dark(style="padding:12px 20px;") Áp dụng
+            div(style="display:flex;flex-direction:column;gap:8px;")
+              div(style="display:flex;gap:10px;")
+                input#cart-coupon-input.form-control(type="text" placeholder="Nhập mã giảm giá" style="width:220px;padding:12px 16px;text-transform:uppercase;")
+                button#cart-apply-coupon-btn.btn.btn-outline-dark(style="padding:12px 20px;") Áp dụng
+              div#cart-coupon-message(style="font-size:0.75rem;display:none;")
 
             a.btn.btn-outline-dark(href="/products") ← Tiếp tục mua sắm
 
@@ -44,7 +46,7 @@ block content
 
           .summary-line
             span Phí vận chuyển
-            strong 150.000 ₫
+            strong 0
 
           .summary-line
             span Giảm giá

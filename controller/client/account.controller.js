@@ -8,6 +8,7 @@ const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const Order = require("../../models/order.model")
 const Product = require("../../models/products.model")
+const Coupon = require("../../models/coupon.model")
 module.exports.login = async (req, res) => {
     res.render("client/pages/login", {
         title: "Dang nhap"
@@ -220,8 +221,19 @@ module.exports.resetPassword = async (req, res) => {
 }
 
 module.exports.notification = async (req, res) => {
+    const now = new Date()
+    const coupons = await Coupon.find({
+        deleted: false,
+        isActive: true,
+        $or: [
+            { expireAt: null },
+            { expireAt: { $gt: now } }
+        ]
+    }).sort({ createdAt: "desc" })
+
     res.render("client/pages/notification", {
-        title: "Thong bao"
+        title: "Thông báo",
+        coupons: coupons
     })
 }
 

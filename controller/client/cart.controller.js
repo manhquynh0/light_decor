@@ -1,6 +1,8 @@
 const Product = require("../../models/products.model")
 const generateHelper = require("../../helpers/generate.helper")
 const Order = require("../../models/order.model")
+const Coupon = require("../../models/coupon.model")
+
 module.exports.cart = async (req, res) => {
     res.render("client/pages/cart", {
 
@@ -11,6 +13,71 @@ module.exports.payment = async (req, res) => {
 
     })
 }
+
+module.exports.applyCoupon = async (req, res) => {
+    try {
+        const { code, subTotal } = req.body;
+        const now = new Date();
+
+        const coupon = await Coupon.findOne({
+            code: code.toUpperCase().trim(),
+            deleted: false,
+            isActive: true,
+            $or: [
+                { expireAt: null },
+                { expireAt: { $gt: now } }
+            ]
+        });
+
+        if (!coupon) {
+            return res.json({
+                code: "error",
+                message: "Mã giảm giá không hợp lệ hoặc đã hết hạn!"
+            });
+        }
+
+        if (coupon.usageLimit !== null && coupon.usedCount >= coupon.usageLimit) {
+            return res.json({
+                code: "error",
+                message: "Mã giảm giá đã hết lượt sử dụng!"
+            });
+        }
+
+        if (subTotal < coupon.minOrderValue) {
+            return res.json({
+                code: "error",
+                message: `Đơn hàng tối thiểu ${coupon.minOrderValue.toLocaleString('vi-VN')}đ để sử dụng mã này!`
+            });
+        }
+
+        let discount = 0;
+        if (coupon.discountType === "percent") {
+            discount = (subTotal * coupon.discountValue) / 100;
+            if (coupon.maxDiscount !== null && discount > coupon.maxDiscount) {
+                discount = coupon.maxDiscount;
+            }
+        } else {
+            discount = coupon.discountValue;
+        }
+
+        // Đảm bảo giảm giá không vượt quá giá trị đơn hàng
+        if (discount > subTotal) discount = subTotal;
+
+        res.json({
+            code: "success",
+            discount: discount,
+            message: "Áp dụng mã giảm giá thành công!"
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.json({
+            code: "error",
+            message: "Có lỗi xảy ra khi áp dụng mã giảm giá!"
+        });
+    }
+}
+
 module.exports.paymentPost = async (req, res) => {
     const ProductPayment = req.body
     for (const item of ProductPayment) {
@@ -87,7 +154,7 @@ module.exports.orderPost = async (req, res) => {
 
 
             // Remove dots from priceNEW (e.g. "45.000.000" -> 45000000)
-            item.price = infor.priceNEW ? parseInt(infor.priceNEW.replace(/\./g, '')) : 0;
+            item.price = infor.priceNEW ? parseInt(String(infor.priceNEW).replace(/\./g, '')) : 0;
             item.avatar = infor.avatar;
             item.name = infor.name;
             item.slug = infor.slug;
@@ -116,15 +183,55 @@ module.exports.orderPost = async (req, res) => {
 
         // Thanh toán
         // Tạm tính
-        req.body.subTotal = req.body.items.reduce((sum, item) => {
+        const subTotal = req.body.items.reduce((sum, item) => {
             return sum + (item.price * parseInt(item.quantity));
         }, 0);
 
-        // Giảm
-        req.body.discount = 0;
+        req.body.subTotal = subTotal;
+
+        // Xử lý giảm giá
+        let discount = 0;
+        if (req.body.couponCode) {
+            const now = new Date();
+            const coupon = await Coupon.findOne({
+                code: req.body.couponCode.toUpperCase().trim(),
+                deleted: false,
+                isActive: true,
+                $or: [
+                    { expireAt: null },
+                    { expireAt: { $gt: now } }
+                ]
+            });
+
+            if (coupon && subTotal >= coupon.minOrderValue && (coupon.usageLimit === null || coupon.usedCount < coupon.usageLimit)) {
+                if (coupon.discountType === "percent") {
+                    discount = (subTotal * coupon.discountValue) / 100;
+                    if (coupon.maxDiscount !== null && discount > coupon.maxDiscount) {
+                        discount = coupon.maxDiscount;
+                    }
+                } else {
+                    discount = coupon.discountValue;
+                }
+                
+                if (discount > subTotal) discount = subTotal;
+                
+                req.body.discount = discount;
+                req.body.couponId = coupon._id;
+
+                // Tăng lượt sử dụng coupon
+                await Coupon.updateOne({ _id: coupon._id }, {
+                    $inc: { usedCount: 1 }
+                });
+            } else {
+                req.body.discount = 0;
+                req.body.couponCode = "";
+            }
+        } else {
+            req.body.discount = 0;
+        }
 
         // Thanh toán
-        req.body.total = req.body.subTotal - req.body.discount;
+        req.body.total = req.body.subTotal - (req.body.discount || 0);
 
         // Trạng thái thanh toán
         if (req.body.method == "money") {

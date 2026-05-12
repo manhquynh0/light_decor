@@ -44,52 +44,70 @@ block main
               input(type="checkbox" checked)
               span.toggle-track
 
+    
+    //- =============================================
+    //- MÃ GIẢM GIÁ CỦA CỬA HÀNG
+    //- =============================================
     .settings-card
       .settings-card-header
         div
-          h2 Thông báo trong ứng dụng
-          p Kiểm soát thông báo hiển thị trực tiếp trên website
+          h2
+            svg.coupon-header-icon(stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="20" width="20")
+              path(d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z")
+              line(x1="7" y1="7" x2="7.01" y2="7")
+            |  Mã Giảm Giá Cửa Hàng
+          p Sao chép và sử dụng các mã ưu đãi dưới đây khi thanh toán
 
       .settings-card-body
-        .toggle-list
+        if coupons && coupons.length > 0
+          .coupon-grid
+            each coupon in coupons
+              .coupon-card
+                .coupon-left
+                  .coupon-icon-wrap
+                    svg(stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="22" width="22")
+                      path(d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z")
+                      line(x1="7" y1="7" x2="7.01" y2="7")
+                  .coupon-value
+                    if coupon.discountType === "percent"
+                      span.coupon-amount -#{coupon.discountValue}%
+                    else
+                      span.coupon-amount -#{coupon.discountValue.toLocaleString("vi-VN")}đ
+                  p.coupon-desc #{coupon.description || "Áp dụng cho đơn hàng"}
 
-          .toggle-item
-            .toggle-info
-              h4 Tin nhắn từ hỗ trợ
-              p Nhận thông báo khi team hỗ trợ phản hồi
-            label.toggle-switch
-              input(type="checkbox" checked)
-              span.toggle-track
+                .coupon-divider
+                  .coupon-notch-top
+                  .coupon-dashes
+                  .coupon-notch-bottom
 
-          .toggle-item
-            .toggle-info
-              h4 Giỏ hàng bị bỏ quên
-              p Nhắc nhở khi có sản phẩm trong giỏ hàng chưa thanh toán
-            label.toggle-switch
-              input(type="checkbox" checked)
-              span.toggle-track
-
-          .toggle-item
-            .toggle-info
-              h4 Đánh giá sản phẩm
-              p Nhắc nhở đánh giá sau khi nhận hàng
-            label.toggle-switch
-              input(type="checkbox")
-              span.toggle-track
-
-        .form-actions(style="margin-top:24px;")
-          button.btn.btn-gold(onclick="showSaveIndicator('notifSaveOk')")
-            svg(
-              stroke-width="2.5"
-              stroke="currentColor"
-              fill="none"
-              viewBox="0 0 24 24"
-              height="16"
-              width="16"
-            )
-              path(d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z")
-              polyline(points="17 21 17 13 7 13 7 21")
-              polyline(points="7 3 7 8 15 8")
-            | Lưu cài đặt
-
-          span#notifSaveOk.save-indicator ✓ Đã lưu!
+                .coupon-right
+                  .coupon-code-wrap
+                    span.coupon-label MÃ GIẢM GIÁ
+                    span.coupon-code #{coupon.code}
+                    button.coupon-copy-btn(
+                      onclick=`copyCouponCode('${coupon.code}', this)`
+                      title="Sao chép mã"
+                    )
+                      svg.copy-icon(stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="14" width="14")
+                        rect(width="13" height="13" x="9" y="9" rx="2" ry="2")
+                        path(d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1")
+                      svg.check-icon(style="display:none" stroke-width="2.5" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="14" width="14")
+                        polyline(points="20 6 9 17 4 12")
+                      span.copy-text Sao chép
+                  .coupon-meta
+                    if coupon.minOrderValue > 0
+                      span.coupon-meta-tag
+                        | Đơn tối thiểu #{coupon.minOrderValue.toLocaleString("vi-VN")}đ
+                    if coupon.expireAt
+                      span.coupon-meta-tag.coupon-expire
+                        svg(stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="11" width="11")
+                          circle(cx="12" cy="12" r="10")
+                          polyline(points="12 6 12 12 16 14")
+                        | HSD: #{new Date(coupon.expireAt).toLocaleDateString("vi-VN")}
+        else
+          .coupon-empty
+            svg(stroke-width="1.5" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="40" width="40")
+              path(d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z")
+              line(x1="7" y1="7" x2="7.01" y2="7")
+            p Hiện chưa có mã giảm giá nào
+            span Hãy quay lại sau để nhận ưu đãi mới nhé!

@@ -16,6 +16,11 @@ const schema = new mongoose.Schema(
         method: String,
         items: Array,
         subTotal: Number,
+        couponCode: String,
+        couponId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Coupon"
+        },
         discount: {
             type: Number,
             default: 0
