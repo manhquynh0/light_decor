@@ -15,9 +15,9 @@ block main
       // Filters & Sorting
       div(style="display:flex;gap:16px;margin-bottom:32px;flex-wrap:wrap;align-items:center;")
         div(style="display:flex;gap:8px;")
-          select.form-control(style="width:200px;cursor:pointer;")
+          select.form-control(style="width:200px;cursor:pointer;" filter-status)
             option(value="") Tất cả trạng thái
-            option(value="processing") Đang xử lý
+            option(value="initial") Đang xử lý
             option(value="shipped") Đã gửi hàng
             option(value="delivered") Đã giao hàng
             option(value="cancelled") Đã hủy

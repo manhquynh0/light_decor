@@ -35,7 +35,7 @@ module.exports.index = async (req, res) => {
 
   const skip = (page - 1) * limitItems; // bỏ qua bao nhiêu record
   const orderList = await Order.find(find)
-    .sort({ name: "asc" })
+    .sort({ createdAt: -1 })
     .limit(limitItems)
     .skip(skip);
 

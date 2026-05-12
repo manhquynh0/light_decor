@@ -1,63 +1,162 @@
+const Chat = require("../../models/chat.model");
+const Product = require("../../models/products.model");
+const { postToGemini } = require("../../helpers/gemini.helper");
+
+function normalizeGeminiHistory(history) {
+    const normalized = history.map((chat) => ({
+        role: chat.role === "model" ? "model" : "user",
+        parts: [{ text: chat.content }]
+    }));
+
+    while (normalized.length > 0 && normalized[0].role !== "user") {
+        normalized.shift();
+    }
+
+    while (normalized.length > 0 && normalized[normalized.length - 1].role !== "model") {
+        normalized.pop();
+    }
+
+    return normalized;
+}
+
 module.exports.index = async (req, res) => {
     try {
         const { message } = req.body;
         const API_KEY = process.env.GEMINI_API_KEY;
 
-        if (!message) return res.json({ code: "error", message: "Tin nhắn trống!" });
+        // Đồng nhất userId: Ưu tiên User ID, sau đó là Guest ID từ session
+        let userId = res.locals.user ? res.locals.user.id : req.session.guestId;
 
-        const modelToUse = "models/gemini-flash-latest";
-        const API_URL = `https://generativelanguage.googleapis.com/v1beta/${modelToUse}:generateContent?key=${API_KEY}`;
-
-        // PHẦN HUẤN LUYỆN AI Ở ĐÂY
-        const systemInstruction = `
-            Bạn là trợ lý ảo AI chuyên nghiệp của cửa hàng nội thất cao cấp MANHQUYNH DECOR.
-            Thông tin cửa hàng:
-            - Tên: MANHQUYNH DECOR!
-            - Sản phẩm: Các loại đèn trang trí , đồ trang trí cao cấp.
-            - Phong cách: Sang trọng, tinh tế, hiện đại.
-            
-            Quy tắc trả lời:
-            1. Luôn lịch sự, xưng hô là "Dạ, MANHQUYNH xin nghe" hoặc "Em có thể giúp gì cho anh/chị ạ?".
-            2. Trả lời ngắn gọn, tập trung vào tư vấn sản phẩm nội thất.
-            3. Nếu khách hỏi về giá hoặc mua hàng, hãy mời khách xem trong danh mục "Sản phẩm" hoặc để lại số điện thoại để nhân viên gọi tư vấn.
-            4. Tuyệt đối không trả lời các câu hỏi về chính trị, tôn giáo hoặc các vấn đề không liên quan đến nội thất.
-        `;
-
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                system_instruction: {
-                    parts: [{ text: systemInstruction }]
-                },
-                contents: [{
-                    parts: [{ text: message }]
-                }]
-            })
-        });
-
-        const data = await response.json();
-
-        if (data.error) {
-            console.error("Google API Error:", data.error);
-            if (data.error.status === "RESOURCE_EXHAUSTED") {
-                throw new Error("Hệ thống đang bận một chút, bạn thử lại sau 30 giây nhé.");
-            }
-            throw new Error("AI đang nghỉ ngơi, bạn quay lại sau nhé!");
+        // Nếu là khách và chưa có guestId trong session, hãy tạo mới
+        if (!userId) {
+            req.session.guestId = "guest_" + Date.now() + "_" + Math.random().toString(36).substring(2, 9);
+            userId = req.session.guestId;
         }
 
-        const aiResponse = data.candidates[0].content.parts[0].text;
+        if (!message) return res.json({ code: "error", message: "Tin nhắn trống!" });
 
-        res.json({
-            code: "success",
-            message: aiResponse
-        });
+        // 1. LẤY DANH SÁCH SẢN PHẨM THỰC TẾ TỪ CỬA HÀNG
+        const allProducts = await Product.find({ deleted: false })
+            .populate("category", "name")
+
+        // Thêm id để Gemini dễ tham chiếu
+        const productData = allProducts.map((p, i) => ({
+            stt: i + 1,
+            name: p.name || "Chưa có tên",
+            price: p.priceNEW != null
+                ? Number(p.priceNEW).toLocaleString("vi-VN") + " ₫"
+                : "Liên hệ",
+            priceOLD: p.priceOLD != null
+                ? Number(p.priceOLD).toLocaleString("vi-VN") + " ₫"
+                : null,
+            category: Array.isArray(p.category)
+                ? p.category.map(c => c.name).join(", ")
+                : "Không rõ",
+            status: p.status === "stock" ? "Còn hàng" : "Hết hàng",
+            stock: p.stock || "Không rõ",
+            description: p.description || "",
+            material: p.material || "",
+            made: p.made || "",
+            power: p.power || "",
+            size: p.size || "",
+            colorIndex: p.colorIndex || "",
+        }));
+
+        const productText = JSON.stringify(productData, null, 2);
+
+        // 2. Lấy lịch sử chat (Chỉ lấy trong 24 giờ gần nhất để tối ưu)
+        const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+        const history = await Chat.find({
+            user_id: userId,
+            type: "client",
+            createdAt: { $gte: oneDayAgo }
+        })
+            .sort({ createdAt: -1 })
+            .limit(10);
+
+        const formattedHistory = normalizeGeminiHistory(history.reverse());
+
+        const modelToUse = "models/gemini-2.5-flash";
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/${modelToUse}:generateContent?key=${API_KEY}`;
+
+
+        const systemInstruction = `
+        Bạn là trợ lý tư vấn bán hàng chuyên nghiệp của MANHQUYNH DECOR — cửa hàng đèn trang trí cao cấp.
+        Hãy trả lời thân thiện, tự nhiên như một nhân viên tư vấn thực thụ.
+
+        DANH SÁCH SẢN PHẨM (chỉ dùng dữ liệu này, không được tự bịa):
+        ${JSON.stringify(productData, null, 2)}
+
+        ═══════════════════════════════════════
+        QUY TẮC BẮT BUỘC:
+        ═══════════════════════════════════════
+
+        [DỮ LIỆU]
+        1. Tên và giá COPY NGUYÊN XI, không sửa đổi.
+        2. Format liệt kê: "- [tên] — [giá]"
+        3. Nếu danh sách trống: "Hiện cửa hàng chưa cập nhật sản phẩm."
+        4. Không dùng dấu * để bao tên/giá sản phẩm.
+        5. Sản phẩm "mới nhất" = sản phẩm có stt cao nhất trong danh sách.
+
+        [TƯ VẤN THÔNG MINH]
+        6. Nếu khách hỏi "rẻ nhất" → tìm sản phẩm có giá thấp nhất và gợi ý.
+        7. Nếu khách hỏi "đắt nhất" / "cao cấp nhất" → tìm giá cao nhất.
+        8. Nếu khách hỏi theo phòng (phòng khách, phòng ngủ, bếp...) → lọc theo category hoặc description phù hợp.
+        9. Nếu khách hỏi theo ngân sách ("dưới 1 triệu", "khoảng 2 triệu") → lọc sản phẩm trong tầm giá đó.
+        10. Nếu khách hỏi chung chung ("có gì đẹp không?") → giới thiệu 3 sản phẩm nổi bật, đa dạng giá.
+        11. Nếu khách hỏi sản phẩm không có trong danh sách → trả lời lịch sự: "Hiện cửa hàng chưa có sản phẩm này, bạn có muốn xem các mẫu tương tự không?"
+        12. Nếu khách so sánh 2 sản phẩm → liệt kê điểm khác biệt về giá, chất liệu, kích thước.
+
+        [GIAO TIẾP]
+        13. Xưng "mình" với khách, gọi khách là "bạn".
+        14. Cuối mỗi câu trả lời nên có 1 câu hỏi gợi mở để tiếp tục tư vấn.
+            Ví dụ: "Bạn đang tìm đèn cho không gian nào ạ?" hoặc "Bạn có muốn mình tư vấn thêm không?"
+        15. Không trả lời quá dài, tối đa 5-6 sản phẩm mỗi lần, tránh làm khách overwhelmed.
+        16. Nếu khách nói "cảm ơn" hoặc kết thúc → chào tạm biệt thân thiện và mời quay lại.
+        17. Nếu câu hỏi không liên quan đến sản phẩm/cửa hàng → lịch sự từ chối và hướng về tư vấn sản phẩm.
+        `;
+
+        const requestBody = {
+            system_instruction: { parts: [{ text: systemInstruction }] },
+            contents: [
+                ...formattedHistory,
+                {
+                    role: "user",
+                    parts: [{ text: `Dựa trên danh sách sản phẩm, hãy trả lời câu hỏi: ${message}` }]
+                }
+            ]
+        };
+
+        const data = await postToGemini(API_URL, requestBody);
+
+        const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "Xin lỗi, tôi không thể trả lời lúc này.";
+
+        // Lưu vào lịch sử Chat
+        await Chat.create([
+            { user_id: userId, role: "user", content: message, type: "client" },
+            { user_id: userId, role: "model", content: aiResponse, type: "client" }
+        ]);
+
+        return res.json({ code: "success", message: aiResponse });
 
     } catch (error) {
-        console.error("AI Chat Error Detail:", error);
-        res.json({
-            code: "error",
-            message: error.message
-        });
+        console.error("AI Chat Error:", error);
+        res.json({ code: "error", message: "Lỗi trợ lý: " + error.message });
+    }
+};
+
+module.exports.getHistory = async (req, res) => {
+    try {
+        const userId = res.locals.user ? res.locals.user.id : req.session.guestId;
+
+        if (!userId) {
+            return res.json({ code: "success", history: [] });
+        }
+
+        const history = await Chat.find({ user_id: userId, type: "client" }).sort({ createdAt: 1 }).limit(20);
+        res.json({ code: "success", history: history });
+    } catch (error) {
+        res.json({ code: "error", message: error.message });
     }
 };

@@ -1,4 +1,4 @@
-﻿
+
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -319,11 +319,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const totalEl = row.querySelector('.line-total');
             if (!qtyEl) return;
             let qty = parseInt(qtyEl.textContent, 10);
-            if (btn.textContent.trim() === 'Ă¢Ë†â€™') qty = Math.max(1, qty - 1);
+            if (btn.textContent.trim() === '-') qty = Math.max(1, qty - 1);
             else qty += 1;
             qtyEl.textContent = qty;
             if (totalEl && unitPrice) {
-                totalEl.textContent = (unitPrice * qty).toLocaleString('vi-VN') + ' Ă¢â€Â«';
+                totalEl.textContent = (unitPrice * qty).toLocaleString('vi-VN') + ' ₫';
             }
             updateCartTotal();
         });
@@ -341,8 +341,8 @@ document.addEventListener('DOMContentLoaded', function () {
             sub += price * qty;
         });
         const ship = 150000;
-        subtotalEl.textContent = sub.toLocaleString('vi-VN') + ' Ă¢â€Â«';
-        totalEl.textContent = (sub + ship).toLocaleString('vi-VN') + ' Ă¢â€Â«';
+        subtotalEl.textContent = sub.toLocaleString('vi-VN') + ' ₫';
+        totalEl.textContent = (sub + ship).toLocaleString('vi-VN') + ' ₫';
     }
 
 
@@ -352,7 +352,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const tgt = document.getElementById(btn.dataset.showPass);
             if (!tgt) return;
             tgt.type = tgt.type === 'password' ? 'text' : 'password';
-            btn.textContent = tgt.type === 'text' ? 'Ă¡ÂºÂ¨n' : 'HiĂ¡Â»â€¡n';
+            btn.textContent = tgt.type === 'text' ? 'Ẩn' : 'Hiện';
         });
     });
 
@@ -425,7 +425,61 @@ document.addEventListener('DOMContentLoaded', function () {
         document.head.appendChild(styleHeader);
     }
 
+    // ========== PRICE RANGE SLIDER ==========
+    const minSlider = document.getElementById('minSlider');
+    const maxSlider = document.getElementById('maxSlider');
+    const minDisplay = document.getElementById('minDisplay');
+    const maxDisplay = document.getElementById('maxDisplay');
+    const fill = document.getElementById('fill');
+
+    if (minSlider && maxSlider && minDisplay && maxDisplay && fill) {
+        function updateRange() {
+            let minVal = parseInt(minSlider.value);
+            let maxVal = parseInt(maxSlider.value);
+
+            // Update displays
+            minDisplay.textContent = minVal.toLocaleString('vi-VN') + 'đ';
+            maxDisplay.textContent = maxVal.toLocaleString('vi-VN') + 'đ';
+
+            // Update fill position
+            const minPercent = (minVal / minSlider.max) * 100;
+            const maxPercent = (maxVal / maxSlider.max) * 100;
+
+            fill.style.left = minPercent + '%';
+            fill.style.width = (maxPercent - minPercent) + '%';
+        }
+
+        minSlider.addEventListener('input', () => {
+            if (parseInt(minSlider.value) > parseInt(maxSlider.value)) {
+                minSlider.value = maxSlider.value;
+            }
+            updateRange();
+        });
+
+        maxSlider.addEventListener('input', () => {
+            if (parseInt(maxSlider.value) < parseInt(minSlider.value)) {
+                maxSlider.value = minSlider.value;
+            }
+            updateRange();
+        });
+
+        // Trigger on release
+        const handleFilterChange = () => {
+            const url = new URL(window.location.href);
+            url.searchParams.set('priceMin', minSlider.value);
+            url.searchParams.set('priceMax', maxSlider.value);
+            // window.location.href = url.href; 
+        };
+
+        minSlider.addEventListener('change', handleFilterChange);
+        maxSlider.addEventListener('change', handleFilterChange);
+
+        // Initial call
+        updateRange();
+    }
+
 }); // end DOMContentLoaded
+
 function switchPanel(panelId) {
     document.querySelectorAll('.settings-nav-item').forEach(item => {
         item.classList.toggle('active', item.dataset.panel === panelId);
@@ -459,12 +513,12 @@ function openModal(id, url = null) {
     if (modal) {
         modal.classList.add('open');
         if (url) {
-            // Ä‘Å¸â€˜â€° chĂ¡Â»â€° lĂ†Â°u URL khi sĂ¡ÂºÂ¯p Ă„â€˜Ă¡Â»â€¢i URL
+            // Để chèn lưu URL khi sắp đổi URL
             previousUrl = window.location.pathname;
             history.pushState({ modal: id }, '', url);
         }
     } else if (url) {
-        // Modal khÄ‚Â´ng cÄ‚Â³ trong DOM Ă¢â€ â€™ chuyĂ¡Â»Æ’n trang Ă„â€˜Ă¡Â»Æ’ server render
+        // Modal không có trong DOM -> chuyển trang để server render
         window.location.href = url;
     }
 }
@@ -472,18 +526,18 @@ function openModal(id, url = null) {
 function closeModal(id) {
     const modal = document.getElementById(id);
     modal?.classList.remove('open');
-    // Ä‘Å¸â€˜â€° quay lĂ¡ÂºÂ¡i URL trĂ†Â°Ă¡Â»â€ºc Ă„â€˜Ä‚Â³
+    // Để quay lại URL trước đó
     if (previousUrl && previousUrl !== window.location.pathname) {
-        // URL Ă„â€˜Ä‚Â£ thay Ă„â€˜Ă¡Â»â€¢i qua pushState Ă¢â€ â€™ pushState lĂ¡ÂºÂ¡i
+        // URL đã thay đổi qua pushState -> pushState lại
         history.pushState({}, '', previousUrl);
     } else {
-        // Trang load trĂ¡Â»Â±c tiĂ¡ÂºÂ¿p (full navigation) Ă¢â€ â€™ chuyĂ¡Â»Æ’n vĂ¡Â»Â trang list
+        // Trang load trực tiếp (full navigation) -> chuyển về trang list
         const basePath = window.location.pathname.replace(/\/(edit|add|detail)(\/.*)?$/, '');
         window.location.href = basePath;
     }
 }
 
-// click ra ngoÄ‚Â i Ă„â€˜Ă¡Â»Æ’ Ă„â€˜Ä‚Â³ng
+// click ra ngoài để đóng
 document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
     backdrop.addEventListener('click', e => {
         if (e.target === backdrop) {
@@ -497,13 +551,7 @@ document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
         }
     });
 });
-// ========== FORMS ==========
-document.getElementById('profileForm')?.addEventListener('submit', e => {
-    e.preventDefault();
-    const name = document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value;
-    document.getElementById('sidebar-name').textContent = name;
-    showSaveIndicator('profileSaveOk');
-});
+
 
 document.getElementById('passwordForm')?.addEventListener('submit', e => {
     e.preventDefault();
@@ -540,10 +588,10 @@ document.getElementById('newPass')?.addEventListener('input', function () {
     if (/[0-9]/.test(val)) score++;
     if (/[^A-Za-z0-9]/.test(val)) score++;
     const levels = [
-        { w: '25%', bg: '#e84040', label: 'RĂ¡ÂºÂ¥t yĂ¡ÂºÂ¿u' },
-        { w: '50%', bg: '#f39c12', label: 'YĂ¡ÂºÂ¿u' },
-        { w: '75%', bg: '#3498db', label: 'Trung bÄ‚Â¬nh' },
-        { w: '100%', bg: '#27ae60', label: 'MĂ¡ÂºÂ¡nh' },
+        { w: '25%', bg: '#e84040', label: 'Rất yếu' },
+        { w: '50%', bg: '#f39c12', label: 'Yếu' },
+        { w: '75%', bg: '#3498db', label: 'Trung bình' },
+        { w: '100%', bg: '#27ae60', label: 'Mạnh' },
     ];
     const lv = levels[Math.max(0, score - 1)];
     fill.style.width = lv.w;
@@ -555,7 +603,7 @@ document.getElementById('newPass')?.addEventListener('input', function () {
 // ========== LOGOUT ==========
 function confirmLogout() {
     const btn = document.getElementById('logoutConfirmBtn');
-    btn.textContent = 'Ă„Âang Ă„â€˜Ă„Æ’ng xuĂ¡ÂºÂ¥t...';
+    btn.textContent = 'Đang đăng xuất...';
     btn.disabled = true;
     setTimeout(() => { window.location.href = '/account/logout'; }, 1500);
 }
@@ -582,7 +630,7 @@ document.getElementById('avatarUpload')?.addEventListener('change', function (e)
             img.src = event.target.result;
             img.style.display = 'block';
             initials.style.display = 'none';
-            // LĂ†Â°u vÄ‚Â o localStorage Ă„â€˜Ă¡Â»Æ’ giĂ¡Â»Â¯ khi reload
+            // Lưu vào localStorage để giữ khi reload
             localStorage.setItem('userAvatar', event.target.result);
         };
         reader.readAsDataURL(file);
@@ -664,7 +712,7 @@ function selectSize(btn) {
 }
 
 
-// OTP input tĂ¡Â»Â± Ă„â€˜Ă¡Â»â„¢ng nhĂ¡ÂºÂ£y Ä‚Â´
+// OTP input tự động nhảy ô
 document.querySelectorAll('.otp-digit').forEach((input, index, inputs) => {
     input.addEventListener('input', function () {
         this.value = this.value.replace(/[^0-9]/g, '');
@@ -689,7 +737,7 @@ document.querySelectorAll('.otp-digit').forEach((input, index, inputs) => {
 });
 
 
-// Password strength (frontend only - hiĂ¡Â»Æ’n thĂ¡Â»â€¹)
+// Password strength (frontend only - hiển thị)
 document.getElementById('password')?.addEventListener('input', function () {
     const pwd = this.value;
     const requirements = {
@@ -710,14 +758,14 @@ document.getElementById('password')?.addEventListener('input', function () {
 });
 const showPageAlert = (message, type = "success") => {
 
-    // XÄ‚Â³a alert cĂ…Â© nĂ¡ÂºÂ¿u cÄ‚Â³
+    // Xóa alert cũ nếu có
     const oldAlert = document.querySelector("[alert-time]");
 
     if (oldAlert) {
         oldAlert.remove();
     }
 
-    // TĂ¡ÂºÂ¡o alert mĂ¡Â»â€ºi
+    // Tạo alert mới
     const alert = document.createElement("div");
 
     alert.setAttribute("alert-time", "4000");
@@ -762,7 +810,7 @@ if (listFilepondImage.length > 0) {
             const imageDefault = elementImageDefault.getAttribute("image-default");
             if (imageDefault) {
                 files = [{
-                    source: imageDefault, // Ă„ÂĂ†Â°Ă¡Â»Âng dĂ¡ÂºÂ«n Ă¡ÂºÂ£nh
+                    source: imageDefault,
                 },]
             }
         }
@@ -792,7 +840,7 @@ if (listFilepondImageMulti.length > 0) {
                 files = [];
                 listImageDefault.forEach(image => {
                     files.push({
-                        source: image, // Ă„ÂĂ†Â°Ă¡Â»Âng dĂ¡ÂºÂ«n Ă¡ÂºÂ£nh
+                        source: image,
                     });
                 })
             }
@@ -811,16 +859,16 @@ if (loginForm) {
     validation
         .addField('#email', [{
             rule: 'required',
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p email cĂ¡Â»Â§a bĂ¡ÂºÂ¡n!',
+            errorMessage: 'Vui lòng nhập email của bạn!',
         },
         {
             rule: 'email',
-            errorMessage: 'Email khÄ‚Â´ng Ă„â€˜Ä‚Âºng Ă„â€˜Ă¡Â»â€¹nh dĂ¡ÂºÂ¡ng!',
+            errorMessage: 'Email không đúng định dạng!',
         },
         ])
         .addField('#password', [{
             rule: 'required',
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p mĂ¡ÂºÂ­t khĂ¡ÂºÂ©u!',
+            errorMessage: 'Vui lòng nhập mật khẩu!',
         }
         ])
         .onSuccess((event) => {
@@ -862,85 +910,85 @@ if (registerForm) {
     validation
         .addField('#firstname', [{
             rule: 'required',
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p tÄ‚Âªn cĂ¡Â»Â§a bĂ¡ÂºÂ¡n!',
+            errorMessage: 'Vui lòng nhập tên của bạn!',
         },
         {
             validator: (value) => value.length >= 2,
-            errorMessage: 'TÄ‚Âªn phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t 2 kÄ‚Â½ tĂ¡Â»Â±!',
+            errorMessage: 'Tên phải chứa ít nhất 2 ký tự!',
         },
         ])
         .addField('#lastname', [{
             rule: 'required',
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p hĂ¡Â»Â cĂ¡Â»Â§a bĂ¡ÂºÂ¡n!',
+            errorMessage: 'Vui lòng nhập họ của bạn!',
         },
         {
             validator: (value) => value.length >= 2,
-            errorMessage: 'HĂ¡Â»Â phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t 2 kÄ‚Â½ tĂ¡Â»Â±!',
+            errorMessage: 'Họ phải chứa ít nhất 2 ký tự!',
         },
         ])
         .addField('#email', [{
             rule: 'required',
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p email cĂ¡Â»Â§a bĂ¡ÂºÂ¡n!',
+            errorMessage: 'Vui lòng nhập email của bạn!',
         },
         {
             rule: 'email',
-            errorMessage: 'Email khÄ‚Â´ng Ă„â€˜Ä‚Âºng Ă„â€˜Ă¡Â»â€¹nh dĂ¡ÂºÂ¡ng!',
+            errorMessage: 'Email không đúng định dạng!',
         },
         ])
         .addField('#phone', [{
             rule: 'required',
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p sĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i cĂ¡Â»Â§a bĂ¡ÂºÂ¡n!',
+            errorMessage: 'Vui lòng nhập số điện thoại của bạn!',
         },
         {
             validator: (value) => value.length >= 10,
-            errorMessage: 'SĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t 10 kÄ‚Â½ tĂ¡Â»Â±!',
+            errorMessage: 'Số điện thoại phải chứa ít nhất 10 ký tự!',
         },
         {
             validator: (value) => value.length <= 11,
-            errorMessage: 'SĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i phĂ¡ÂºÂ£i chĂ¡Â»Â©a tĂ¡Â»â€˜i Ă„â€˜a 11 kÄ‚Â½ tĂ¡Â»Â±!',
+            errorMessage: 'Số điện thoại phải chứa tối đa 11 ký tự!',
         },
         {
             validator: (value) => /^0[0-9]{9}$/.test(value),
-            errorMessage: 'SĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i khÄ‚Â´ng Ă„â€˜Ä‚Âºng Ă„â€˜Ă¡Â»â€¹nh dĂ¡ÂºÂ¡ng!',
+            errorMessage: 'Số điện thoại không đúng định dạng!',
         },
         ])
         .addField('#password', [{
             rule: 'required',
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p mĂ¡ÂºÂ­t khĂ¡ÂºÂ©u cĂ¡Â»Â§a bĂ¡ÂºÂ¡n!',
+            errorMessage: 'Vui lòng nhập mật khẩu của bạn!',
         },
         {
             validator: (value) => value.length >= 8,
-            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t 8 kÄ‚Â½ tĂ¡Â»Â±!',
+            errorMessage: 'Mật khẩu phải chứa ít nhất 8 ký tự!',
         },
         {
             validator: (value) => /[A-Z]/.test(value),
-            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t chĂ¡Â»Â¯ cÄ‚Â¡i in hoa!',
+            errorMessage: 'Mật khẩu phải chứa ít nhất một ký tự in hoa!',
         },
         {
             validator: (value) => /[a-z]/.test(value),
-            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t chĂ¡Â»Â¯ cÄ‚Â¡i thĂ†Â°Ă¡Â»Âng!',
+            errorMessage: 'Mật khẩu phải chứa ít nhất một ký tự thường!',
         },
         {
             validator: (value) => /\d/.test(value),
-            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t chĂ¡Â»Â¯ sĂ¡Â»â€˜!',
+            errorMessage: 'Mật khẩu phải chứa ít nhất một chữ số!',
         },
         {
             validator: (value) => /[@$!%*?&]/.test(value),
-            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t kÄ‚Â½ tĂ¡Â»Â± Ă„â€˜Ă¡ÂºÂ·c biĂ¡Â»â€¡t!',
+            errorMessage: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt!',
         },
         ])
         .addField('#confirmPassword', [{
             rule: 'required',
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p lĂ¡ÂºÂ¡i mĂ¡ÂºÂ­t khĂ¡ÂºÂ©u cĂ¡Â»Â§a bĂ¡ÂºÂ¡n!',
+            errorMessage: 'Vui lòng nhập lại mật khẩu của bạn!',
         },
         {
             validator: (value) => value === document.querySelector("#password").value,
-            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u khÄ‚Â´ng khĂ¡Â»â€ºp!',
+            errorMessage: 'Mật khẩu không khớp!',
         },
         ])
         .addField('#terms', [{
             rule: 'required',
-            errorMessage: 'BĂ¡ÂºÂ¡n phĂ¡ÂºÂ£i Ă„â€˜Ă¡Â»â€œng Ä‚Â½ vĂ¡Â»â€ºi Ă„â€˜iĂ¡Â»Âu khoĂ¡ÂºÂ£n vÄ‚Â  Ă„â€˜iĂ¡Â»Âu kiĂ¡Â»â€¡n!',
+            errorMessage: 'BẠn phải đồng ý với điều khoản và điều kiện!',
         }])
         .onSuccess((event) => {
             const firstName = event.target.firstname.value;
@@ -988,11 +1036,11 @@ if (forgotPasswordForm) {
     validation
         .addField('#email', [{
             rule: 'required',
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p email cĂ¡Â»Â§a bĂ¡ÂºÂ¡n!',
+            errorMessage: 'Vui lòng nhập email của bạn!',
         },
         {
             rule: 'email',
-            errorMessage: 'Email khÄ‚Â´ng Ă„â€˜Ä‚Âºng Ă„â€˜Ă¡Â»â€¹nh dĂ¡ÂºÂ¡ng!',
+            errorMessage: 'Email không đúng định dạng!',
         },
         ])
         .onSuccess((event) => {
@@ -1052,7 +1100,7 @@ if (otpPasswordForm) {
 
             if (timeLeft <= 0) {
                 clearInterval(interval);
-                countdownEl.textContent = "HĂ¡ÂºÂ¿t hĂ¡ÂºÂ¡n";
+                countdownEl.textContent = "Hết hạn";
                 countdownBlock.classList.remove("warning");
                 otpPasswordForm.querySelector(".btn-gold").disabled = true;
             }
@@ -1070,7 +1118,7 @@ if (otpPasswordForm) {
     }
 
     otpInputs.forEach((input, index) => {
-        // chĂ¡Â»â€° cho nhĂ¡ÂºÂ­p sĂ¡Â»â€˜ + 1 kÄ‚Â½ tĂ¡Â»Â±
+        // chỉ cho nhập số + 1 ký tự
         input.addEventListener("input", () => {
             input.value = input.value.replace(/\D/g, "").slice(-1);
 
@@ -1081,7 +1129,7 @@ if (otpPasswordForm) {
             updateOTP();
         });
 
-        // backspace quay lĂ¡ÂºÂ¡i Ä‚Â´ trĂ†Â°Ă¡Â»â€ºc
+        // backspace quay lại ô trước
         input.addEventListener("keydown", (e) => {
             if (e.key === "Backspace" && !input.value && index > 0) {
                 otpInputs[index - 1].focus();
@@ -1105,7 +1153,7 @@ if (otpPasswordForm) {
         updateOTP();
     });
 
-    // focus Ä‚Â´ Ă„â€˜Ă¡ÂºÂ§u
+    // focus ô đầu
     otpInputs[0].focus();
 
     /* ================== VALIDATION ================== */
@@ -1114,11 +1162,11 @@ if (otpPasswordForm) {
         .addField('#otp', [
             {
                 rule: 'required',
-                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p mÄ‚Â£ OTP!'
+                errorMessage: 'Vui lòng nhập mã OTP!'
             },
             {
                 validator: (value) => /^\d{6}$/.test(value),
-                errorMessage: 'OTP phĂ¡ÂºÂ£i Ă„â€˜Ă¡Â»Â§ 6 chĂ¡Â»Â¯ sĂ¡Â»â€˜!'
+                errorMessage: 'OTP phải đủ 6 chữ số!'
             }
         ])
         .onSuccess((event) => {
@@ -1154,37 +1202,37 @@ if (resetPasswordForm) {
     validation
         .addField('#newPassword', [{
             rule: 'required',
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p mĂ¡ÂºÂ­t khĂ¡ÂºÂ©u!',
+            errorMessage: 'Vui lòng nhập mật khẩu!',
         },
         {
             validator: (value) => value.length >= 8,
-            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t 8 kÄ‚Â½ tĂ¡Â»Â±!',
+            errorMessage: 'Mật khẩu phải chứa ít nhất 8 ký tự!',
         },
         {
             validator: (value) => /[A-Z]/.test(value),
-            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t chĂ¡Â»Â¯ cÄ‚Â¡i in hoa!',
+            errorMessage: 'Mật khẩu phải chứa ít nhất một chữ cái in hoa!',
         },
         {
             validator: (value) => /[a-z]/.test(value),
-            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t chĂ¡Â»Â¯ cÄ‚Â¡i thĂ†Â°Ă¡Â»Âng!',
+            errorMessage: 'Mật khẩu phải chứa ít nhất một chữ cái thường!',
         },
         {
             validator: (value) => /\d/.test(value),
-            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t chĂ¡Â»Â¯ sĂ¡Â»â€˜!',
+            errorMessage: 'Mật khẩu phải chứa ít nhất một chữ số!',
         },
         {
             validator: (value) => /[@$!%*?&]/.test(value),
-            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t kÄ‚Â½ tĂ¡Â»Â± Ă„â€˜Ă¡ÂºÂ·c biĂ¡Â»â€¡t!',
+            errorMessage: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt!',
         },
         ])
         .addField('#confirmPassword', [
             {
                 rule: 'required',
-                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p lĂ¡ÂºÂ¡i mĂ¡ÂºÂ­t khĂ¡ÂºÂ©u mĂ¡Â»â€ºi!',
+                errorMessage: 'Vui lòng nhập lại mật khẩu mới!',
             },
             {
                 validator: (value) => value === document.querySelector("#newPassword").value,
-                errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u khÄ‚Â´ng khĂ¡Â»â€ºp!',
+                errorMessage: 'Mật khẩu không khớp!',
             },
         ])
         .onSuccess((event) => {
@@ -1221,46 +1269,46 @@ if (resetPassword) {
         .addField('#currentPass', [
             {
                 rule: 'required',
-                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p mĂ¡ÂºÂ­t khĂ¡ÂºÂ©u hiĂ¡Â»â€¡n tĂ¡ÂºÂ¡i!',
+                errorMessage: 'Vui lòng nhập mật khẩu hiện tại!',
             },
             {
                 rule: 'password',
-                errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u khÄ‚Â´ng Ă„â€˜Ä‚Âºng Ă„â€˜Ă¡Â»â€¹nh dĂ¡ÂºÂ¡ng!',
+                errorMessage: 'Mật khẩu không đúng định dạng!',
             },
         ])
         .addField('#newPass', [{
             rule: 'required',
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p mĂ¡ÂºÂ­t khĂ¡ÂºÂ©u!',
+            errorMessage: 'Vui lòng nhập mật khẩu!',
         },
         {
             validator: (value) => value.length >= 8,
-            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t 8 kÄ‚Â½ tĂ¡Â»Â±!',
+            errorMessage: 'Mật khẩu phải chứa ít nhất 8 ký tự!',
         },
         {
             validator: (value) => /[A-Z]/.test(value),
-            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t chĂ¡Â»Â¯ cÄ‚Â¡i in hoa!',
+            errorMessage: 'Mật khẩu phải chứa ít nhất một chữ cái in hoa!',
         },
         {
             validator: (value) => /[a-z]/.test(value),
-            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t chĂ¡Â»Â¯ cÄ‚Â¡i thĂ†Â°Ă¡Â»Âng!',
+            errorMessage: 'Mật khẩu phải chứa ít nhất một chữ cái thường!',
         },
         {
             validator: (value) => /\d/.test(value),
-            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t chĂ¡Â»Â¯ sĂ¡Â»â€˜!',
+            errorMessage: 'Mật khẩu phải chứa ít nhất một chữ số!',
         },
         {
             validator: (value) => /[@$!%*?&]/.test(value),
-            errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u phĂ¡ÂºÂ£i chĂ¡Â»Â©a Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t kÄ‚Â½ tĂ¡Â»Â± Ă„â€˜Ă¡ÂºÂ·c biĂ¡Â»â€¡t!',
+            errorMessage: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt!',
         },
         ])
         .addField('#confirmPass', [
             {
                 rule: 'required',
-                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p lĂ¡ÂºÂ¡i mĂ¡ÂºÂ­t khĂ¡ÂºÂ©u mĂ¡Â»â€ºi!',
+                errorMessage: 'Vui lòng nhập lại mật khẩu mới!',
             },
             {
                 validator: (value) => value === document.querySelector("#confirmPass").value,
-                errorMessage: 'MĂ¡ÂºÂ­t khĂ¡ÂºÂ©u khÄ‚Â´ng khĂ¡Â»â€ºp!',
+                errorMessage: 'Mật khẩu không khớp!',
             },
         ])
         .onSuccess((event) => {
@@ -1318,7 +1366,7 @@ if (googleLogin) {
                 }
             })
             .catch(err => {
-                console.error("LĂ¡Â»â€”i Google Login:", err);
+                console.error("Lỗi Google Login:", err);
             });
     };
 
@@ -1330,7 +1378,7 @@ if (categoryCreate) {
     validation
         .addField('#name', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p tÄ‚Âªn danh mĂ¡Â»Â¥c'
+            errorMessage: 'Vui lòng nhập tên danh mục'
         }])
         .onSuccess((event) => {
             event.preventDefault();
@@ -1374,49 +1422,49 @@ if (productCreate) {
     validation
         .addField('#name', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p tÄ‚Âªn sĂ¡ÂºÂ£n phĂ¡ÂºÂ©m'
+            errorMessage: 'Vui lòng nhập tên sản phẩm'
         }])
         .addField('#priceOLD', [{
             rule: "number",
-            errorMessage: 'GiÄ‚Â¡ cĂ…Â© phĂ¡ÂºÂ£i lÄ‚Â  sĂ¡Â»â€˜'
+            errorMessage: 'Giá cũ phải là số'
         }])
         .addField('#priceNEW', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p giÄ‚Â¡ mĂ¡Â»â€ºi'
+            errorMessage: 'Vui lòng nhập giá mới'
         }, {
             rule: "number",
-            errorMessage: 'GiÄ‚Â¡ mĂ¡Â»â€ºi phĂ¡ÂºÂ£i lÄ‚Â  sĂ¡Â»â€˜'
+            errorMessage: 'Giá mới phải là số'
         }])
         .addField('#stock', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p sĂ¡Â»â€˜ lĂ†Â°Ă¡Â»Â£ng'
+            errorMessage: 'Vui lòng nhập số lượng'
         }, {
             rule: "number",
-            errorMessage: 'SĂ¡Â»â€˜ lĂ†Â°Ă¡Â»Â£ng phĂ¡ÂºÂ£i lÄ‚Â  sĂ¡Â»â€˜'
+            errorMessage: 'Số lượng phải là số'
         }])
         .addField('#description', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p mÄ‚Â´ tĂ¡ÂºÂ£'
+            errorMessage: 'Vui lòng nhập mô tả'
         }])
         .addField('#material', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p chĂ¡ÂºÂ¥t liĂ¡Â»â€¡u'
+            errorMessage: 'Vui lòng nhập chất liệu'
         }])
         .addField('#made', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p xuĂ¡ÂºÂ¥t xĂ¡Â»Â©'
+            errorMessage: 'Vui lòng nhập xuất xứ'
         }])
         .addField('#size', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p kÄ‚Â­ch thĂ†Â°Ă¡Â»â€ºc'
+            errorMessage: 'Vui lòng nhập kích thước'
         }])
         .addField('#colorIndex', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p chĂ¡Â»â€° sĂ¡Â»â€˜ mÄ‚Â u'
+            errorMessage: 'Vui lòng nhập chỉ số màu'
         }])
         .addField('#power', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p cÄ‚Â´ng suĂ¡ÂºÂ¥t'
+            errorMessage: 'Vui lòng nhập công suất'
         }])
         .onSuccess((event) => {
             event.preventDefault();
@@ -1481,7 +1529,7 @@ if (productCreate) {
                     }
 
                     if (data.code == "success") {
-                        showPageAlert("ThÄ‚Âªm thÄ‚Â nh cÄ‚Â´ng", "success")
+                        showPageAlert("Thêm thành công", "success")
                     }
 
                 })
@@ -1494,34 +1542,34 @@ if (userCreate) {
     validation
         .addField('#firstname', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p tÄ‚Âªn'
+            errorMessage: 'Vui lòng nhập tên'
         }])
         .addField('#lastname', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p hĂ¡Â»Â'
+            errorMessage: 'Vui lòng nhập họ'
         }])
         .addField('#phone', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p sĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i'
+            errorMessage: 'Vui lòng nhập số điện thoại'
         }, {
             rule: "minLength",
             value: 10,
-            errorMessage: 'SĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i phĂ¡ÂºÂ£i cÄ‚Â³ Ä‚Â­t nhĂ¡ÂºÂ¥t 10 sĂ¡Â»â€˜'
+            errorMessage: 'Số điện thoại phải có ít nhất 10 số'
         }, {
             rule: "maxLength",
             value: 11,
-            errorMessage: 'SĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i phĂ¡ÂºÂ£i cÄ‚Â³ nhiĂ¡Â»Âu nhĂ¡ÂºÂ¥t 11 sĂ¡Â»â€˜'
+            errorMessage: 'Số điện thoại phải có nhiều nhất 11 số'
         }])
         .addField('#email', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p email'
+            errorMessage: 'Vui lòng nhập email'
         }, {
             rule: "email",
-            errorMessage: 'Email khÄ‚Â´ng Ă„â€˜Ä‚Âºng Ă„â€˜Ă¡Â»â€¹nh dĂ¡ÂºÂ¡ng'
+            errorMessage: 'Email không đúng định dạng'
         }])
         .addField('#password', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p mĂ¡ÂºÂ­t khĂ¡ÂºÂ©u'
+            errorMessage: 'Vui lòng nhập mật khẩu'
         }])
         .onSuccess((event) => {
             event.preventDefault();
@@ -1574,11 +1622,11 @@ if (roleCreate) {
     validation
         .addField('#name', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p tÄ‚Âªn vai trÄ‚Â²'
+            errorMessage: 'Vui lòng nhập tên vai trò'
         }])
         .addField('#description', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p mÄ‚Â´ tĂ¡ÂºÂ£'
+            errorMessage: 'Vui lòng nhập mô tả'
         }])
         .onSuccess((event) => {
             event.preventDefault();
@@ -1623,7 +1671,7 @@ if (categoryEdit) {
     validation
         .addField('#name', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p tÄ‚Âªn danh mĂ¡Â»Â¥c'
+            errorMessage: 'Vui lòng nhập tên danh mục'
         }])
         .onSuccess((event) => {
             event.preventDefault();
@@ -1670,9 +1718,9 @@ function closeConfirmModal() {
 }
 let deleteUrl = null;
 
-// mĂ¡Â»Å¸ confirm
+// mở confirm
 document.addEventListener("click", function (e) {
-    const btn = e.target.closest("[button-delete]"); // tÄ‚Â¬m nÄ‚Âºt gĂ¡ÂºÂ§n nhĂ¡ÂºÂ¥t cÄ‚Â³ button-delete
+    const btn = e.target.closest("[button-delete]"); // tìm nút gần nhất có button-delete
     if (!btn) return;
 
     deleteUrl = btn.getAttribute("data-url");
@@ -1684,7 +1732,7 @@ document.getElementById("confirmYes")?.addEventListener("click", () => {
     if (!deleteUrl) return;
 
     fetch(deleteUrl, {
-        method: "PATCH" // hoĂ¡ÂºÂ·c DELETE tuĂ¡Â»Â³ backend bĂ¡ÂºÂ¡n
+        method: "PATCH" // hoặc DELETE tùy backend bạn
     })
         .then(res => res.json())
         .then(data => {
@@ -1692,7 +1740,7 @@ document.getElementById("confirmYes")?.addEventListener("click", () => {
                 closeConfirmModal();
                 window.location.reload();
             } else {
-                alert("XoÄ‚Â¡ thĂ¡ÂºÂ¥t bĂ¡ÂºÂ¡i");
+                alert("Xóa thất bại");
             }
         });
 });
@@ -1705,19 +1753,19 @@ if (userEdit) {
     validation
         .addField('#firstname', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p hĂ¡Â»Â'
+            errorMessage: 'Vui lòng nhập họ'
         }])
         .addField('#lastname', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p tÄ‚Âªn'
+            errorMessage: 'Vui lòng nhập tên'
         }])
         .addField('#email', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p email'
+            errorMessage: 'Vui lòng nhập email'
         }])
         .addField('#phone', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p sĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i'
+            errorMessage: 'Vui lòng nhập số điện thoại'
         }])
         .onSuccess((event) => {
             event.preventDefault();
@@ -1743,11 +1791,11 @@ if (userEdit) {
 
             let avatar = null;
 
-            //  lĂ¡ÂºÂ¥y Ă¡ÂºÂ£nh tĂ¡Â»Â« filepond
+            // lấy ảnh từ filepond
             if (avatars.length > 0 && avatars[0].file) {
                 avatar = avatars[0].file;
 
-                //  check nĂ¡ÂºÂ¿u lÄ‚Â  Ă¡ÂºÂ£nh cĂ…Â© thÄ‚Â¬ bĂ¡Â»Â
+                // check nếu là ảnh cũ thì bỏ
                 const wrapper = avatarInput.closest("[image-default]");
                 const imageDefault = wrapper?.getAttribute("image-default");
 
@@ -1785,7 +1833,7 @@ if (productEdit) {
         try {
             const id = event.target._id?.value;
             if (!id) {
-                console.error("KhÄ‚Â´ng tÄ‚Â¬m thĂ¡ÂºÂ¥y ID sĂ¡ÂºÂ£n phĂ¡ÂºÂ©m");
+                console.error("Không tìm thấy ID sản phẩm");
                 return;
             }
 
@@ -1821,7 +1869,7 @@ if (productEdit) {
                 formData.append('category', catId);
             });
 
-            // XĂ¡Â»Â­ lÄ‚Â½ Avatar
+            // Xử lý Avatar
             const avatarPond = filePond.avatar;
             if (avatarPond) {
                 const avatars = avatarPond.getFiles();
@@ -1838,7 +1886,7 @@ if (productEdit) {
                 }
             }
 
-            // XĂ¡Â»Â­ lÄ‚Â½ Multi Images
+            // Xử lý Multi Images
             const imagesPond = filePondMulti.images;
             if (imagesPond) {
                 const files = imagesPond.getFiles();
@@ -1859,15 +1907,15 @@ if (productEdit) {
                         closeModal('editProductModal');
                         window.location.reload();
                     } else {
-                        alert("CĂ¡ÂºÂ­p nhĂ¡ÂºÂ­t thĂ¡ÂºÂ¥t bĂ¡ÂºÂ¡i: " + (data.message || "LĂ¡Â»â€”i khÄ‚Â´ng xÄ‚Â¡c Ă„â€˜Ă¡Â»â€¹nh"));
+                        alert("Cập nhật thất bại: " + (data.message || "Lỗi không xác định"));
                     }
                 })
                 .catch(err => {
-                    console.error("LĂ¡Â»â€”i Fetch:", err);
-                    alert("CÄ‚Â³ lĂ¡Â»â€”i xĂ¡ÂºÂ£y ra khi kĂ¡ÂºÂ¿t nĂ¡Â»â€˜i vĂ¡Â»â€ºi mÄ‚Â¡y chĂ¡Â»Â§.");
+                    console.error("Lỗi Fetch:", err);
+                    alert("Có lỗi xảy ra khi kết nối với máy chủ.");
                 });
         } catch (err) {
-            console.error("LĂ¡Â»â€”i thĂ¡Â»Â±c thi script:", err);
+            console.error("Lỗi thực thi script:", err);
         }
     })
 }
@@ -1878,11 +1926,11 @@ if (roleEdit) {
     validation
         .addField('#name', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p tÄ‚Âªn vai trÄ‚Â²'
+            errorMessage: 'Vui lòng nhập tên vai trò'
         }])
         .addField('#description', [{
             rule: "required",
-            errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p mÄ‚Â´ tĂ¡ÂºÂ£ vai trÄ‚Â²'
+            errorMessage: 'Vui lòng nhập mô tả vai trò'
         }])
         .onSuccess((event) => {
             event.preventDefault();
@@ -1926,7 +1974,7 @@ const filterStatus = document.querySelector("[filter-status]");
 if (filterStatus) {
     const url = new URL(window.location.href);
 
-    // LĂ¡ÂºÂ¯ng nghe thay Ă„â€˜Ă¡Â»â€¢i lĂ¡Â»Â±a chĂ¡Â»Ân
+    // Lắng nghe thay đổi lựa chọn
     filterStatus.addEventListener("change", () => {
         const value = filterStatus.value;
         if (value) {
@@ -1938,7 +1986,7 @@ if (filterStatus) {
         window.location.href = url.href;
     })
 
-    // HiĂ¡Â»Æ’n thĂ¡Â»â€¹ lĂ¡Â»Â±a chĂ¡Â»Ân mĂ¡ÂºÂ·c Ă„â€˜Ă¡Â»â€¹nh
+    // Hiển thị lựa chọn mặc định
     const valueCurrent = url.searchParams.get("status");
     if (valueCurrent) {
         filterStatus.value = valueCurrent;
@@ -1949,7 +1997,7 @@ const search = document.querySelector("[search]");
 if (search) {
     const url = new URL(window.location.href);
 
-    // LĂ¡ÂºÂ¯ng nghe phÄ‚Â­m Ă„â€˜ang gÄ‚Âµ
+    // Lắng nghe phím đang gõ
     search.addEventListener("keyup", (event) => {
         if (event.code == "Enter") {
             const value = search.value;
@@ -1973,7 +2021,7 @@ const filterRole = document.querySelector("[filter-role]");
 if (filterRole) {
     const url = new URL(window.location.href);
 
-    // LĂ¡ÂºÂ¯ng nghe thay Ă„â€˜Ă¡Â»â€¢i lĂ¡Â»Â±a chĂ¡Â»Ân
+    // Lắng nghe thay đổi lựa chọn
     filterRole.addEventListener("change", () => {
         const value = filterRole.value;
         if (value) {
@@ -1985,7 +2033,7 @@ if (filterRole) {
         window.location.href = url.href;
     })
 
-    // HiĂ¡Â»Æ’n thĂ¡Â»â€¹ lĂ¡Â»Â±a chĂ¡Â»Ân mĂ¡ÂºÂ·c Ă„â€˜Ă¡Â»â€¹nh
+    // Hiển thị lựa chọn mặc định
     const valueCurrent = url.searchParams.get("role");
     if (valueCurrent) {
         filterRole.value = valueCurrent;
@@ -2012,10 +2060,11 @@ if (pagination) {
     const currentPage = parseInt(valueCurrent) || 1;
     const totalPages = parseInt(pagination.dataset.totalPages) || 1;
 
-    // LĂ¡ÂºÂ¯ng nghe thay Ă„â€˜Ă¡Â»â€¢i lĂ¡Â»Â±a chĂ¡Â»Ân (cho cÄ‚Â¡c nÄ‚Âºt sĂ¡Â»â€˜ trang)
+    // Lắng nghe thay đổi lựa chọn (cho các nút số trang)
     const pageButtons = pagination.querySelectorAll("[button-pagination]");
     pageButtons.forEach(button => {
         button.addEventListener("click", () => {
+            const url = new URL(window.location.href);
             const page = button.getAttribute("button-pagination");
             if (page) {
                 url.searchParams.set("page", page);
@@ -2024,54 +2073,285 @@ if (pagination) {
         });
     });
 
-    // HiĂ¡Â»Æ’n thĂ¡Â»â€¹ lĂ¡Â»Â±a chĂ¡Â»Ân mĂ¡ÂºÂ·c Ă„â€˜Ă¡Â»â€¹nh
+
+    // Hiển thị lựa chọn mặc định
     pagination.value = currentPage;
 
     if (prevButton) {
         prevButton.disabled = currentPage <= 1;
         prevButton.addEventListener("click", () => {
+            const url = new URL(window.location.href);
             if (currentPage > 1) {
                 url.searchParams.set("page", currentPage - 1);
                 window.location.href = url.href;
             }
         })
+
     }
 
     if (nextButton) {
         nextButton.disabled = currentPage >= totalPages;
         nextButton.addEventListener("click", () => {
+            const url = new URL(window.location.href);
             if (currentPage < totalPages) {
                 url.searchParams.set("page", currentPage + 1);
                 window.location.href = url.href;
             }
         })
+
     }
 }
-// Filter Price
 const filterPrice = document.querySelector("[filter-price]")
 if (filterPrice) {
     const url = new URL(window.location.href)
     filterPrice.addEventListener("change", () => {
         const value = filterPrice.value
         if (value) {
-            const [min, max] = value.split("-")
-            url.searchParams.set("priceMin", min)
-            url.searchParams.set("priceMax", max)
+            url.searchParams.set("sort", value);
+
+
         } else {
-            url.searchParams.delete("priceMin");
-            url.searchParams.delete("priceMax");
+            url.searchParams.delete("sort");
+
         }
         window.location.href = url.href;
     })
 
-    // set lĂ¡ÂºÂ¡i value khi reload
-    const valueCurrentMin = url.searchParams.get("priceMin");
-    const valueCurrentMax = url.searchParams.get("priceMax");
-    if (valueCurrentMin !== null && valueCurrentMax !== null) {
-        filterPrice.value = `${valueCurrentMin}-${valueCurrentMax}`;
+    // set lại value khi reload
+    const currentSortValue = url.searchParams.get("sort");
+    if (currentSortValue) {
+        filterPrice.value = currentSortValue;
     }
-
 }
+
+
+
+// Filter Price
+const minSlider = document.querySelector("#minSlider");
+const maxSlider = document.querySelector("#maxSlider");
+
+const minDisplay = document.querySelector("#minDisplay");
+const maxDisplay = document.querySelector("#maxDisplay");
+
+const fill = document.querySelector("#fill");
+
+const productList = document.querySelector(".products-list-grid");
+
+if (
+    minSlider &&
+    maxSlider &&
+    minDisplay &&
+    maxDisplay &&
+    fill &&
+    productList
+) {
+
+    const maxValue = Number(minSlider.max);
+
+    // format tiền
+    const formatPrice = (value) => {
+        return Number(value).toLocaleString("vi-VN") + "đ";
+    };
+
+    // update text + fill
+    const updateDisplay = () => {
+
+        let min = Number(minSlider.value);
+        let max = Number(maxSlider.value);
+
+        // fix min > max
+        if (min > max) {
+            [min, max] = [max, min];
+        }
+
+        // text
+        minDisplay.textContent = formatPrice(min);
+        maxDisplay.textContent = formatPrice(max);
+
+        // fill %
+        const left = (min / maxValue) * 100;
+        const right = (max / maxValue) * 100;
+
+        fill.style.left = `${left}%`;
+        fill.style.width = `${right - left}%`;
+    };
+
+    // render products
+    const renderProducts = (data) => {
+        const { products, pagination } = data;
+
+        // Cập nhật số lượng tổng
+        const totalProductsEl = document.querySelector("#totalProducts");
+        if (totalProductsEl) {
+            totalProductsEl.textContent = pagination.totalRecord;
+        }
+
+        // Cập nhật danh sách sản phẩm
+        productList.innerHTML = products.map(item => `
+            <article class="prod-card">
+                <a class="prod-img-wrap" href="/products/${item.slug}">
+                    <img src="${item.avatar}" alt="${item.name}">
+                    <span class="prod-badge">
+                        - ${(() => {
+                const oldPrice = Number(String(item.priceOLD).replace(/\./g, ""));
+                const newPrice = Number(String(item.priceNEW).replace(/\./g, ""));
+                return oldPrice > 0 ? Math.floor(((oldPrice - newPrice) / oldPrice) * 100) : 0;
+            })()}%
+                    </span>
+
+                    <div class="prod-overlay">
+                        <button class="quick-add">Thêm giỏ hàng</button>
+                    </div>
+                </a>
+                <div class="prod-body">
+                    <h3 class="prod-name">
+                        <a href="/products/${item.slug}">${item.name}</a>
+                    </h3>
+                    <div class="prod-price">
+                        <span class="price-old">${Number(String(item.priceOLD).replace(/\./g, "")).toLocaleString("vi-VN")} ₫</span>
+                        <span class="price-new">${Number(String(item.priceNEW).replace(/\./g, "")).toLocaleString("vi-VN")} ₫</span>
+                    </div>
+
+                    <div class="prod-stars">★★★★★</div>
+                </div>
+            </article>
+        `).join("");
+
+        // Cập nhật phân trang
+        const paginationContainer = document.querySelector("#paginationContainer");
+        if (paginationContainer && pagination.totalPage > 1) {
+            let paginationHtml = `
+                <div class="pagination" data-total-pages="${pagination.totalPage}">
+                    <button class="page-btn prev-button" ${pagination.currentPage <= 1 ? "disabled" : ""}>‹</button>
+            `;
+
+            for (let i = 1; i <= pagination.totalPage; i++) {
+                paginationHtml += `
+                    <button class="page-btn ${pagination.currentPage === i ? "active" : ""}" button-pagination="${i}">${i}</button>
+                `;
+            }
+
+            paginationHtml += `
+                    <button class="page-btn next-button" ${pagination.currentPage >= pagination.totalPage ? "disabled" : ""}>›</button>
+                </div>
+                <div class="inner-wrap" style="display:flex;justify-content:center;margin-top:1rem;">
+                    Hiển thị ${pagination.skip + 1} - ${pagination.skip + products.length} của ${pagination.totalRecord}
+                </div>
+            `;
+            paginationContainer.innerHTML = paginationHtml;
+
+            // Gắn lại sự kiện cho các nút phân trang mới
+            initPagination(paginationContainer);
+        } else if (paginationContainer) {
+            paginationContainer.innerHTML = "";
+        }
+    };
+
+    // Hàm khởi tạo sự kiện phân trang
+    const initPagination = (container) => {
+        const url = new URL(window.location.href);
+        const prevBtn = container.querySelector(".prev-button");
+        const nextBtn = container.querySelector(".next-button");
+        const pageBtns = container.querySelectorAll("[button-pagination]");
+        const totalPages = parseInt(container.querySelector(".pagination")?.dataset.totalPages || 1);
+        const currentPage = parseInt(url.searchParams.get("page") || 1);
+
+        pageBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                url.searchParams.set("page", btn.getAttribute("button-pagination"));
+                window.location.href = url.href;
+            });
+        });
+
+        if (prevBtn) {
+            prevBtn.addEventListener("click", () => {
+                if (currentPage > 1) {
+                    url.searchParams.set("page", currentPage - 1);
+                    window.location.href = url.href;
+                }
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener("click", () => {
+                if (currentPage < totalPages) {
+                    url.searchParams.set("page", currentPage + 1);
+                    window.location.href = url.href;
+                }
+            });
+        }
+    };
+
+    // fetch products
+    const filterProducts = async () => {
+
+        let min = Number(minSlider.value);
+        let max = Number(maxSlider.value);
+
+        if (min > max) {
+            [min, max] = [max, min];
+        }
+
+        // update URL không reload
+        const url = new URL(window.location.href);
+
+        url.searchParams.set("priceMin", min);
+        url.searchParams.set("priceMax", max);
+        url.searchParams.set("page", 1);
+
+
+        history.replaceState({}, "", url);
+
+        try {
+
+            const response = await fetch(
+                url.pathname + url.search,
+                {
+                    headers: {
+                        "Accept": "application/json",
+                    },
+                }
+            );
+
+
+
+
+
+            const products = await response.json();
+
+            renderProducts(products);
+
+        } catch (error) {
+
+            console.error("Lỗi filter:", error);
+
+        }
+    };
+
+    // events
+    [minSlider, maxSlider].forEach(slider => {
+        slider.addEventListener("input", updateDisplay);
+        slider.addEventListener("change", filterProducts);
+    });
+
+    // init
+    const urlInit = new URL(window.location.href);
+    const valueCurrentMin = urlInit.searchParams.get("priceMin");
+    const valueCurrentMax = urlInit.searchParams.get("priceMax");
+    if (valueCurrentMin !== null) minSlider.value = valueCurrentMin;
+    if (valueCurrentMax !== null) maxSlider.value = valueCurrentMax;
+
+    updateDisplay();
+
+    // Khởi tạo phân trang cho lần đầu tải trang
+    const initialPaginationContainer = document.querySelector("#paginationContainer");
+    if (initialPaginationContainer) {
+        initPagination(initialPaginationContainer);
+    }
+}
+
+
+
 // Filter Status (Radio Buttons Legacy)
 const listStatus = document.querySelectorAll("input[type='radio'][name='status']");
 if (listStatus.length > 0) {
@@ -2088,7 +2368,7 @@ if (listStatus.length > 0) {
         });
     });
 
-    // set lĂ¡ÂºÂ¡i value khi reload
+    // set lại value khi reload
     const statusCurrent = url.searchParams.get("status") || "";
     const activeRadio = document.querySelector(`[name='status'][value='${statusCurrent}']`);
     if (activeRadio) {
@@ -2115,7 +2395,7 @@ if (quantity) {
     })
 }
 const drawProductDetail = () => {
-    // lĂ¡ÂºÂ¥y sĂ¡Â»â€˜ lĂ†Â°Ă¡Â»Â£ng vÄ‚Â  giÄ‚Â¡ tiĂ¡Â»Ân
+    // lấy số lượng và giá tiền
     const quantity = parseInt(document.querySelector("#pdQty").innerHTML)
     const price = parseInt(document.querySelector("#pdPrice").innerHTML)
     const totalPrice = parseInt(quantity || 0) * parseInt(price || 0)
@@ -2134,7 +2414,7 @@ if (btnsAddToCart.length > 0) {
             const priceTextEl = document.querySelector(".pd-price-new");
             const priceText = priceTextEl ? priceTextEl.innerHTML : "0";
             const price = parseInt(
-                priceText.replace(/\./g, "").replace("Ă¢â€Â«", "").trim()
+                priceText.replace(/\./g, "").replace("₫", "").trim()
             );
 
             if (quantity > 0) {
@@ -2156,15 +2436,15 @@ if (btnsAddToCart.length > 0) {
                 }
 
                 localStorage.setItem("cart", JSON.stringify(currentCart));
-                showPageAlert("ThÄ‚Âªm vÄ‚Â o giĂ¡Â»Â hÄ‚Â ng thÄ‚Â nh cÄ‚Â´ng!", "success");
+                showPageAlert("Thêm vào giỏ hàng thành công!", "success");
 
-                // CĂ¡ÂºÂ­p nhĂ¡ÂºÂ­t sĂ¡Â»â€˜ lĂ†Â°Ă¡Â»Â£ng mini cart
+                // Cập nhật số lượng mini cart
                 const miniCart = document.querySelector(".cart-count");
                 if (miniCart) {
                     miniCart.innerHTML = currentCart.length;
                 }
 
-                // NĂ¡ÂºÂ¿u lÄ‚Â  nÄ‚Âºt "Mua ngay" (cÄ‚Â³ href="/cart"), chuyĂ¡Â»Æ’n hĂ†Â°Ă¡Â»â€ºng ngay
+                // Nếu là nút "Mua ngay" (có href="/cart"), chuyển hướng ngay
                 if (btn.getAttribute("href") === "/cart") {
                     window.location.href = "/cart";
                 }
@@ -2200,7 +2480,7 @@ const drawCart = () => {
         .then(response => response.json())
         .then(data => {
             if (data.code == "success") {
-                // Ă„ÂĂ¡ÂºÂ£m bĂ¡ÂºÂ£o tĂ¡ÂºÂ¥t cĂ¡ÂºÂ£ item Ă„â€˜Ă¡Â»Âu cÄ‚Â³ thuĂ¡Â»â„¢c tÄ‚Â­nh checked (mĂ¡ÂºÂ·c Ă„â€˜Ă¡Â»â€¹nh true)
+                // Đảm bảo tất cả item đều có thuộc tính checked (mặc định true)
                 const cartStorage = JSON.parse(localStorage.getItem("cart") || "[]");
                 let changed = false;
                 data.cart.forEach(item => {
@@ -2238,20 +2518,20 @@ const drawCart = () => {
                         </div>
 
                         <div class="cart-qty" style="justify-content:center;">
-                            <button class="qty-btn-minus">Ă¢Ë†â€™</button>
+                            <button class="qty-btn-minus">-</button>
                             <span class="qty-val">${item.quantity}</span>
                             <button class="qty-btn-plus">+</button>
                         </div>
 
                         <div style="text-align:center;font-size:0.92rem;font-weight:700;color:var(--accent);">
-                            ${Number(item.price).toLocaleString('vi-VN')} Ă¢â€Â«
+                            ${Number(item.price).toLocaleString('vi-VN')} ₫
                         </div>
 
                         <div
                             class="line-total"
                             style="text-align:right;font-size:0.92rem;font-weight:800;color:var(--white);"
                         >
-                            ${Number(item.totalPrice).toLocaleString('vi-VN')} Ă¢â€Â«
+                            ${Number(item.totalPrice).toLocaleString('vi-VN')} ₫
                         </div>
 
                         <button
@@ -2259,7 +2539,7 @@ const drawCart = () => {
                             button-delete-cart
                             productId="${item.productId}"
                         >
-                            Ă¢Å“â€¢
+                            ×
                         </button>
 
                     </div>`
@@ -2279,9 +2559,9 @@ const drawCart = () => {
                             cart.splice(indexItem, 1)
                             localStorage.setItem("cart", JSON.stringify(cart))
                             drawCart()
-                            showPageAlert("XÄ‚Â³a sĂ¡ÂºÂ£n phĂ¡ÂºÂ©m khĂ¡Â»Âi giĂ¡Â»Â hÄ‚Â ng thÄ‚Â nh cÄ‚Â´ng!", "success");
+                            showPageAlert("Xóa sản phẩm khỏi giỏ hàng thành công!", "success");
 
-                            // CĂ¡ÂºÂ­p nhĂ¡ÂºÂ­t sĂ¡Â»â€˜ lĂ†Â°Ă¡Â»Â£ng mini cart
+                            // Cập nhật số lượng mini cart
                             const miniCart = document.querySelector(".cart-count");
                             if (miniCart) {
                                 miniCart.innerHTML = cart.length;
@@ -2303,8 +2583,8 @@ const drawCart = () => {
                         const ship = 150000;
                         const subtotalEl = document.querySelector('.subtotal-val');
                         const totalEl = document.querySelector('.total-val');
-                        if (subtotalEl) subtotalEl.textContent = sub.toLocaleString('vi-VN') + ' Ă¢â€Â«';
-                        if (totalEl) totalEl.textContent = (sub > 0 ? sub + ship : 0).toLocaleString('vi-VN') + ' Ă¢â€Â«';
+                        if (subtotalEl) subtotalEl.textContent = sub.toLocaleString('vi-VN') + ' ₫';
+                        if (totalEl) totalEl.textContent = (sub > 0 ? sub + ship : 0).toLocaleString('vi-VN') + ' ₫';
                     };
 
                     cartList.querySelectorAll('.cart-item-check').forEach(checkbox => {
@@ -2347,17 +2627,17 @@ const drawCart = () => {
                     const btnCheckout = document.querySelector("#btn-checkout");
                     if (btnCheckout) {
                         btnCheckout.addEventListener("click", () => {
-                            const checkedProductIds = [  // lĂ¡ÂºÂ¥y danh sÄ‚Â¡ch id cÄ‚Â¡c sĂ¡ÂºÂ£n phĂ¡ÂºÂ©m Ă„â€˜Ă†Â°Ă¡Â»Â£c check
+                            const checkedProductIds = [  // lấy danh sách id các sản phẩm được check
                                 ...document.querySelectorAll(".cart-item-check:checked")
-                            ].map(item => item.value); // chuyĂ¡Â»Æ’n thÄ‚Â nh array
+                            ].map(item => item.value); // chuyển thành array
 
                             if (checkedProductIds.length === 0) {
-                                showPageAlert("Vui lÄ‚Â²ng chĂ¡Â»Ân Ä‚Â­t nhĂ¡ÂºÂ¥t mĂ¡Â»â„¢t sĂ¡ÂºÂ£n phĂ¡ÂºÂ©m Ă„â€˜Ă¡Â»Æ’ thanh toÄ‚Â¡n", "error");
+                                showPageAlert("Vui lòng chọn ít nhất một sản phẩm để thanh toán", "error");
                                 return;
                             }
 
                             const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-                            const paymentData = cart.filter(item => checkedProductIds.includes(item.productId)); // tÄ‚Â¬m nhĂ¡Â»Â¯ng id sĂ¡ÂºÂ£n phĂ¡ÂºÂ©m Ă„â€˜Ă†Â°Ă¡Â»Â£c check trong giĂ¡Â»Â hÄ‚Â ng
+                            const paymentData = cart.filter(item => checkedProductIds.includes(item.productId)); // tìm những id sản phẩm được check trong giỏ hàng
 
                             localStorage.setItem("payment", JSON.stringify(paymentData));
                             window.location.href = "/cart/payment";
@@ -2371,13 +2651,13 @@ const drawCart = () => {
                             const unitPrice = parseInt(row.dataset.price || 0, 10);
                             const totalEl = row.querySelector('.line-total');
                             let qty = parseInt(qtyEl.textContent, 10);
-                            if (btn.textContent.trim() === 'Ă¢Ë†â€™') qty = Math.max(1, qty - 1);
+                            if (btn.textContent.trim() === '-') qty = Math.max(1, qty - 1);
                             else qty += 1;
                             qtyEl.textContent = qty;
 
                             const newTotalPrice = unitPrice * qty;
                             if (totalEl && unitPrice) {
-                                totalEl.textContent = newTotalPrice.toLocaleString('vi-VN') + ' Ă¢â€Â«';
+                                totalEl.textContent = newTotalPrice.toLocaleString('vi-VN') + ' ₫';
                             }
                             calculateTotal();
 
@@ -2412,7 +2692,7 @@ const drawPayment = () => {
     if (paymentList) {
         const paymentData = JSON.parse(localStorage.getItem("payment") || "[]");
         if (paymentData.length === 0) {
-            paymentList.innerHTML = "<p>KhÄ‚Â´ng cÄ‚Â³ sĂ¡ÂºÂ£n phĂ¡ÂºÂ©m nÄ‚Â o Ă„â€˜Ă¡Â»Æ’ thanh toÄ‚Â¡n.</p>";
+            paymentList.innerHTML = "<p>Không có sản phẩm nào để thanh toán.</p>";
             return;
         }
 
@@ -2439,18 +2719,18 @@ const drawPayment = () => {
                                     ${item.name}
                                 </p>
                                 <p style="font-size:0.78rem;color:var(--text-light);">
-                                    SĂ¡Â»â€˜ LĂ†Â°Ă¡Â»Â£ng : ${item.quantity}
+                                    Số lượng: ${item.quantity}
                                 </p>
                             </div>
                             <span style="font-size:0.88rem;font-weight:800;color:var(--accent);white-space:nowrap;">
-                                ${Number(item.totalPrice).toLocaleString('vi-VN')} Ă¢â€Â«
+                                ${Number(item.totalPrice).toLocaleString('vi-VN')} ₫
                             </span>
                         </div>
                         `
                     );
                     paymentList.innerHTML = htmlPayment.join("");
 
-                    // TÄ‚Â­nh lĂ¡ÂºÂ¡i tĂ¡Â»â€¢ng tiĂ¡Â»Ân
+                    // Tính lại tổng tiền
                     let subTotal = 0;
                     data.ProductPayment.forEach(item => {
                         subTotal += item.totalPrice;
@@ -2460,8 +2740,8 @@ const drawPayment = () => {
                     // Update UI (Assuming you have class payment-subtotal and payment-total in payment.pug)
                     const subtotalEl = document.querySelector('.payment-subtotal');
                     const totalEl = document.querySelector('.payment-total');
-                    if (subtotalEl) subtotalEl.textContent = subTotal.toLocaleString('vi-VN') + ' Ă¢â€Â«';
-                    if (totalEl) totalEl.textContent = (subTotal > 0 ? subTotal + ship : 0).toLocaleString('vi-VN') + ' Ă¢â€Â«';
+                    if (subtotalEl) subtotalEl.textContent = subTotal.toLocaleString('vi-VN') + ' ₫';
+                    if (totalEl) totalEl.textContent = (subTotal > 0 ? subTotal + ship : 0).toLocaleString('vi-VN') + ' ₫';
                 }
             });
     }
@@ -2469,24 +2749,24 @@ const drawPayment = () => {
 drawPayment();
 
 
-// BiĂ¡Â»Æ’u Ă„â€˜Ă¡Â»â€œ doanh thu
+// Biểu đồ doanh thu
 const revenueChart = document.querySelector("#revenue-chart");
 if (revenueChart) {
     let chart = null;
     const drawChart = (date) => {
-        // LĂ¡ÂºÂ¥y thÄ‚Â¡ng vÄ‚Â  nĂ„Æ’m hiĂ¡Â»â€¡n tĂ¡ÂºÂ¡i
-        const currentMonth = date.getMonth() + 1; // getMonth() trĂ¡ÂºÂ£ vĂ¡Â»Â giÄ‚Â¡ trĂ¡Â»â€¹ tĂ¡Â»Â« 0 Ă„â€˜Ă¡ÂºÂ¿n 11, nÄ‚Âªn cĂ¡ÂºÂ§n +1
+        // Lấy tháng và năm hiện tại
+        const currentMonth = date.getMonth() + 1; // getMonth() trả về giá trị từ 0 đến 11, nên cần +1
         const currentYear = date.getFullYear();
 
-        // TĂ¡ÂºÂ¡o mĂ¡Â»â„¢t Ă„â€˜Ă¡Â»â€˜i tĂ†Â°Ă¡Â»Â£ng Date mĂ¡Â»â€ºi cho thÄ‚Â¡ng trĂ†Â°Ă¡Â»â€ºc
-        // NĂ¡ÂºÂ¿u hiĂ¡Â»â€¡n tĂ¡ÂºÂ¡i lÄ‚Â  thÄ‚Â¡ng 1 thÄ‚Â¬ new Date(currentYear, 0 - 1, 1) sĂ¡ÂºÂ½ tĂ¡Â»Â± Ă„â€˜Ă¡Â»â„¢ng chuyĂ¡Â»Æ’n thÄ‚Â nh thÄ‚Â¡ng 12 cĂ¡Â»Â§a nĂ„Æ’m trĂ†Â°Ă¡Â»â€ºc.
+        // Tạo một đối tượng Date mới cho tháng trước
+        // Nếu hiện tại là tháng 1 thì new Date(currentYear, 0 - 1, 1) sẽ tự động chuyển thành tháng 12 của năm trước.
         const previousMonthDate = new Date(currentYear, date.getMonth() - 1, 1);
 
-        // LĂ¡ÂºÂ¥y thÄ‚Â¡ng vÄ‚Â  nĂ„Æ’m tĂ¡Â»Â« Ă„â€˜Ă¡Â»â€˜i tĂ†Â°Ă¡Â»Â£ng previousMonthDate
+        // Lấy tháng và năm từ đối tượng previousMonthDate
         const previousMonth = previousMonthDate.getMonth() + 1;
         const previousYear = previousMonthDate.getFullYear();
 
-        // LĂ¡ÂºÂ¥y ra tĂ¡Â»â€¢ng sĂ¡Â»â€˜ ngÄ‚Â y
+        // Lấy ra tổng số ngày
         const daysInMonthCurrent = new Date(currentYear, currentMonth, 0).getDate();
         const daysInMonthPrevious = new Date(previousYear, previousMonth, 0).getDate();
         const days = daysInMonthCurrent > daysInMonthPrevious ? daysInMonthCurrent : daysInMonthPrevious;
@@ -2526,16 +2806,16 @@ if (revenueChart) {
                             labels: arrayDay,
                             datasets: [
                                 {
-                                    label: `ThÄ‚Â¡ng ${currentMonth}/${currentYear}`, // NhÄ‚Â£n cĂ¡Â»Â§a dataset
-                                    data: data.dataMonthCurrent, // DĂ¡Â»Â¯ liĂ¡Â»â€¡u
-                                    borderColor: '#4379EE', // MÄ‚Â u viĂ¡Â»Ân
-                                    borderWidth: 1.5, // Ă„ÂĂ¡Â»â„¢ dÄ‚Â y cĂ¡Â»Â§a Ă„â€˜Ă†Â°Ă¡Â»Âng
+                                    label: `Tháng ${currentMonth}/${currentYear}`, // Nhãn của dataset
+                                    data: data.dataMonthCurrent, // Dữ liệu
+                                    borderColor: '#4379EE', // Màu viền
+                                    borderWidth: 1.5, // Độ dày của đường
                                 },
                                 {
-                                    label: `ThÄ‚Â¡ng ${previousMonth}/${previousYear}`, // NhÄ‚Â£n cĂ¡Â»Â§a dataset
-                                    data: data.dataMonthPrevious, // DĂ¡Â»Â¯ liĂ¡Â»â€¡u
-                                    borderColor: '#EF3826', // MÄ‚Â u viĂ¡Â»Ân
-                                    borderWidth: 1.5, // Ă„ÂĂ¡Â»â„¢ dÄ‚Â y cĂ¡Â»Â§a Ă„â€˜Ă†Â°Ă¡Â»Âng
+                                    label: `Tháng ${previousMonth}/${previousYear}`, // Nhãn của dataset
+                                    data: data.dataMonthPrevious, // Dữ liệu
+                                    borderColor: '#EF3826', // Màu viền
+                                    borderWidth: 1.5, // Độ dày của đường
                                 }
                             ]
                         },
@@ -2549,7 +2829,7 @@ if (revenueChart) {
                                 x: {
                                     title: {
                                         display: true,
-                                        text: 'NgÄ‚Â y'
+                                        text: 'Ngày'
                                     }
                                 },
                                 y: {
@@ -2559,14 +2839,14 @@ if (revenueChart) {
                                     }
                                 }
                             },
-                            maintainAspectRatio: false, // KhÄ‚Â´ng giĂ¡Â»Â¯ tĂ¡Â»Â· lĂ¡Â»â€¡ khung hÄ‚Â¬nh mĂ¡ÂºÂ·c Ă„â€˜Ă¡Â»â€¹nh
+                            maintainAspectRatio: false, // Không giữ tỉ lệ khung hình mặc định
                         }
                     });
                 }
             })
     }
 
-    // LĂ¡ÂºÂ¥y ngÄ‚Â y hiĂ¡Â»â€¡n tĂ¡ÂºÂ¡i
+    // Lấy ngày hiện tại
     const now = new Date();
     drawChart(now);
 
@@ -2576,7 +2856,91 @@ if (revenueChart) {
         drawChart(new Date(value));
     })
 }
-// HĂ¡ÂºÂ¿t BiĂ¡Â»Æ’u Ă„â€˜Ă¡Â»â€œ doanh thu
+// Hết Biểu đồ doanh thu
+// Information Form
+const profileForm = document.querySelector("#profileForm")
+if (profileForm) {
+    const validation = new JustValidate("#profileForm");
+    validation
+        .addField('#firstname', [{
+            rule: 'required',
+            errorMessage: 'Vui lòng nhập tên của bạn!',
+        },
+        {
+            validator: (value) => value.length >= 2,
+            errorMessage: 'Tên phải chứa ít nhất 2 ký tự!',
+        },
+        ])
+        .addField('#lastname', [{
+            rule: 'required',
+            errorMessage: 'Vui lòng nhập họ của bạn!',
+        },
+        {
+            validator: (value) => value.length >= 2,
+            errorMessage: 'Họ phải chứa ít nhất 2 ký tự!',
+        },
+        ])
+        .addField('#email', [{
+            rule: 'required',
+            errorMessage: 'Vui lòng nhập email của bạn!',
+        },
+        {
+            rule: 'email',
+            errorMessage: 'Email không đúng định dạng!',
+        },
+        ])
+        .addField('#phone', [{
+            rule: 'required',
+            errorMessage: 'Vui lòng nhập số điện thoại của bạn!',
+        },
+        {
+            validator: (value) => value.length >= 10,
+            errorMessage: 'Số điện thoại phải chứa ít nhất 10 ký tự!',
+        },
+        {
+            validator: (value) => value.length <= 11,
+            errorMessage: 'Số điện thoại phải chứa tối đa 11 ký tự!',
+        },
+        {
+            validator: (value) => /^0[0-9]{9}$/.test(value),
+            errorMessage: 'Số điện thoại không đúng định dạng!',
+        },
+        ]).onSuccess((event) => {
+            const firstname = event.target.firstname.value;
+            const lastname = event.target.lastname.value;
+            const email = event.target.email.value;
+            const phone = event.target.phone.value;
+            const dataFinal = {
+                firstname: firstname,
+                lastname: lastname,
+                email: email,
+                phone: phone,
+
+
+            }
+            console.log(dataFinal);
+            fetch("/account/setting/information", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(dataFinal),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code == "success") {
+                        window.location.reload()
+                    }
+                    if (data.code == "error") {
+
+                        window.location.reload()
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        })
+}
 // Order Form
 const orderForm = document.querySelector("#order-form");
 if (orderForm) {
@@ -2585,70 +2949,64 @@ if (orderForm) {
         .addField('#firstName', [
             {
                 rule: 'required',
-                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p hĂ¡Â»Â tÄ‚Âªn!'
+                errorMessage: 'Vui lòng nhập họ tên!'
             },
             {
                 rule: 'minLength',
                 value: 4,
-                errorMessage: 'HĂ¡Â»Â tÄ‚Âªn phĂ¡ÂºÂ£i cÄ‚Â³ Ä‚Â­t nhĂ¡ÂºÂ¥t 4 kÄ‚Â½ tĂ¡Â»Â±!',
+                errorMessage: 'Họ tên phải có ít nhất 4 ký tự!',
             },
             {
                 rule: 'maxLength',
                 value: 50,
-                errorMessage: 'HĂ¡Â»Â tÄ‚Âªn khÄ‚Â´ng Ă„â€˜Ă†Â°Ă¡Â»Â£c vĂ†Â°Ă¡Â»Â£t quÄ‚Â¡ 50 kÄ‚Â½ tĂ¡Â»Â±!',
+                errorMessage: 'Họ tên không được vượt quá 50 ký tự!',
             },
         ])
         .addField('#lastName', [
             {
                 rule: 'required',
-                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p hĂ¡Â»Â tÄ‚Âªn!'
-            },
-            {
-                rule: 'minLength',
-                value: 5,
-                errorMessage: 'HĂ¡Â»Â tÄ‚Âªn phĂ¡ÂºÂ£i cÄ‚Â³ Ä‚Â­t nhĂ¡ÂºÂ¥t 5 kÄ‚Â½ tĂ¡Â»Â±!',
             },
             {
                 rule: 'maxLength',
                 value: 50,
-                errorMessage: 'HĂ¡Â»Â tÄ‚Âªn khÄ‚Â´ng Ă„â€˜Ă†Â°Ă¡Â»Â£c vĂ†Â°Ă¡Â»Â£t quÄ‚Â¡ 50 kÄ‚Â½ tĂ¡Â»Â±!',
+                errorMessage: 'Họ tên không được vượt quá 50 ký tự!',
             },
         ])
         .addField('#email', [
             {
                 rule: 'required',
-                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p email!'
+                errorMessage: 'Vui lòng nhập email!'
             },
             {
                 rule: 'email',
-                errorMessage: 'Email khÄ‚Â´ng Ă„â€˜Ä‚Âºng Ă„â€˜Ă¡Â»â€¹nh dĂ¡ÂºÂ¡ng!',
+                errorMessage: 'Email không đúng định dạng!',
             },
         ])
         .addField('#phone', [
             {
                 rule: 'required',
-                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p sĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i!'
+                errorMessage: 'Vui lòng nhập số điện thoại!'
             },
             {
                 rule: 'customRegexp',
                 value: /(84|0[3|5|7|8|9])+([0-9]{8})\b/g,
-                errorMessage: 'SĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i khÄ‚Â´ng Ă„â€˜Ä‚Âºng Ă„â€˜Ă¡Â»â€¹nh dĂ¡ÂºÂ¡ng!'
+                errorMessage: 'Số điện thoại không đúng định dạng!'
             },
         ])
         .addField('#address', [
             {
                 rule: 'required',
-                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p Ă„â€˜Ă¡Â»â€¹a chĂ¡Â»â€°!'
+                errorMessage: 'Vui lòng nhập địa chỉ!'
             },
             {
                 rule: 'minLength',
                 value: 5,
-                errorMessage: 'Ă„ÂĂ¡Â»â€¹a chĂ¡Â»â€° phĂ¡ÂºÂ£i cÄ‚Â³ Ä‚Â­t nhĂ¡ÂºÂ¥t 5 kÄ‚Â½ tĂ¡Â»Â±!',
+                errorMessage: 'Địa chỉ phải có ít nhất 5 ký tự!',
             },
             {
                 rule: 'maxLength',
                 value: 100,
-                errorMessage: 'Ă„ÂĂ¡Â»â€¹a chĂ¡Â»â€° khÄ‚Â´ng Ă„â€˜Ă†Â°Ă¡Â»Â£c vĂ†Â°Ă¡Â»Â£t quÄ‚Â¡ 100 kÄ‚Â½ tĂ¡Â»Â±!',
+                errorMessage: 'Địa chỉ không được vượt quá 100 ký tự!',
             },
         ])
 
@@ -2657,9 +3015,9 @@ if (orderForm) {
             event.preventDefault();
             const submitBtn = document.querySelector("#submit-order");
 
-            // chĂ¡ÂºÂ·n spam
+            // chặn spam
             submitBtn.disabled = true;
-            submitBtn.innerHTML = "Ă„Âang xĂ¡Â»Â­ lÄ‚Â½...";
+            submitBtn.innerHTML = "Đang xử lý...";
             const firstName = event.target.firstName.value;
             const lastName = event.target.lastName.value;
             const email = event.target.email.value;
@@ -2694,25 +3052,25 @@ if (orderForm) {
                         .then(data => {
                             if (data.code == "error") {
                                 submitBtn.disabled = false;
-                                submitBtn.innerHTML = "Ä‘Å¸â€â€™ Ă„ÂĂ¡ÂºÂ·t hÄ‚Â ng ngay";
+                                submitBtn.innerHTML = "Đặt hàng ngay";
                                 window.location.reload();
 
                             }
                             if (data.code == "success") {
                                 submitBtn.disabled = true;
-                                submitBtn.innerHTML = "Ă„ÂĂ¡ÂºÂ·t hÄ‚Â ng thÄ‚Â nh cÄ‚Â´ng";
+                                submitBtn.innerHTML = "Đặt hàng thành công";
 
-                                showPageAlert("Ă„ÂĂ¡ÂºÂ·t hÄ‚Â ng thÄ‚Â nh cÄ‚Â´ng!", "success");
+                                showPageAlert("Đặt hàng thành công!", "success");
 
-                                // CĂ¡ÂºÂ­p nhĂ¡ÂºÂ­t lĂ¡ÂºÂ¡i giĂ¡Â»Â hÄ‚Â ng chÄ‚Â­nh
+                                // Cập nhật lại giỏ hàng chính
                                 let cart = JSON.parse(localStorage.getItem("cart") || "[]");
                                 cart = cart.filter(item => item.checked == false);
                                 localStorage.setItem("cart", JSON.stringify(cart));
 
-                                // XÄ‚Â³a dĂ¡Â»Â¯ liĂ¡Â»â€¡u thanh toÄ‚Â¡n tĂ¡ÂºÂ¡m thĂ¡Â»Âi
+                                // Xóa dữ liệu thanh toán tạm thời
                                 localStorage.removeItem("payment");
 
-                                // CĂ¡ÂºÂ­p nhĂ¡ÂºÂ­t sĂ¡Â»â€˜ lĂ†Â°Ă¡Â»Â£ng mini cart
+                                // Cập nhật số lượng mini cart
                                 const miniCart = document.querySelector(".cart-count");
                                 if (miniCart) {
                                     miniCart.innerHTML = cart.length;
@@ -2726,7 +3084,7 @@ if (orderForm) {
                         BANK_ID: "MB",
                         ACCOUNT_NO: "0522115385"
                     }
-                    // BĂ¡ÂºÂ­t tĂ¡ÂºÂ¯t thÄ‚Â´ng tin chuyĂ¡Â»Æ’n khoĂ¡ÂºÂ£n ngÄ‚Â¢n hÄ‚Â ng
+                    // Bật tắt thông tin chuyển khoản ngân hàng
                     const paymentRadios = document.querySelectorAll('input[name="method"]');
                     const bankInfo = document.getElementById('bank-transfer-info');
                     let isSuccess = false
@@ -2744,30 +3102,30 @@ if (orderForm) {
             <div style="display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap;">
                 <div style="flex:1; min-width:200px;">
                     <p style="margin-bottom:8px; color:var(--text-light); font-size:0.85rem;">
-                        TÄ‚Âªn chĂ¡Â»Â§ tÄ‚Â i khoĂ¡ÂºÂ£n:
+                        Tên chủ tài khoản:
                         <strong style="color:var(--white);">VU MANH QUYNH</strong>
                     </p>
                     <p style="margin-bottom:8px; color:var(--text-light); font-size:0.85rem;">
-                        SĂ¡Â»â€˜ tÄ‚Â i khoĂ¡ÂºÂ£n:
+                        Số tài khoản:
                         <strong style="color:var(--white); font-size:1.1rem;">0522115385</strong>
                     </p>
                     <p style="margin-bottom:8px; color:var(--text-light); font-size:0.85rem;">
-                        NgÄ‚Â¢n hÄ‚Â ng:
+                        Ngân hàng:
                         <strong style="color:var(--white);">MB Bank</strong>
                     </p>
                     <p style="margin-bottom:0; color:var(--text-light); font-size:0.85rem;">
-                        SĂ¡Â»â€˜ tiĂ¡Â»Ân thanh toÄ‚Â¡n:
-                        <strong style="color:var(--accent); font-size:1rem;">${Number(pricePayment).toLocaleString("vi-VN")} Ă¢â€Â«</strong>
+                        Số tiền thanh toán:
+                        <strong style="color:var(--accent); font-size:1rem;">${Number(pricePayment).toLocaleString("vi-VN")} ₫</strong>
                     </p>
                     <p style="margin-bottom:0; color:var(--text-light); font-size:0.85rem;">
-                        NĂ¡Â»â„¢i dung chuyĂ¡Â»Æ’n khoĂ¡ÂºÂ£n: 
+                        Nội dung chuyển khoản: 
                         <strong class ="content" style="color:var(--accent); font-size:1rem;">  ${transferCode}</strong>
                     </p>
                 </div>
                 <div style="text-align:center;">
                     <img src="${qrUrl}" alt="QR Code" style="width:100%; height:auto; border-radius:8px; border:2px solid var(--border); background:#fff; padding:4px;">
                     <p style="font-size:0.75rem; color:var(--text-light); margin-top:6px; margin-bottom:0;">
-                        QuÄ‚Â©t mÄ‚Â£ thanh toÄ‚Â¡n
+                        Quét mã thanh toán
                     </p>
                 </div>
             </div>
@@ -2779,7 +3137,7 @@ if (orderForm) {
 
 
 
-                        // TrĂ¡ÂºÂ¡ng thÄ‚Â¡i ban Ă„â€˜Ă¡ÂºÂ§u
+                        // Trạng thái ban đầu
                         const initialChecked = document.querySelector('input[name="method"]:checked');
                         if (initialChecked && initialChecked.value === 'bank') {
                             updateBankInfo();
@@ -2796,8 +3154,8 @@ if (orderForm) {
                                 isSuccess = true;
                                 clearInterval(interval);
 
-                                // CHĂ¡Â»Ë† KHI THANH TOÄ‚ÂN THÄ‚â‚¬NH CÄ‚â€NG
-                                // mĂ¡Â»â€ºi tĂ¡ÂºÂ¡o order
+                                // CHỈ KHI THANH TOÁN THÀNH CÔNG
+                                // mới tạo order
 
                                 fetch("/cart/order", {
                                     method: "POST",
@@ -2815,9 +3173,9 @@ if (orderForm) {
 
                                         if (data.code == "success") {
                                             submitBtn.disabled = true;
-                                            submitBtn.innerHTML = "Thanh toÄ‚Â¡n thÄ‚Â nh cÄ‚Â´ng";
+                                            submitBtn.innerHTML = "Thanh toán thành công";
                                             showPageAlert(
-                                                "Thanh toÄ‚Â¡n thÄ‚Â nh cÄ‚Â´ng! Xem trĂ¡ÂºÂ¡ng thÄ‚Â¡i Ă„â€˜Ă†Â¡n hÄ‚Â ng Ă¡Â»Å¸ lĂ¡Â»â€¹ch sĂ¡Â»Â­ Ă„â€˜Ă†Â¡n hÄ‚Â ng",
+                                                "Thanh toán thành công! Xem trạng thái đơn hàng ở lịch sử đơn hàng",
                                                 "success"
                                             );
 
@@ -2825,10 +3183,10 @@ if (orderForm) {
                                             cart = cart.filter(item => item.checked == false);
                                             localStorage.setItem("cart", JSON.stringify(cart));
 
-                                            // XÄ‚Â³a dĂ¡Â»Â¯ liĂ¡Â»â€¡u thanh toÄ‚Â¡n tĂ¡ÂºÂ¡m thĂ¡Â»Âi
+                                            // Xóa dữ liệu thanh toán tạm thời
                                             localStorage.removeItem("payment");
 
-                                            // CĂ¡ÂºÂ­p nhĂ¡ÂºÂ­t sĂ¡Â»â€˜ lĂ†Â°Ă¡Â»Â£ng mini cart
+                                            // Cập nhật số lượng mini cart
                                             const miniCart = document.querySelector(".cart-count");
                                             if (miniCart) {
                                                 miniCart.innerHTML = cart.length;
@@ -2856,7 +3214,7 @@ const filterCategory = document.querySelectorAll(".space-tag");
 
 if (filterCategory.length > 0) {
 
-    // LĂ¡ÂºÂ¥y category hiĂ¡Â»â€¡n tĂ¡ÂºÂ¡i trÄ‚Âªn URL
+    // Lấy category hiện tại trên URL
     const currentCategories =
         new URLSearchParams(window.location.search)
             .get("category");
@@ -2917,38 +3275,38 @@ if (contact) {
         .addField('#name', [
             {
                 rule: 'required',
-                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p hĂ¡Â»Â tÄ‚Âªn!'
+                errorMessage: 'Vui lòng nhập họ và tên!'
             },
             {
                 rule: 'minLength',
                 value: 2,
-                errorMessage: 'HĂ¡Â»Â tÄ‚Âªn phĂ¡ÂºÂ£i cÄ‚Â³ Ä‚Â­t nhĂ¡ÂºÂ¥t 5 kÄ‚Â½ tĂ¡Â»Â±!',
+                errorMessage: 'Họ tên phải có ít nhất 5 ký tự!',
             },
             {
                 rule: 'maxLength',
                 value: 50,
-                errorMessage: 'HĂ¡Â»Â tÄ‚Âªn khÄ‚Â´ng Ă„â€˜Ă†Â°Ă¡Â»Â£c vĂ†Â°Ă¡Â»Â£t quÄ‚Â¡ 50 kÄ‚Â½ tĂ¡Â»Â±!',
+                errorMessage: 'Họ tên không được vượt quá 50 ký tự!',
             },
         ])
         .addField('#email', [
             {
                 rule: 'required',
-                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p email!'
+                errorMessage: 'Vui lòng nhập email!'
             },
             {
                 rule: 'email',
-                errorMessage: 'Email khÄ‚Â´ng Ă„â€˜Ä‚Âºng Ă„â€˜Ă¡Â»â€¹nh dĂ¡ÂºÂ¡ng!',
+                errorMessage: 'Email không đúng định dạng!',
             },
         ])
         .addField('#phone', [
             {
                 rule: 'required',
-                errorMessage: 'Vui lÄ‚Â²ng nhĂ¡ÂºÂ­p sĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i!'
+                errorMessage: 'Vui lòng nhập số điện thoại!'
             },
             {
                 rule: 'customRegexp',
                 value: /(84|0[3|5|7|8|9])+([0-9]{8})\b/g,
-                errorMessage: 'SĂ¡Â»â€˜ Ă„â€˜iĂ¡Â»â€¡n thoĂ¡ÂºÂ¡i khÄ‚Â´ng Ă„â€˜Ä‚Âºng Ă„â€˜Ă¡Â»â€¹nh dĂ¡ÂºÂ¡ng!'
+                errorMessage: 'Số điện thoại không đúng định dạng!'
             },
         ])
 
@@ -2958,9 +3316,9 @@ if (contact) {
             event.preventDefault();
             const submitBtn = document.querySelector(".submit-contact");
 
-            // chĂ¡ÂºÂ·n spam
+            // chặn spam
 
-            submitBtn.innerHTML = "Ă„Âang xĂ¡Â»Â­ lÄ‚Â½...";
+            submitBtn.innerHTML = "Đang xử lý...";
             const name = event.target.name.value;
             const email = event.target.email.value;
             const phone = event.target.phone.value;
@@ -2989,14 +3347,14 @@ if (contact) {
                 .then(data => {
                     if (data.code == "error") {
                         submitBtn.disabled = false;
-                        submitBtn.innerHTML = "Ä‘Å¸â€â€™ GĂ¡Â»Â­i";
+                        submitBtn.innerHTML = "Đã Gửi";
 
 
                     }
                     if (data.code == "success") {
                         submitBtn.disabled = true;
-                        submitBtn.innerHTML = "GĂ¡Â»Â­i thÄ‚Â nh cÄ‚Â´ng";
-                        showPageAlert("GĂ¡Â»Â­i thÄ‚Â nh cÄ‚Â´ng! ChÄ‚Âºng tÄ‚Â´i sĂ¡ÂºÂ½ liÄ‚Âªn hĂ¡Â»â€¡ lĂ¡ÂºÂ¡i sĂ¡Â»â€ºm nhĂ¡ÂºÂ¥t cÄ‚Â³ thĂ¡Â»Æ’.", "success");
+                        submitBtn.innerHTML = "Gửi thành công";
+                        showPageAlert("Gửi thành công! Chúng tôi sẽ liên hệ lại sớm nhất có thể.", "success");
 
 
                     }
@@ -3010,7 +3368,7 @@ async function CheckPaid(pricePayment, transferCode) {
         const response = await fetch("https://script.google.com/macros/s/AKfycbxsVeo16PF7qaRl_cHF5s3VhU6EuyjFX5mbBo8_f9aywxOZeQSWh7vInld1SQ0nEgFl/exec");
         const json = await response.json();
 
-        // Google Apps Script thĂ†Â°Ă¡Â»Âng trĂ¡ÂºÂ£ vĂ¡Â»Â { data: [...] } hoĂ¡ÂºÂ·c trĂ¡Â»Â±c tiĂ¡ÂºÂ¿p [...]
+        // Google Apps Script trả về { data: [...] } hoặc trực tiếp [...]
         const data = json.data || json;
 
         if (!Array.isArray(data) || data.length === 0) {
@@ -3020,8 +3378,8 @@ async function CheckPaid(pricePayment, transferCode) {
         const lastPaid = data[data.length - 1];
         if (!lastPaid) return false;
 
-        const lastPrice = lastPaid["GiÄ‚Â¡ trĂ¡Â»â€¹"];
-        const lastContent = lastPaid["MÄ‚Â´ tĂ¡ÂºÂ£"];
+        const lastPrice = lastPaid["Giá trị"];
+        const lastContent = lastPaid["Mô tả"];
 
         if (
             lastPrice >= pricePayment &&
@@ -3033,7 +3391,7 @@ async function CheckPaid(pricePayment, transferCode) {
         return false;
 
     } catch (error) {
-        console.log("LĂ¡Â»â€”i kiĂ¡Â»Æ’m tra thanh toÄ‚Â¡n:", error);
+        console.log("Lỗi kiểm tra thanh toán:", error);
         return false;
     }
 }
@@ -3099,11 +3457,48 @@ const initAiChat = () => {
     const aiChatSend = document.getElementById('aiChatSend');
     const aiChatMessages = document.getElementById('aiChatMessages');
 
+    let isHistoryLoaded = false;
+
     if (aiChatToggle && aiChatWindow) {
-        // Xóa listener cũ nếu có (để tránh lặp)
-        aiChatToggle.onclick = null; 
+
+        const appendMessage = (role, text) => {
+            const cssClass = (role === 'model' || role === 'ai') ? 'ai' : 'user';
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'chat-msg ' + cssClass;
+            msgDiv.innerHTML = text
+                .replace(/\*\*(.*?)\*\*/g, '<strong></strong>')
+                .replace(/\*(.*?)\*/g, '<em></em>')
+                .replace(/\n/g, '<br>');
+            aiChatMessages.appendChild(msgDiv);
+            return msgDiv;
+        };
+
+        const loadHistory = async () => {
+            if (isHistoryLoaded) return;
+            const isAdmin = window.location.pathname.startsWith('/admin');
+            const endpoint = isAdmin ? "/admin/chat/history" : "/chat/history";
+
+            try {
+                const response = await fetch(endpoint);
+                const data = await response.json();
+                if (data.code === "success" && data.history && data.history.length > 0) {
+                    aiChatMessages.innerHTML = '';
+                    data.history.forEach(chat => {
+                        appendMessage(chat.role, chat.content);
+                    });
+                    aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+                }
+                isHistoryLoaded = true;
+            } catch (error) {
+                console.error("Lỗi tải lịch sử chat:", error);
+            }
+        };
+
         aiChatToggle.addEventListener('click', () => {
             aiChatWindow.classList.toggle('active');
+            if (aiChatWindow.classList.contains('active')) {
+                loadHistory();
+            }
         });
 
         if (closeChat) {
@@ -3116,17 +3511,13 @@ const initAiChat = () => {
             const text = aiChatInput.value.trim();
             if (!text) return;
 
-            const userMsg = document.createElement('div');
-            userMsg.className = 'chat-msg user';
-            userMsg.textContent = text;
-            aiChatMessages.appendChild(userMsg);
-            
+            const userMessageEl = appendMessage('user', text);
             aiChatInput.value = '';
             aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
 
             const loadingMsg = document.createElement('div');
             loadingMsg.className = 'chat-msg ai loading';
-            loadingMsg.textContent = "AI đang suy nghĩ...";
+            loadingMsg.textContent = "Đệ anh Quỳnh đang suy nghĩ...";
             aiChatMessages.appendChild(loadingMsg);
             aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
 
@@ -3140,20 +3531,16 @@ const initAiChat = () => {
                     body: JSON.stringify({ message: text })
                 });
                 const data = await response.json();
-                
+
                 if (aiChatMessages.contains(loadingMsg)) {
                     aiChatMessages.removeChild(loadingMsg);
                 }
 
                 if (data.code === "success") {
-                    const aiMsg = document.createElement('div');
-                    aiMsg.className = 'chat-msg ai';
-                    aiMsg.innerHTML = data.message
-                        .replace(/\*\*(.*?)\*\*/g, '<strong></strong>')
-                        .replace(/\*(.*?)\*/g, '<em></em>')
-                        .replace(/\n/g, '<br>');
-                    aiChatMessages.appendChild(aiMsg);
+                    appendMessage('ai', data.message);
                 } else {
+                    userMessageEl.classList.add('error');
+                    userMessageEl.title = 'Tin nhan gui that bai';
                     const errorMsg = document.createElement('div');
                     errorMsg.className = 'chat-msg ai error';
                     errorMsg.textContent = data.message || "Lỗi hệ thống.";
@@ -3163,6 +3550,8 @@ const initAiChat = () => {
                 if (aiChatMessages.contains(loadingMsg)) {
                     aiChatMessages.removeChild(loadingMsg);
                 }
+                userMessageEl.classList.add('error');
+                userMessageEl.title = 'Tin nhan gui that bai';
                 const errorMsg = document.createElement('div');
                 errorMsg.className = 'chat-msg ai error';
                 errorMsg.textContent = "Lỗi kết nối.";
@@ -3171,9 +3560,7 @@ const initAiChat = () => {
             aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
         };
 
-        if (aiChatSend) {
-            aiChatSend.addEventListener('click', sendMessage);
-        }
+        if (aiChatSend) aiChatSend.addEventListener('click', sendMessage);
         if (aiChatInput) {
             aiChatInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') sendMessage();
@@ -3182,7 +3569,6 @@ const initAiChat = () => {
     }
 };
 
-// Đảm bảo chạy dù trang đã load hay chưa
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initAiChat);
 } else {

@@ -70,13 +70,15 @@ block main
               div.inner-time #{item.updatedAtFormat}
             td
               .action-btns
-                button.action-btn.action-btn-edit(
-                    onclick=`openModal('editCategoryModal', '/admin/categories/edit/${item._id}')`
-                ) ✏
-                button.action-btn.action-btn-delete(
-                    data-url=`/admin/categories/delete/${item._id}`,
-                    button-delete
-                ) 🗑
+                if permissions && permissions.includes("order-update")
+                  button.action-btn.action-btn-edit(
+                      onclick=`openModal('editCategoryModal', '/admin/categories/edit/${item._id}')`
+                  ) ✏
+                if permissions && permissions.includes("delete")
+                  button.action-btn.action-btn-delete(
+                      data-url=`/admin/categories/delete/${item._id}`,
+                      button-delete
+                  ) 🗑
     +pagination(pagination, categoryList.length)
   // Add Category Modal
   #addCategoryModal.modal-backdrop

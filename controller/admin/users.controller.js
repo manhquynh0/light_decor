@@ -1,6 +1,7 @@
 const Account = require("../../models/account.model")
 const bcrypt = require("bcryptjs")
 const Role = require("../../models/role.model")
+const Order = require("../../models/order.model")
 module.exports.index = async (req, res) => {
   const find = {
     deleted: false,
@@ -48,11 +49,19 @@ module.exports.index = async (req, res) => {
     skip: skip,
     totalRecord: totalRecord
   };
+  for (let user of accountList) {
+    user.totalOrder = await Order.countDocuments({
+      deleted: false,
+      userId: user._id
+    });
+  }
+
   const roleList = await Role.find({ deleted: false })
   res.render("admin/pages/users", {
     accountList: accountList,
     roleList: roleList,
     pagination: pagination,
+
   })
 }
 

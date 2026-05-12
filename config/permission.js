@@ -17,15 +17,15 @@ module.exports.permissionList = [
     },
     {
         value: "order-update",
-        label: "Cập nhật đơn hàng",
+        label: "Cập nhật ",
     },
     {
         value: "permission",
         label: "Phân quyền",
     },
     {
-        value: "settings",
-        label: "Cài đặt hệ thống",
+        value: "delete",
+        label: "Xóa",
     },
 
 ]

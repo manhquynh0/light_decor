@@ -2,41 +2,42 @@ extend ../layouts/default
 include ../mixins/pagination
 block main
   // SUB: USERS
-  #sub-users.admin-sub-panel
-  .table-toolbar
-    .toolbar-search
-      svg(
-        stroke-width="2"
-        stroke="currentColor"
-        fill="none"
-        viewBox="0 0 24 24"
-        height="14"
-        width="14"
-      )
-        circle(r="8" cy="11" cx="11")
-        line(y2="16.65" x2="16.65" y1="21" x1="21")
-      input(
-        placeholder="Tìm người dùng..."
-        type="text"
-        search
-      )
-    .toolbar-actions
-      .toolbar-actions
-        select.btn-admin.btn-admin-outline(filter-role)
-          each item in roleList
-            option(value=item._id) #{item.name}
-      button.btn-admin.btn-admin-primary(onclick="openModal('addUserModal', '/admin/users/add')")
+  if permissions && permissions.includes("permission")
+    #sub-users.admin-sub-panel
+    .table-toolbar
+      .toolbar-search
         svg(
-          stroke-width="2.5"
+          stroke-width="2"
           stroke="currentColor"
           fill="none"
           viewBox="0 0 24 24"
-          height="13"
-          width="13"
+          height="14"
+          width="14"
         )
-          line(y2="19" x2="12" y1="5" x1="12")
-          line(y2="12" x2="19" y1="12" x1="5")
-        | Thêm người dùng
+          circle(r="8" cy="11" cx="11")
+          line(y2="16.65" x2="16.65" y1="21" x1="21")
+        input(
+          placeholder="Tìm người dùng..."
+          type="text"
+          search
+        )
+      .toolbar-actions
+        .toolbar-actions
+          select.btn-admin.btn-admin-outline(filter-role)
+            each item in roleList
+              option(value=item._id) #{item.name}
+        button.btn-admin.btn-admin-primary(onclick="openModal('addUserModal', '/admin/users/add')")
+          svg(
+            stroke-width="2.5"
+            stroke="currentColor"
+            fill="none"
+            viewBox="0 0 24 24"
+            height="13"
+            width="13"
+          )
+            line(y2="19" x2="12" y1="5" x1="12")
+            line(y2="12" x2="19" y1="12" x1="5")
+          | Thêm người dùng
   .data-table-wrap(style="border-radius:0;border:none;border-top:1px solid var(--border);")
     table.data-table
       thead
@@ -57,7 +58,7 @@ block main
             td #{item.firstname} #{item.lastname}
             td #{item.email}
             td #{item.createdAt.toLocaleString("vi-VN")}
-            td 0
+            td #{item.totalOrder}
             td #{item.role ? item.role.name : "Chưa có vai trò"}  
             td
               .action-btns

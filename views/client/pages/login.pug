@@ -11,8 +11,8 @@ block content
   section.auth-wrap
     .auth-box
       div(style="text-align:center;margin-bottom:32px;")
-        div(style="font-size:2rem;font-weight:900;color:var(--primary);")
-          span OH!
+        div(style="font-size:2rem;font-weight:900;color:var(--accent);")
+          span MANHQUYNH!
           span(style="font-weight:300;") Decor.
         p(style="font-size:0.9rem;color:var(--text-light);margin-top:8px;") Chào mừng trở lại! Đăng nhập để tiếp tục.
       form#loginForm
@@ -63,7 +63,7 @@ block content
           span(style="font-size:0.78rem;color:var(--text-light);white-space:nowrap;") Hoặc đăng nhập với
           div(style="flex:1;height:1px;background:var(--border);")
         div(style="display:grid;grid-template-columns:1fr 1fr;gap:12px;")
-          div.google-login-wrapper
+          div.google-login-wrapper( style="display:flex;justify-content:center;align-items:center;")
             #g_id_onload(
               data-client_id="169562147948-tq3hgnuptt7vn13nie4c91rru0tg78hq.apps.googleusercontent.com"
               data-callback="handleCredentialResponse"

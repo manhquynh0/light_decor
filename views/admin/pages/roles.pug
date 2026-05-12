@@ -1,20 +1,22 @@
 extend ../layouts/default
 block main
-  // SUB: ROLES
-  #sub-roles.admin-sub-panel
-  .table-toolbar(style="justify-content:flex-end;")
-    button.btn-admin.btn-admin-primary(onclick="openModal('addRoleModal', '/admin/roles/add')")
-      svg(
-        stroke-width="2.5"
-        stroke="currentColor"
-        fill="none"
-        viewBox="0 0 24 24"
-        height="13"
-        width="13"
-      )
-        line(y2="19" x2="12" y1="5" x1="12")
-        line(y2="12" x2="19" y1="12" x1="5")
-      | Tạo vai trò mới
+  if permissions && permissions.includes("permission")
+    // SUB: ROLES
+    #sub-roles.admin-sub-panel
+    .table-toolbar(style="justify-content:flex-end;")
+      button.btn-admin.btn-admin-primary(onclick="openModal('addRoleModal', '/admin/roles/add')")
+        svg(
+          stroke-width="2.5"
+          stroke="currentColor"
+          fill="none"
+          viewBox="0 0 24 24"
+          height="13"
+          width="13"
+          
+        )
+          line(y2="19" x2="12" y1="5" x1="12")
+          line(y2="12" x2="19" y1="12" x1="5")
+        | Tạo vai trò mới
   div(style="display:flex;flex-direction:column;gap:16px;padding-top:8px;")
     each item in rolelist
       div(style="background:var(--off-white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 24px;")

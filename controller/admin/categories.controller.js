@@ -1,13 +1,15 @@
 const Category = require("../../models/category.model")
 const Account = require("../../models/account.model")
 const categoryHelper = require("../../helpers/categoryTree.helper")
+
 module.exports.index = async (req, res) => {
   const find = {
     deleted: false
   }
   if (req.query.keyword) {
-    find.slug = {
-      $regex: req.query.keyword,
+    const keyword = req.query.keyword
+    find.name = {
+      $regex: keyword,
       $options: "i"
     }
   }
@@ -36,7 +38,7 @@ module.exports.index = async (req, res) => {
 
   const skip = (page - 1) * limitItems; // bỏ qua bao nhiêu record
   const categoryList = await Category.find(find)
-    .sort({ name: "asc" })
+    .sort({ createdAt: -1 })
     .limit(limitItems)
     .skip(skip);
 

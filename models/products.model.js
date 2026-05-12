@@ -10,14 +10,16 @@ const schema = new mongoose.Schema({
     size: String,
     colorIndex: String,
     material: String,
-    category: {
-        type: Array,
-        ref: "Category"
-    }, // lưu mảng id của danh mục
+    category: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Category"
+        }
+    ],
 
     createdBy: String,
-    priceOLD: String,
-    priceNEW: String,
+    priceOLD: Number,
+    priceNEW: Number,
     updatedBy: String,
     images: Array,
     stock: String,

@@ -10,6 +10,8 @@ router.get("/register", accountController.register)
 router.post("/register", accountController.registerPost)
 
 router.get("/setting/information", authMiddleware.verifyToken, accountController.information)
+router.post("/setting/information", authMiddleware.verifyToken, accountController.informationPost)
+
 
 router.get("/setting/reset-password", authMiddleware.verifyToken, accountController.resetPassword)
 

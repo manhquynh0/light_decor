@@ -191,6 +191,27 @@ module.exports.information = async (req, res) => {
         title: "Thong tin tai khoan"
     })
 }
+module.exports.informationPost = async (req, res) => {
+    const { email } = req.body
+    const exitAccount = await Account.findOne({
+        email: email
+    })
+    if (!exitAccount) {
+        req.flash("error", "Không tìm thấy tài khoản")
+        res.json({
+            code: "error"
+        })
+        return
+    }
+    await Account.updateOne({
+        email: email
+    }, req.body)
+    req.flash("success", "Cập nhật thành công")
+    res.json({
+        code: "error"
+
+    })
+}
 
 module.exports.resetPassword = async (req, res) => {
     res.render("client/pages/reset-password", {

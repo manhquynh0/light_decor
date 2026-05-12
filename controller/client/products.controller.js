@@ -2,23 +2,21 @@ const Product = require("../../models/products.model");
 const Category = require("../../models/category.model");
 const categoryHelper = require("../../helpers/categoryTree.helper");
 
+
 module.exports.products = async (req, res) => {
     const find = {
         deleted: false,
         status: "stock"
     }
-    if (req.query.category) {
-        find.category = req.query.category;
-    }
-    //loc theo gia
+
     const priceFilter = {}
     if (req.query.priceMin || req.query.priceMax) {
         if (req.query.priceMin) {
-            const priceMin = req.query.priceMin
+            const priceMin = Number(req.query.priceMin);
             priceFilter.$gte = priceMin
         }
         if (req.query.priceMax) {
-            const priceMax = req.query.priceMax
+            const priceMax = Number(req.query.priceMax);
             priceFilter.$lte = priceMax
         }
     }
@@ -31,6 +29,7 @@ module.exports.products = async (req, res) => {
             $options: "i"
         }
     }
+    console.log(priceFilter)
     // Phân trang
     const limitItems = 9;
     let page = 1;
@@ -107,8 +106,7 @@ module.exports.products = async (req, res) => {
         products = await Product.find(find)
             .sort(sort)
             .limit(limitItems)
-            .skip(skip)
-
+            .skip(skip);
     }
 
     const totalPage = Math.max(Math.ceil(totalRecord / limitItems), 1);
@@ -133,25 +131,35 @@ module.exports.products = async (req, res) => {
         .categoryTree(categoryList)
         .filter(item => item.children.length > 0);
 
+    if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+        return res.json({
+            products: products,
+            pagination: pagination
+        });
+    }
+
     res.render("client/pages/products", {
         products,
         categoryTree,
         pagination,
     });
 };
+
 module.exports.productDetail = async (req, res) => {
     const slug = req.params.slug;
     const product = await Product.findOne({ slug: slug }).populate("category", "name").lean();
+    if (!product) return res.redirect("/products");
+
     const categoryIDs = product.category.map(item => (item._id ? item._id.toString() : item.toString()));
     const productList = await Product.find({
-        _id: { $ne: product._id }, // không lấy sản phẩm hiện tại
+        _id: { $ne: product._id },
         deleted: false,
         status: "stock",
         category: {
             $in: categoryIDs
         },
     }).limit(4).populate("category", "name").lean();
-    console.log(productList)
+
     res.render("client/pages/product-detail", {
         product,
         productList

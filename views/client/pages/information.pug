@@ -11,49 +11,42 @@ block main
           .form-row(style="margin-bottom:20px;")
             .form-group(style="margin:0;")
               label(for="firstName") Họ
-              input#firstName.form-control(
+              input#firstname.form-control(
                 value=user.firstname
                 type="text"
+                name = "firstname"
               )
             .form-group(style="margin:0;")
               label(for="lastName") Tên
-              input#lastName.form-control(
+              input#lastname.form-control(
                 value=user.lastname
                 type="text"
+                name ="lastname"
               )
           .form-group
             label(for="profileEmail") Email
-            input#profileEmail.form-control(
+            input#email.form-control(
               value=user.email
               type="email"
+              reaonly 
+              name ="email"
             )
           .form-group
             label(for="profilePhone") Số điện thoại
-            input#profilePhone.form-control(
+            input#phone.form-control(
               placeholder="+84 xxx xxx xxx"
               value=user.phone
               type="tel"
+              name = "phone"
             )
           .form-group
             label(for="profileBio") Giới thiệu ngắn
             textarea#profileBio.form-control(
               placeholder="Viết vài dòng giới thiệu về bạn..."
               rows="3"
+              readonly
             ) #{user.roleName}
-          .form-row(style="margin-bottom:20px;")
-            .form-group(style="margin:0;")
-              label(for="profileCity") Thành phố
-              select#profileCity.form-control
-                option Hà Nội
-                option(selected="") TP. Hồ Chí Minh
-                option Đà Nẵng
-                option Cần Thơo
-            .form-group(style="margin:0;")
-              label(for="profileGender") Giới tính
-              select#profileGender.form-control
-                option(selected="") Nam
-                option Nữ
-                option Khác
+        
           .form-actions
             button#saveProfileBtn.btn.btn-gold(type="submit")
               svg(

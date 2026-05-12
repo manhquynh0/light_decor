@@ -10,7 +10,7 @@ block content
     .container
       h1 Quản Lý Cửa Hàng
       nav.breadcrumb
-        a(href="/home") Trang chủ
+        a(href="/admin/dashboard") Trang Tổng Quan
         span ›
         span Cài đặt
 
@@ -40,10 +40,12 @@ block content
                   | Đơn hàng
                 button.admin-tab(data-sub="products" onclick="window.location.href='/admin/products'")
                   | Sản phẩm
-                button.admin-tab(data-sub="users" onclick="window.location.href='/admin/users'")
-                  | Người dùng
-                button.admin-tab(data-sub="roles" onclick="window.location.href='/admin/roles'")
-                  | Phân quyền
+                if permissions && permissions.includes("permission")
+                  button.admin-tab(data-sub="users" onclick="window.location.href='/admin/users'")
+                    | Người dùng
+                if permissions && permissions.includes("permission")
+                  button.admin-tab(data-sub="roles" onclick="window.location.href='/admin/roles'")
+                    | Phân quyền
                 button.admin-tab(data-sub="categories" onclick="window.location.href='/admin/categories'")
                   | Danh mục
           block main   
