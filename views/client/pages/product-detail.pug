@@ -29,7 +29,7 @@ block content
           h1.pd-name #{product.name}
         .pd-stars
           span.stars ★★★★★
-          span 4.9 (128 đánh giá)
+          span #{ratingAvg ? ratingAvg.toFixed(1) : 0} (#{listReview.length} đánh giá)
           span(style="color:#2a9d5c;font-weight:600;") · Còn hàng
         .pd-price-wrap
           span.pd-price-new #{Number(product.priceNEW).toLocaleString('vi-VN')} ₫
@@ -194,7 +194,7 @@ block content
     .tab-nav
       button.tab-nav-btn.active(onclick="switchTab('desc', this)") Mô tả sản phẩm
       button.tab-nav-btn(onclick="switchTab('specs', this)") Thông số kỹ thuật
-      button.tab-nav-btn(onclick="switchTab('reviews', this)") Đánh giá (128)
+      button.tab-nav-btn(onclick="switchTab('reviews', this)") Đánh giá (#{listReview.length})
     // Description
     #tab-desc.tab-pane.active
       div(style="max-width:800px;font-size:.95rem;color:var(--text-mid);line-height:1.9;")
@@ -245,95 +245,131 @@ block content
         style="display:grid;grid-template-columns:160px 1fr;gap:32px;align-items:center;margin-bottom:32px;padding:24px;background:var(--off-white);border-radius:var(--radius-lg);"
         )
         div(style="text-align:center;")
-          div(style="font-size:3.5rem;font-weight:900;color:var(--white);line-height:1;") 4.9
-          div(style="color:#f5a623;font-size:1.2rem;margin:6px 0;") ★★★★★
-          div(style="font-size:.8rem;color:var(--text-light);") 128 đánh giá
+          div(style="font-size:3.5rem;font-weight:900;color:var(--white);line-height:1;") #{ratingAvg ? ratingAvg.toFixed(1) : 0}
+          div(style="color:#f5a623;font-size:1.2rem;margin:6px 0;")
+            if(ratingAvg>=4.5)
+              span ★★★★★
+            else if(ratingAvg>=4)
+              span ★★★★☆
+            else if(ratingAvg>=3)
+              span ★★★☆☆
+            else if(ratingAvg>=2)
+              span ★★☆☆☆
+            else
+              span ★☆☆☆☆
+          div(style="font-size:.8rem;color:var(--text-light);") #{listReview.length} đánh giá
         div(style="display:flex;flex-direction:column;gap:6px;")
-          div(style="display:flex;align-items:center;gap:10px;font-size:.82rem;")
-            span(style="width:20px;text-align:right;") 5★
-            div(style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;")
-              div(style="width:90%;height:100%;background:#f5a623;border-radius:4px;")
-            span(style="color:var(--text-light);") 112
-          div(style="display:flex;align-items:center;gap:10px;font-size:.82rem;")
-            span(style="width:20px;text-align:right;") 4★
-            div(style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;")
-              div(style="width:10%;height:100%;background:#f5a623;border-radius:4px;")
-            span(style="color:var(--text-light);") 12
-          div(style="display:flex;align-items:center;gap:10px;font-size:.82rem;")
-            span(style="width:20px;text-align:right;") 3★
-            div(style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;")
-              div(style="width:3%;height:100%;background:#f5a623;border-radius:4px;")
-            span(style="color:var(--text-light);") 4
+          - const starRatings = [5, 4, 3, 2, 1]
+          - const ratingCounts = {5: 0, 4: 0, 3: 0, 2: 0, 1: 0}
+          - listReview.forEach(item =>  { if(ratingCounts[item.rating] !== undefined) ratingCounts[item.rating]++ })
+          - const totalReviews = listReview.length
+          each star in starRatings
+            - const count = ratingCounts[star]
+            - const percent = totalReviews > 0 ? (count / totalReviews * 100) : 0
+            div(style="display:flex;align-items:center;gap:10px;font-size:.82rem;")
+              span(style="width:20px;text-align:right;") #{star}★
+              div(style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;")
+                div(style=`width:${percent}%;height:100%;background:#f5a623;border-radius:4px; transition: width 0.3s ease;`)
+              span(style="color:var(--text-light);") #{count}
       #reviewList
-        .review-item
-          .review-author
-            img.review-avatar(
-              alt="Khách hàng" 
-              src="../assets/images/thanh.jpg"
+         each item in listReview
+           .review-item
+       
+            .review-author
+              img.review-avatar(
+                alt="Khách hàng" 
+                src=item.userId.avatar || "" 
+                )
+              div
+                .review-name(style ="color :var(--white)") #{item.userId.name}
+                .review-date(style ="color :var(--text-light)") #{item.createdAtFormat}
+            .review-stars 
+              if item.rating == 1
+                span(style="color:var(--yellow)") ★
+              if item.rating == 2
+                span(style="color:var(--yellow)") ★★
+              if item.rating == 3
+                span(style="color:var(--yellow)") ★★★
+              if item.rating == 4
+                span(style="color:var(--yellow)") ★★★★
+              if item.rating == 5
+                span(style="color:var(--yellow)") ★★★★★
+            if item.images && item.images.length > 0
+              div(
+                style="display:flex;flex-direction:row;gap:6px;"
               )
-            div
-              .review-name(style ="color :var(--white)") Đỗ Văn Thành
-              .review-date(style ="color :var(--text-light)") 5/8/2026
-          .review-stars ★★★★★
-          p.review-text
-            | Đèn đẹp hơn hình rất nhiều! Chất liệu da mềm, màu vàng bò rất sang trọng. Đội ngũ giao hàng chuyên nghiệp, lắp đặt nhanh gọn. Rất hài lòng với lựa chọn này!
-        .review-item
-          .review-author
-            img.review-avatar(
-              alt="Khách hàng" 
-              src="../assets/images/manhquynhdz.png"
-              )
-            div
-              .review-name(style ="color :var(--white)") Trần Minh Tuấn
-              .review-date(style ="color :var(--text-light)") 28/03/2024
-          .review-stars ★★★★★
-          p.review-text
-            | Mua lần thứ 2 rồi, chất lượng vẫn rất tốt như lần đầu. Khung gỗ chắc, đệm ngồi thoải mái. Phòng khách nhà mình nhờ cái đèn này mà trông sang hẳn lên.
-        .review-item
-          .review-author
-            img.review-avatar(
-              alt="Khách hàng" 
-              src="../assets/images/nghia.png"
-              )
-            div
-              .review-name(style ="color :var(--white)") Lê Thị Hương
-              .review-date(style ="color :var(--text-light)") 15/03/2024
-          .review-stars ★★★★☆
-          p.review-text
-            | Đèn rất đẹp và sang trọng. Về chất lượng thì đúng với mô tả. Chỉ tiếc là giao hàng chậm hơn dự kiến 1 ngày, nhưng nhìn chung vẫn OK. Sẽ giới thiệu cho bạn bè.
+                each image,index in item.images
+                  img.review-image(
+                    alt="Ảnh review"
+                    src=image
+                    style = "width:290px;height: 290px;object-fit: cover;"
+                  )
+            p.review-text
+              | #{item.content}
+       
       // Write review
-      div(
-        style="margin-top:32px;padding:28px;border:2px solid var(--border);border-radius:var(--radius-xl);"
-        )
-        h4(style="font-size:1rem;font-weight:800;margin-bottom:20px;color:var(--white);") Viết đánh giá của bạn
-        form(style="display:grid;gap:16px;")
-          div(style="display:flex;gap:4px;font-size:1.5rem;cursor:pointer;color:#f5a623;")
-            span ★
-            span ★
-            span ★
-            span ★
-            span ★
-          div(style="display:grid;grid-template-columns:1fr 1fr;gap:16px;")
-            .form-group(style="margin:0;")
-              label Họ tên
-              input.form-control(
-                placeholder="Nguyễn Văn A" 
-                type="text"
-                )
-            .form-group(style="margin:0;")
-              label Email
-              input.form-control(
-                placeholder="example@email.com" 
-                type="email"
-                )
-          .form-group(style="margin:0;")
-            label Đánh giá của bạn *
-            textarea.form-control(
-              style="resize:vertical;" 
-              placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..." 
-              rows="4"
+      if(user)
+        if(order.includes(product._id.toString()))
+          div(
+            style="margin-top:32px;padding:28px;border:2px solid var(--border);border-radius:var(--radius-xl);"
+            )
+            h4(style="font-size:1rem;font-weight:800;margin-bottom:20px;color:var(--white);") Viết đánh giá của bạn
+            form#review-form(style="display:grid;gap:16px;")
+              div.rating(
+                style="display:flex;gap:4px;font-size:1.5rem;cursor:pointer;color:#ccc;"
               )
-          button.btn.btn-gold(style="justify-content:center;padding:14px;") Gửi đánh giá
+                input(type="hidden" name="rating" id="ratingValue")
+                each number in [1,2,3,4,5]
+                  span(data-value=number) ★
+                
+              .form-group(style="display:none")
+                input.form-control(
+                type="text"
+                name="productId"
+                id="productId"
+                value = product._id
+                )
+              .form-group(style="display:none")
+                input.form-control(
+                type="text"
+                name="slug"
+                id="slug"
+                value = product.slug
+                )
+              .form-group(style="margin:0;")
+                label Ảnh sản phẩm 
+                  div()
+                    input(
+                      type="file"
+                      id="images"
+                      name="images"
+                      multiple
+                      accept="image/*"
+                      filepond-image-multi
+                    )
+              .form-group(style="margin:0;")
+                label Đánh giá của bạn *
+                textarea.form-control(
+                  style="resize:vertical;" 
+                  placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..." 
+                  rows="4"
+                  name = "content"
+                  id="content"
+                  )
+              button.btn.btn-gold(style="justify-content:center;padding:14px;") Gửi đánh giá
+        else
+          div(
+            style="margin-top:32px;padding:24px;background:var(--off-white);border-radius:var(--radius-lg);text-align:center;border:1px dashed var(--border);"
+          )
+            p(style="color:var(--text-mid);margin:0;") Bạn cần mua sản phẩm này để có thể gửi đánh giá.
+      else
+        div(
+          style="margin-top:32px;padding:24px;background:var(--off-white);border-radius:var(--radius-lg);text-align:center;border:1px dashed var(--border);"
+        )
+          p(style="color:var(--text-mid);margin:0;")
+            | Vui lòng 
+            a(href="/login" style="color:var(--gold);font-weight:700;text-decoration:underline;") Đăng nhập
+            |  để gửi đánh giá của bạn.
   // Related products
   section.section(style="background:var(--off-white);")
     .container

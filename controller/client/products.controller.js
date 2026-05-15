@@ -1,13 +1,22 @@
 const Product = require("../../models/products.model");
 const Category = require("../../models/category.model");
 const categoryHelper = require("../../helpers/categoryTree.helper");
-
+const Review = require("../../models/review.model");
+const Order = require("../../models/order.model");
 
 module.exports.products = async (req, res) => {
     const find = {
         deleted: false,
         status: "stock"
     }
+
+    if (req.query.category) {
+        const categoryIds = req.query.category.split(",");
+        find.category = {
+            $in: categoryIds
+        };
+    }
+
 
     const priceFilter = {}
     if (req.query.priceMin || req.query.priceMax) {
@@ -29,7 +38,7 @@ module.exports.products = async (req, res) => {
             $options: "i"
         }
     }
-    console.log(priceFilter)
+
     // Phân trang
     const limitItems = 9;
     let page = 1;
@@ -47,67 +56,42 @@ module.exports.products = async (req, res) => {
     let totalRecord = 0;
 
     // Lọc và Sắp xếp
-    if (req.query.status === "promotion") {
-        const aggregatePipeline = [
-            { $match: find },
-            {
-                $addFields: {
-                    // Chuyển đổi giá sang số, xử lý trường hợp có dấu chấm phân cách
-                    priceOLD_clean: { $replaceAll: { input: { $ifNull: ["$priceOLD", "0"] }, find: ".", replacement: "" } },
-                    priceNEW_clean: { $replaceAll: { input: { $ifNull: ["$priceNEW", "0"] }, find: ".", replacement: "" } }
-                }
-            },
-            {
-                $addFields: {
-                    priceOLD_num: { $convert: { input: "$priceOLD_clean", to: "int", onError: 0, onNull: 0 } },
-                    priceNEW_num: { $convert: { input: "$priceNEW_clean", to: "int", onError: 0, onNull: 0 } }
-                }
-            },
-            {
-                $addFields: {
-                    // Tính % giảm giá: ((Old - New) / Old) * 100
-                    discountPercent: {
-                        $cond: [
-                            { $gt: ["$priceOLD_num", 0] },
-                            {
-                                $floor: {
-                                    $multiply: [
-                                        { $divide: [{ $subtract: ["$priceOLD_num", "$priceNEW_num"] }, "$priceOLD_num"] },
-                                        100
-                                    ]
-                                }
-                            },
-                            0
-                        ]
-                    }
-                }
-            },
-            { $match: { discountPercent: { $gt: 0 } } },
-            { $sort: { discountPercent: -1 } }, // Sắp xếp theo % giảm giá cao nhất
-            {
-                $facet: {
-                    metadata: [{ $count: "total" }],
-                    data: [{ $skip: skip }, { $limit: limitItems }]
-                }
-            }
-        ];
+    // Lọc và Sắp xếp
+    let sort = { name: "asc" };
 
-        const result = await Product.aggregate(aggregatePipeline);
-        products = result[0].data;
-        totalRecord = result[0].metadata[0] ? result[0].metadata[0].total : 0;
-    } else {
-        // Các trường hợp khác dùng find() thông thường
-        let sort = { name: "asc" };
-        if (req.query.status === "new") {
-            sort = { createdAt: "desc" };
-        }
-
-        totalRecord = await Product.countDocuments(find);
-        products = await Product.find(find)
-            .sort(sort)
-            .limit(limitItems)
-            .skip(skip);
+    if (req.query.status === "new") {
+        sort = { createdAt: "desc" };
     }
+
+    // Lấy toàn bộ sản phẩm theo điều kiện
+    products = await Product.find(find)
+        .sort(sort)
+        .limit(limitItems)
+        .skip(skip)
+        .lean();
+    totalRecord = await Product.countDocuments(find);
+    // Nếu lọc khuyến mãi
+    if (req.query.status === "promotion") {
+
+        // Chỉ lấy sản phẩm có giảm giá
+        products = products.filter(item => {
+            return item.priceOLD > item.priceNEW;
+        });
+
+        // Sắp xếp theo % giảm giá cao nhất
+        products.sort((a, b) => {
+
+            const discountA =
+                ((a.priceOLD - a.priceNEW) / a.priceOLD) * 100;
+
+            const discountB =
+                ((b.priceOLD - b.priceNEW) / b.priceOLD) * 100;
+
+            return discountB - discountA;
+
+        });
+    }
+
 
     const totalPage = Math.max(Math.ceil(totalRecord / limitItems), 1);
     if (page > totalPage) {
@@ -159,9 +143,54 @@ module.exports.productDetail = async (req, res) => {
             $in: categoryIDs
         },
     }).limit(4).populate("category", "name").lean();
+    const listReview = await Review.find({
+        productId: product._id,
+    }).populate("userId")
 
+    for (let item of listReview) {
+        item.createdAtFormat = item.createdAt.toLocaleString('vi-VN')
+    }
+
+    const ratingTotal = listReview.reduce((total, item) => total + item.rating, 0);
+    const ratingAvg = listReview.length > 0 ? ratingTotal / listReview.length : 0;
+    let purchasedProductIds = [];
+    if (req.user) {
+        const orders = await Order.find({
+            userId: req.user.id,
+            deleted: false
+        }).lean();
+
+        orders.forEach(order => {
+            if (order.items) {
+                order.items.forEach(item => {
+                    purchasedProductIds.push(item.productId.toString());
+                });
+            }
+        });
+    }
     res.render("client/pages/product-detail", {
         product,
-        productList
+        productList,
+        listReview,
+        ratingAvg,
+        order: purchasedProductIds
     })
+}
+
+module.exports.review = async (req, res) => {
+    try {
+        req.body.userId = req.user ? req.user.id : "";
+
+        if (req.files && req.files.images && req.files.images.length > 0) {
+            req.body.images = req.files.images.map(file => file.path);
+        } else {
+            delete req.body.images;
+        }
+        const reviewNew = new Review(req.body);
+        await reviewNew.save();
+
+        res.json({ code: "success" });
+    } catch (error) {
+        res.json({ code: "error", message: error.message });
+    }
 }

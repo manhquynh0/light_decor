@@ -63,47 +63,71 @@ block main
         .modal-header
           h3 Chi tiết đơn hàng #{orderDetail.orderCode}
           button.modal-close(onclick="closeModal('orderDetailModal')") ✕
+        form#orderDetailForm(action="")
+          div(style="display:flex;flex-direction:column;gap:16px;")
+            div(style="padding:16px;background:var(--off-white);border-radius:var(--radius-md);")
+              div(style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:0.85rem;")
+                input(type="hidden", name="orderId", value=orderDetail._id)
+                div
+                  span(style="color:var(--text-light);") Khách hàng : 
+                  
+                  strong #{orderDetail.firstName} #{orderDetail.lastName}
+                div
+                  span(style="color:var(--text-light);") SĐT : 
+                  
+                  strong #{orderDetail.phone}
+                div
+                  span(style="color:var(--text-light);") Ngày đặt : 
+                  
+                  strong #{orderDetail.createdAtFormat}
+                div
+                  span(style="color:var(--text-light);") Phương thức thanh toán : 
+                
+                  strong #{orderDetail.method}
+        
+                div(style="grid-column:1/-1;")
+                  span(style="color:var(--text-light);") Địa chỉ giao : 
+                  
+                  strong #{orderDetail.address}
+            div(style="display:flex;flex-direction:column;gap:16px;")
+              div(style="display:flex;align-items:center;gap:12px;")
+                span(style="color:var(--text-light);") Trạng thái đơn hàng : 
+                select.btn-admin.btn-admin-outline(name="status")
+                  option(value="initial", selected = orderDetail.status == "initial") Đã khởi tạo
+                  option(value="shipping", selected = orderDetail.status == "shipping") Đang vận chuyển
+                  option(value="delivered", selected = orderDetail.status == "delivered") Đã giao hàng
+                  option(value="cancelled", selected = orderDetail.status == "cancelled") Đã huỷ
+                
 
-        div(style="display:flex;flex-direction:column;gap:16px;")
-          div(style="padding:16px;background:var(--off-white);border-radius:var(--radius-md);")
-            div(style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:0.85rem;")
-              div
-                span(style="color:var(--text-light);") Khách hàng:
-                br
-                strong #{orderDetail.firstName} #{orderDetail.lastName}
-              div
-                span(style="color:var(--text-light);") SĐT:
-                br
-                strong #{orderDetail.phone}
-              div
-                span(style="color:var(--text-light);") Ngày đặt:
-                br
-                strong #{orderDetail.createdAtFormat}
-              div
-                span(style="color:var(--text-light);") Phương thức TT:
-                br
-                strong #{orderDetail.method}
-              div(style="grid-column:1/-1;")
-                span(style="color:var(--text-light);") Địa chỉ giao:
-                br
-                strong #{orderDetail.address}
+            div
+              p(style="font-size:0.78rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-light);margin-bottom:10px;") Sản phẩm
+              div(style="display:flex;flex-direction:column;gap:10px;")
+                each product in orderDetail.items
+                  div(style="display:flex;align-items:center;gap:12px;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);")
+                    div(style="width:44px;height:44px;background:var(--light-bg);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;")   
+                      img(src = product.avatar)
+                    div(style="flex:1;font-size:0.85rem;")
+                      strong #{product.name}
+                      br
+                      span(style="color:var(--text-light);") SL: #{product.quantity}
+                    strong(style="white-space:nowrap;") #{product.totalPrice.toLocaleString("vi-VN")} ₫
 
-          div
-            p(style="font-size:0.78rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-light);margin-bottom:10px;") Sản phẩm
-            div(style="display:flex;flex-direction:column;gap:10px;")
-              each product in orderDetail.items
-                div(style="display:flex;align-items:center;gap:12px;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);")
-                  div(style="width:44px;height:44px;background:var(--light-bg);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;")   
-                    img(src = product.avatar)
-                  div(style="flex:1;font-size:0.85rem;")
-                    strong #{product.name}
-                    br
-                    span(style="color:var(--text-light);") SL: #{product.quantity}
-                  strong(style="white-space:nowrap;") #{product.totalPrice.toLocaleString("vi-VN")} ₫
+            div(style="border-top:1px solid var(--border);padding-top:12px;display:flex;justify-content:space-between;")
+              strong Tổng thanh toán
+              strong(style="color:var(--accent);") #{orderDetail.total.toLocaleString("vi-VN")} ₫
+            
+            div(style="display:flex;gap:12px;")
+              button.btn.btn-gold(
+                style="flex:1;justify-content:center;"
+                type="submit"
+              ) Lưu thay đổi
 
-          div(style="border-top:1px solid var(--border);padding-top:12px;display:flex;justify-content:space-between;")
-            strong Tổng thanh toán
-            strong(style="color:var(--accent);") #{orderDetail.total.toLocaleString("vi-VN")} ₫
+              button.btn.btn-outline-dark(
+                type="button"
+                onclick="closeModal('editProductModal')"
+              ) Hủy
+  #confirmModal.modal-backdro
+          
 
   #confirmModal.modal-backdrop
     .modal-box

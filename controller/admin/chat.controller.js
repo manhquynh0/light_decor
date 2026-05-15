@@ -24,7 +24,7 @@ module.exports.index = async (req, res) => {
     try {
         const { message } = req.body;
         const API_KEY = process.env.GEMINI_API_KEY;
-        const userId = req.user ? req.user.id : "admin_global";
+        const userId = req.user.id;
 
         if (!message) {
             return res.json({ code: "error", message: "Tin nhan trong!" });
@@ -78,6 +78,31 @@ module.exports.index = async (req, res) => {
                     }
                 },
                 {
+                    name: "update_product",
+                    description: "Cap nhat thong tin san pham hien co voi cac truong nhieu hon.",
+                    parameters: {
+                        type: "OBJECT",
+                        properties: {
+                            name: { type: "STRING" },
+                            new_name: { type: "STRING" },
+                            priceNEW: { type: "STRING" },
+                            priceOLD: { type: "STRING" },
+                            stock: { type: "STRING" },
+                            description: { type: "STRING" },
+                            category_name: { type: "STRING" },
+                            made: { type: "STRING" },
+                            material: { type: "STRING" },
+                            power: { type: "STRING" },
+                            size: { type: "STRING" },
+                            colorIndex: { type: "STRING" },
+                            status: { type: "STRING" },
+                            avatar: { type: "STRING" },
+                            images: { type: "STRING" }
+                        },
+                        required: ["name"]
+                    }
+                },
+                {
                     name: "update_product_price",
                     description: "Cap nhat gia moi cho san pham.",
                     parameters: {
@@ -109,7 +134,7 @@ module.exports.index = async (req, res) => {
             data = await postToGemini(apiUrl, {
                 system_instruction: {
                     parts: [{
-                        text: "Ban la tro ly Admin cap cao cua MANHQUYNH DECOR. Ban co quyen tao san pham, danh muc va cap nhat gia."
+                        text: "Ban la tro ly Admin cap cao cua MANHQUYNH DECOR. Ban co quyen tao san pham, danh muc va cap nhat san pham , danh muc."
                     }]
                 },
                 contents: [...formattedHistory, { role: "user", parts: [{ text: message }] }],
@@ -185,6 +210,52 @@ async function handleResponse(data, userId, message, res) {
             });
             await newProduct.save();
             finalMessage = `Đã tạo sản phẩm : **${args.name}**.`;
+        } else if (name === "update_product") {
+            const product = await Product.findOne({
+                name: { $regex: args.name, $options: "i" },
+                deleted: false
+            });
+
+            if (product) {
+                const updateData = {};
+
+                if (args.new_name) updateData.name = args.new_name;
+                if (args.priceNEW) updateData.priceNEW = args.priceNEW;
+                if (args.priceOLD) updateData.priceOLD = args.priceOLD;
+                if (args.stock) updateData.stock = args.stock;
+                if (args.description) updateData.description = args.description;
+                if (args.made) updateData.made = args.made;
+                if (args.material) updateData.material = args.material;
+                if (args.power) updateData.power = args.power;
+                if (args.size) updateData.size = args.size;
+                if (args.colorIndex) updateData.colorIndex = args.colorIndex;
+                if (args.status) updateData.status = args.status;
+                if (args.avatar) updateData.avatar = args.avatar;
+                if (args.images) {
+                    const imageList = String(args.images)
+                        .split(",")
+                        .map(img => img.trim())
+                        .filter(Boolean);
+                    updateData.images = imageList;
+                }
+                if (args.category_name) {
+                    const categoryNames = String(args.category_name)
+                        .split(",")
+                        .map(name => name.trim())
+                        .filter(Boolean);
+                    const categories = await Category.find({
+                        name: { $in: categoryNames.map(name => new RegExp(name, "i")) }
+                    });
+                    updateData.category = categories.map(cat => cat.id);
+                }
+
+                Object.assign(product, updateData);
+                await product.save();
+
+                finalMessage = `Da cap nhat san pham **${product.name}**.`;
+            } else {
+                finalMessage = `Khong tim thay san pham "${args.name}".`;
+            }
         } else if (name === "update_product_price") {
             const product = await Product.findOne({
                 name: { $regex: args.name, $options: "i" },
@@ -252,7 +323,7 @@ async function handleResponse(data, userId, message, res) {
 
 module.exports.getHistory = async (req, res) => {
     try {
-        const userId = req.user ? req.user.id : "admin_global";
+        const userId = req.user.id;
         const history = await Chat.find({ user_id: userId, type: "admin" })
             .sort({ createdAt: 1 })
             .limit(30);

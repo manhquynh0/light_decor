@@ -340,7 +340,7 @@ block main
         
           .form-group
               label Ảnh sản phẩm (nhiều ảnh)
-              div(list-image-default=JSON.stringify(productDetail.images))
+              div(list-image-default=JSON.stringify(productDetail.images || []))
                 input(
                   type="file"
                   id="images"

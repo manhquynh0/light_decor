@@ -195,7 +195,8 @@ module.exports.information = async (req, res) => {
 module.exports.informationPost = async (req, res) => {
     const { email } = req.body
     const exitAccount = await Account.findOne({
-        email: email
+        _id: req.user.id,
+        deleted: false
     })
     if (!exitAccount) {
         req.flash("error", "Không tìm thấy tài khoản")
@@ -204,13 +205,21 @@ module.exports.informationPost = async (req, res) => {
         })
         return
     }
+
+    if (req.body.password && req.body.password.trim() !== "") {
+        const salt = bcrypt.genSaltSync(10);
+        req.body.password = bcrypt.hashSync(req.body.password, salt);
+    } else {
+        delete req.body.password;
+    }
+
     await Account.updateOne({
-        email: email
+        _id: req.user.id
     }, req.body)
+
     req.flash("success", "Cập nhật thành công")
     res.json({
-        code: "error"
-
+        code: "success"
     })
 }
 

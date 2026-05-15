@@ -73,7 +73,7 @@ block main
                   
                 .order-card-footer
                   button.btn.btn-outline-dark.btn-sm(onclick=`window.location.href='/products/${product.slug}'` style="padding:10px 16px;color:white;border-color:rgba(255,255,255,0.2);") Mua lại
-                  button.btn.btn-outline-dark.btn-sm(onclick=`window.location.href='/products/${product.slug}'` style="padding:10px 16px;color:white;border-color:rgba(255,255,255,0.2);") Để lại đánh giá
+                  button.btn.btn-outline-dark.btn-sm(onclick=`window.location.href='/products/${product.slug}#reviews'` style="padding:10px 16px;color:white;border-color:rgba(255,255,255,0.2);") Để lại đánh giá
       // Pagination
       +pagination(pagination, orderList.length)
   // Help Section

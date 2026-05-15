@@ -27,5 +27,13 @@ module.exports.permissionList = [
         value: "delete",
         label: "Xóa",
     },
+    {
+        value: "coupon",
+        label: "Mã giảm giá",
+    },
+    {
+        value: "category",
+        label: "Danh mục",
+    },
 
 ]

@@ -164,6 +164,43 @@ block content
               div(
                 style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;"
                 )
+                //- ---- Danh sách mã giảm giá hiện có ----
+                if coupons && coupons.length > 0
+                  div(style="margin-bottom:8px;")
+                    p(style="font-size:0.78rem;font-weight:700;color:var(--accent);margin-bottom:8px;letter-spacing:0.5px;")  MÃ ƯU ĐÃI ĐANG CÓ
+                    div(style="display:flex;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto;padding-right:2px;")
+                      each coupon in coupons
+                        //- Card: flex-column để xếp [hàng code+button] và [cảnh báo] chồng lên nhau trong cùng 1 khung
+                        div(style="display:flex;flex-direction:column;gap:6px;background:rgba(212,175,55,0.06);border:1px dashed rgba(212,175,55,0.35);border-radius:var(--radius-md);padding:8px 12px;")
+                          //- Hàng trên: code + badge giảm giá + nút Chép
+                          div(style="display:flex;align-items:center;justify-content:space-between;gap:8px;")
+                            div(style="flex:1;min-width:0;")
+                              div(style="display:flex;align-items:center;gap:6px;margin-bottom:2px;")
+                                span(style="font-family:monospace;font-size:0.82rem;font-weight:800;color:var(--accent);letter-spacing:1px;") #{coupon.code}
+                                if coupon.discountType === "percent"
+                                  span(style="font-size:0.7rem;background:rgba(212,175,55,0.15);color:var(--accent);padding:1px 6px;border-radius:999px;font-weight:700;") -#{coupon.discountValue}%
+                                else
+                                  span(style="font-size:0.7rem;background:rgba(212,175,55,0.15);color:var(--accent);padding:1px 6px;border-radius:999px;font-weight:700;") -#{coupon.discountValue.toLocaleString("vi-VN")}đ
+                              if coupon.description
+                                p(style="font-size:0.7rem;color:var(--text-light);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;") #{coupon.description}
+                            button(
+                              onclick=`copyCouponCode('${coupon.code}', this)`
+                              title="Sao chép và áp dụng mã"
+                              style="flex-shrink:0;display:flex;align-items:center;gap:4px;background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.3);border-radius:var(--radius-sm);padding:4px 8px;cursor:pointer;color:var(--accent);font-size:0.72rem;font-weight:700;transition:all 0.2s;"
+                            )
+                              svg.copy-icon(stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="11" width="11")
+                                rect(width="13" height="13" x="9" y="9" rx="2" ry="2")
+                                path(d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1")
+                              svg.check-icon(style="display:none" stroke-width="2.5" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="11" width="11")
+                                polyline(points="20 6 9 17 4 12")
+                              span.copy-text Chép
+                          //- Hàng dưới (chỉ hiện khi có đơn tối thiểu): cảnh báo nằm trong cùng khung với code
+                          if coupon.minOrderValue > 0
+                            p(style="font-size:0.68rem;color:#f87171;margin:0;padding:3px 6px;background:rgba(248,113,113,0.1);border-radius:4px;")
+                              |  Đơn hàng tối thiểu #{coupon.minOrderValue.toLocaleString("vi-VN")}đ để sử dụng mã này!
+
+
+                //- ---- Ô nhập mã thủ công ----
                 label(style="font-size:0.85rem;font-weight:700;color:var(--text-mid);") Mã giảm giá
                 div(style="display:flex;gap:10px;")
                   input#coupon-input.form-control(
@@ -197,7 +234,7 @@ block content
                 )
                 span Tổng cộng
                 span(style="color:var(--accent);" class="payment-total") 0 ₫
-            button.btn.btn-gold(type="submit" form="order-form" style="width:100%;justify-content:center;margin-top:20px;padding:16px;font-size:1rem;"   id="submit-order") 🔒 Đặt hàng ngay
+            button.btn.btn-gold(type="submit" form="order-form" style="width:100%;justify-content:center;margin-top:20px;padding:16px;font-size:1rem;"   id="submit-order")  Đặt hàng ngay
             p(style="text-align:center;font-size:0.75rem;color:var(--text-light);margin-top:12px;")
               | Bằng cách đặt hàng, bạn đồng ý với 
               a(

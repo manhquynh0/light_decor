@@ -56,54 +56,36 @@ block content
           a(
             style="color:white;font-weight:700;" 
             href="/account/register"
-            ) Đăng ký ngay
+            )  Đăng ký ngay
       div(style="margin-top:20px;")
         div(style="display:flex;align-items:center;gap:12px;margin-bottom:16px;")
           div(style="flex:1;height:1px;background:var(--border);")
           span(style="font-size:0.78rem;color:var(--text-light);white-space:nowrap;") Hoặc đăng nhập với
           div(style="flex:1;height:1px;background:var(--border);")
-        div(style="display:grid;grid-template-columns:1fr 1fr;gap:12px;")
-          div.google-login-wrapper( style="display:flex;justify-content:center;align-items:center;")
-            #g_id_onload(
-              data-client_id="169562147948-tq3hgnuptt7vn13nie4c91rru0tg78hq.apps.googleusercontent.com"
-              data-callback="handleCredentialResponse"
-            )
-            div.g_id_signin(style="display:flex;justify-content:center;")
-          button.btn.btn-outline-dark(style="justify-content:center;gap:8px;padding:12px;")
-            svg(
-              fill="#1877F2" 
-              viewBox="0 0 24 24" 
-              height="18" 
-              width="18"
-              )
-              path(
-                d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
-                )
-            | Facebook
-      // User Info Section (shown after login)
-      #userInfoSection.user-info-section(style="display:none;margin-top:32px;padding-top:24px;border-top:1px solid var(--border);")
-        div(style="text-align:center;")
-          #userInfoAvatar.user-info-avatar(
-            style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;"
-            )
-            span#userInitials(style="font-size:1.8rem;font-weight:900;color:var(--accent);") NQ
-          .user-info-logo(
-            style="display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:12px;"
-            )
-            span(style="font-size:1.4rem;font-weight:900;color:var(--primary);") MANHQUYNH
-            span(style="font-size:1.4rem;font-weight:300;color:var(--accent-dark);") Decor.
-          #userInfoName.user-info-name(style="font-size:1.1rem;font-weight:800;color:var(--text-dark);margin-bottom:8px;") Nguyễn Quỳnh
-          #userInfoRole.user-info-role(
-            style="display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:999px;font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;background:rgba(234,191,132,0.2);color:var(--accent-dark);"
-            )
-            svg(
-              fill="currentColor" 
-              viewBox="0 0 24 24" 
-              height="14" 
-              width="14"
-              )
-              path(
-                d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                )
-            | Quản trị viên
+
+
+      div(style="display:flex;justify-content:center;align-items:center;")
+        div.google-login-wrapper(
+          style="display:flex;justify-content:center;align-items:center;width:100%;"
+        )
+          #g_id_onload(
+            data-client_id="169562147948-tq3hgnuptt7vn13nie4c91rru0tg78hq.apps.googleusercontent.com"
+            data-callback="handleCredentialResponse"
+               )
+
+          div.g_id_signin(
+          data-type="standard"
+           tyle="display:flex;justify-content:center;"
+      )
+          //- button.btn.btn-outline-dark(style="justify-content:center;gap:8px;padding:12px;")
+          //-   svg(
+          //-     fill="#1877F2" 
+          //-     viewBox="0 0 24 24" 
+          //-     height="18" 
+          //-     width="18"
+          //-     )
+          //-     path(
+          //-       d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+          //-       )
+          //-   | Facebook
   script(src="https://accounts.google.com/gsi/client" async defer)

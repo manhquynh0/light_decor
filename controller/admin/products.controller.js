@@ -98,7 +98,7 @@ module.exports.add = async (req, res) => {
     res.json({
       code: "success"
     })
-    console.log(req.body)
+
   } catch (error) {
     console.log(error)
     req.flash("error", "Thêm thất bại")

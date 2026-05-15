@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <style>
+    .logo-text {
+      fill: #aa8c2c; /* Màu vàng đồng đậm - rõ hơn trên nền sáng */
+    }
+    @media (prefers-color-scheme: dark) {
+      .logo-text {
+        fill: #d4af37; /* Màu vàng kim sáng hơn cho nền tối */
+      }
+    }
+  </style>
+  <text x="50%" y="50%" 
+        dominant-baseline="central" 
+        text-anchor="middle" 
+        font-family="'Montserrat', sans-serif" 
+        font-weight="900" 
+        font-size="75" 
+        class="logo-text">
+    MQ
+  </text>
+</svg>

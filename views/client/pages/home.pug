@@ -81,6 +81,72 @@ block content
               button.hero-dot(data-idx="2")
               button.hero-dot(data-idx="3")
     // CATEGORIES SLIDER
+    .section-2(
+    data-aos-delay="450" 
+    data-aos-duration="800" 
+    data-aos="fade-up"
+    )
+      .container
+        .inner-wrap
+          .inner-info
+            h2.inner-title
+              | ƯU ĐÃI CHÀO HÈ 2026
+              br
+              | SẢN PHẨM GIÁ SỐC
+            .inner-desc NHANH TAY LẸ MẮT
+            .inner-clock-title Kết thúc sau
+            .inner-clock-number(clock-expire="2026-06-15T13:40:00")
+              span.inner-item
+                .inner-number 00
+                .inner-label Ngày
+              span.inner-item
+                .inner-number 00
+                .inner-label Giờ
+              span.inner-item
+                .inner-number 00
+                .inner-label Phút
+              span.inner-item
+                .inner-number 00
+                .inner-label Giây
+            .inner-discount-title GIẢM ĐẾN
+            .inner-discount-price
+              | 50.000.000 VNĐ
+          .inner-list
+            .swiper.swiper-section-2
+              .swiper-wrapper
+                each item in products
+                  if item.priceOLD > item.priceNEW
+                    - const discount = Math.floor(((item.priceOLD - item.priceNEW) / item.priceOLD) * 100)
+                    if(discount > 30)
+                      .swiper-slide
+                        .product-item
+                          .inner-image
+                            a(href=`/products/${item.slug}`)
+                              img(
+                                alt=item.name
+                                src=item.avatar
+                                )
+                          
+                              .inner-discount
+                                i.fa-solid.fa-bolt
+                                | Giảm -#{discount}%
+                          .inner-content
+                            h3.inner-title
+                              a(href=`/products/${item.slug}`) #{item.name}
+                            .inner-prices
+                              if item.priceOLD > item.priceNEW
+                                .inner-price-old
+                                  | #{item.priceOLD.toLocaleString("vi-VN")}
+                              
+                              .inner-price-new
+                                | #{item.priceNEW.toLocaleString("vi-VN")}
+                            
+                            
+                            .inner-meta
+                              .inner-stock
+                                .inner-label CHỈ CÒN <b> #{item.stock}</b>
+                               
+                    
     section.section.categories-section
       .container
         .section-head
@@ -577,58 +643,58 @@ block content
               | Mỗi đóng góp từ bạn chính là kim chỉ nam để chúng tôi không ngừng thay đổi và cải thiện mỗi ngày.
           a.btn.btn-gold(href="/contact") Liên hệ ngay
     // BRANDS
-    section.section.brands-section
-      .container
-        .brands-label Đối tác thương hiệu
-        .brands-track
-          #brandsInner.brands-inner
-            img(
-              alt="Brand 1" 
-              src="/assets/images/av2.png"
-            )
-            img(
-              alt="Brand 2" 
-              src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_10.webp"
-              )
-            img(
-              alt="Brand 3" 
-              src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_2.webp"
-              )
-            img(
-              alt="Brand 4" 
-              src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_4.webp"
-              )
-            img(
-              alt="Brand 5" 
-              src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_5.webp"
-              )
-            img(
-              alt="Brand 6" 
-              src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_6.webp"
-              )
-            img(
-              alt="Brand 7" 
-              src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_7.webp"
-              )
-            img(
-              alt="Brand 8" 
-              src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_8.webp"
-              )
-            // Duplicate for seamless loop
-            img(
-              alt="Brand 1" 
-              src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_3.webp"
-              )
-            img(
-              alt="Brand 2" 
-              src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_10.webp"
-              )
-            img(
-              alt="Brand 3" 
-              src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_2.webp"
-              )
-            img(
-              alt="Brand 4" 
-              src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_4.webp"
-              )
+    //- section.section.brands-section
+    //-   .container
+    //-     .brands-label Đối tác thương hiệu
+    //-     .brands-track
+    //-       #brandsInner.brands-inner
+    //-         img(
+    //-           alt="Brand 1" 
+    //-           src="/assets/images/av2.png"
+    //-         )
+    //-         img(
+    //-           alt="Brand 2" 
+    //-           src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_10.webp"
+    //-           )
+    //-         img(
+    //-           alt="Brand 3" 
+    //-           src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_2.webp"
+    //-           )
+    //-         img(
+    //-           alt="Brand 4" 
+    //-           src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_4.webp"
+    //-           )
+    //-         img(
+    //-           alt="Brand 5" 
+    //-           src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_5.webp"
+    //-           )
+    //-         img(
+    //-           alt="Brand 6" 
+    //-           src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_6.webp"
+    //-           )
+    //-         img(
+    //-           alt="Brand 7" 
+    //-           src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_7.webp"
+    //-           )
+    //-         img(
+    //-           alt="Brand 8" 
+    //-           src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_8.webp"
+    //-           )
+    //-         // Duplicate for seamless loop
+    //-         img(
+    //-           alt="Brand 1" 
+    //-           src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_3.webp"
+    //-           )
+    //-         img(
+    //-           alt="Brand 2" 
+    //-           src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_10.webp"
+    //-           )
+    //-         img(
+    //-           alt="Brand 3" 
+    //-           src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_2.webp"
+    //-           )
+    //-         img(
+    //-           alt="Brand 4" 
+    //-           src="https://cdn3729.cdn-template-4s.com/templates/noithat10/assets/media/brand/img_brand_4.webp"
+    //-           )
   

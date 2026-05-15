@@ -14,6 +14,12 @@ async function parseJsonResponse(response) {
     }
 }
 
+function getRetrySeconds(message) {
+    const rawMessage = String(message || "").trim();
+    const retryMatch = rawMessage.match(/retry in\s+([\d.]+)s/i);
+    return retryMatch ? Math.ceil(Number(retryMatch[1])) : null;
+}
+
 function formatGeminiErrorMessage(message, status) {
     const rawMessage = String(message || "").trim();
     const lowerMessage = rawMessage.toLowerCase();
@@ -25,8 +31,7 @@ function formatGeminiErrorMessage(message, status) {
         lowerMessage.includes("resource_exhausted") ||
         lowerMessage.includes("exceeded your current quota")
     ) {
-        const retryMatch = rawMessage.match(/retry in\s+([\d.]+)s/i);
-        const retrySeconds = retryMatch ? Math.ceil(Number(retryMatch[1])) : null;
+        const retrySeconds = getRetrySeconds(rawMessage);
 
         if (retrySeconds && Number.isFinite(retrySeconds)) {
             return `AI dang qua tai hoac het quota tam thoi. Thu lai sau ${retrySeconds} giay.`;
@@ -42,7 +47,7 @@ function formatGeminiErrorMessage(message, status) {
     return rawMessage || `HTTP ${status}`;
 }
 
-async function postToGemini(url, body) {
+async function postToGemini(url, body, retryCount = 0) {
     const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -52,7 +57,20 @@ async function postToGemini(url, body) {
     const data = await parseJsonResponse(response);
 
     if (!response.ok) {
-        throw new Error(formatGeminiErrorMessage(data?.error?.message, response.status));
+        const errorMessage = data?.error?.message || "";
+        const status = response.status;
+
+        // Tự động thử lại nếu bị rate limit (429) và thời gian chờ < 30 giây
+        if (status === 429 && retryCount < 2) {
+            const retrySeconds = getRetrySeconds(errorMessage);
+            if (retrySeconds && retrySeconds <= 30) {
+                console.log(`Rate limit detected. Attempt ${retryCount + 1}. Retrying in ${retrySeconds} seconds...`);
+                await new Promise(resolve => setTimeout(resolve, retrySeconds * 1000 + 1000));
+                return postToGemini(url, body, retryCount + 1);
+            }
+        }
+
+        throw new Error(formatGeminiErrorMessage(errorMessage, status));
     }
 
     if (data?.error?.message) {

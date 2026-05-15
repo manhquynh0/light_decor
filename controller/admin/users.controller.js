@@ -146,8 +146,12 @@ module.exports.edit = async (req, res) => {
     }
     req.body.updatedBy = req.user.id
     const salt = await bcrypt.genSalt(10); // Tạo ra chuỗi ngẫu nhiên có 10 ký tự
-    req.body.password = await bcrypt.hash(req.body.password, salt);
-    console.log(req.body)
+    if (req.body.password && req.body.password.trim() !== "") {
+      req.body.password = await bcrypt.hash(req.body.password, salt);
+    } else {
+      delete req.body.password;
+    }
+
     await Account.updateOne({ _id: req.params.id }, req.body)
 
     req.flash("success", "Cập nhật thành công!")

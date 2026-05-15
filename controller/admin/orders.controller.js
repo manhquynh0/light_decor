@@ -86,3 +86,14 @@ module.exports.openOrderDetail = async (req, res) => {
     orderList,
   })
 }
+
+module.exports.update = async (req, res) => {
+  const { orderId, status } = req.body;
+  await Order.updateOne({ _id: orderId }, {
+    status: status
+  });
+  req.flash("success", "Đã cập nhật đơn hàng thành công!");
+  res.json({
+    code: "success"
+  })
+}

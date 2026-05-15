@@ -94,8 +94,8 @@ block main
             th(style="padding:14px; text-align:left; font-size:0.85rem; color:var(--text-light); font-weight:600;") Khách hàng
             th(style="padding:14px; text-align:left; font-size:0.85rem; color:var(--text-light); font-weight:600;") Ngày đặt
             th(style="padding:14px; text-align:left; font-size:0.85rem; color:var(--text-light); font-weight:600;") Tổng tiền
-            th(style="padding:14px; text-align:left; font-size:0.85rem; color:var(--text-light); font-weight:600;") Trạng thái
-            th(style="padding:14px; text-align:center; font-size:0.85rem; color:var(--text-light); font-weight:600;") Thao tác
+            th(style="padding:14px; text-align:left; font-size:0.85rem; color:var(--text-light); font-weight:600;") Thanh toán
+            th(style="padding:14px; text-align:center; font-size:0.85rem; color:var(--text-light); font-weight:600;") Đơn hàng
         tbody
           each item in ordersNew
             tr(style="border-top:1px solid var(--border); transition:all 0.2s ease;")
@@ -105,9 +105,16 @@ block main
               td(style="padding:14px; font-size:0.9rem; font-weight:700; color:var(--white);") #{item.total.toLocaleString("vi-VN")} ₫
               td(style="padding:14px;")
                 if(item.paymentStatus =="paid")
-                  span(style=" border-radius:999px; font-size:0.75rem; background:rgba(144, 238, 144, 0.1); color:green; font-weight:700;") | Đã thanh toán
+                  span(style="padding : 10px; border-radius:999px; font-size:0.75rem; background:rgba(144, 238, 144, 0.1); color:green; font-weight:700;")  Đã thanh toán
                 else
-                  span(style=" border-radius:999px; font-size:0.75rem; background:rgba(255, 99, 71, 0.1); color:red; font-weight:700;") | Chưa thanh toán
+                  span(style="padding : 10px; border-radius:999px; font-size:0.75rem; background:rgba(255, 99, 71, 0.1); color:red; font-weight:700;")  Chưa thanh toán
 
               td(style="padding:5px; text-align:center;")
-                a.action-btn.action-btn-edit(href="/admin/orders" style=" font-size:0.8rem; background:transparent; border:1px solid var(--border); color:var(--text-mid); border-radius:6px; cursor:pointer; text-decoration:none; display:inline-block;") ->
+                if(item.status == "initial")
+                  span(style="padding:6px 14px; border-radius:999px; font-size:0.75rem; background:rgba(59, 130, 246, 0.15); color:#2563eb; font-weight:700;") Khởi tạo
+                else if(item.status == "cancelled")
+                  span(style="padding:6px 14px; border-radius:999px; font-size:0.75rem; background:rgba(239, 68, 68, 0.15); color:#dc2626; font-weight:700;") Đã hủy
+                else if(item.status == "shipping")
+                  span(style="padding:6px 14px; border-radius:999px; font-size:0.75rem; background:rgba(245, 158, 11, 0.15); color:#d97706; font-weight:700;") Đang giao hàng
+                else if(item.status == "delivered")
+                  span(style="padding:6px 14px; border-radius:999px; font-size:0.75rem; background:rgba(16, 185, 129, 0.15); color:#059669; font-weight:700;") Đã giao hàng

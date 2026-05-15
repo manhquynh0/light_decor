@@ -22,8 +22,10 @@ block content
           
           .filter-sidebar-search
             i.fa-solid.fa-magnifying-glass
-            input(type="text" placeholder="Tìm kiếm đèn..." search)
-   
+            input(type="text" placeholder="Tìm kiếm đèn..."  id="searchInput")
+            .suggestion
+              
+
           .filter-accordion.active
             .filter-accordion-header
               h3 Sắp xếp theo
@@ -43,7 +45,7 @@ block content
           // Không gian
           // Danh mục động từ categoryTree
           each item in categoryTree
-            .filter-accordion
+            .filter-accordion.active
               .filter-accordion-header
                 h3 #{item.name}
                 i.fa-solid.fa-chevron-down.chevron

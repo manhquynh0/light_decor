@@ -9,8 +9,19 @@ module.exports.cart = async (req, res) => {
     })
 }
 module.exports.payment = async (req, res) => {
-    res.render("client/pages/payment", {
+    const now = new Date();
+    // Lấy tất cả mã giảm giá đang hoạt động và chưa hết hạn
+    const coupons = await Coupon.find({
+        deleted: false,
+        isActive: true,
+        $or: [
+            { expireAt: null },
+            { expireAt: { $gt: now } }
+        ]
+    }).sort({ createdAt: "desc" });
 
+    res.render("client/pages/payment", {
+        coupons: coupons
     })
 }
 

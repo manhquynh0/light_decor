@@ -31,25 +31,28 @@ block content
             #sidebar-name.user-card-name #{user.fullname}
             .user-card-email #{user.email}
             span.user-role-badge.role-admin #{user.roleName}
-        
-        main.settings-main
-          .settings-card
-            .settings-card-body(style="padding: 28px 28px 0;")
-              #adminTabs.admin-tabs
-                button.admin-tab(data-sub="orders" onclick="window.location.href='/admin/orders'")
-                  | Đơn hàng
-                button.admin-tab(data-sub="products" onclick="window.location.href='/admin/products'")
-                  | Sản phẩm
-                if permissions && permissions.includes("permission")
-                  button.admin-tab(data-sub="users" onclick="window.location.href='/admin/users'")
-                    | Người dùng
-                if permissions && permissions.includes("permission")
-                  button.admin-tab(data-sub="roles" onclick="window.location.href='/admin/roles'")
-                    | Phân quyền
+          .settings-nav
+            #adminTabs.admin-tabs
+              button.admin-tab(data-sub="dashboard" onclick="window.location.href='/admin/dashboard'")
+                | Trang Tổng Quan
+              button.admin-tab(data-sub="orders" onclick="window.location.href='/admin/orders'")
+                | Đơn hàng
+              button.admin-tab(data-sub="products" onclick="window.location.href='/admin/products'")
+                | Sản phẩm
+              if permissions && permissions.includes("permission")
+                button.admin-tab(data-sub="users" onclick="window.location.href='/admin/users'")
+                  | Người dùng
+              if permissions && permissions.includes("permission")
+                button.admin-tab(data-sub="roles" onclick="window.location.href='/admin/roles'")
+                  | Phân quyền
+              if permissions && permissions.includes("category")
                 button.admin-tab(data-sub="categories" onclick="window.location.href='/admin/categories'")
                   | Danh mục
+              if permissions && permissions.includes("coupon")
                 button.admin-tab(data-sub="coupons" onclick="window.location.href='/admin/coupons'")
                   | Mã Giảm Giá
+        
+        main.settings-main
           block main   
 
   // Đưa tất cả Script vào cuối block content để đảm bảo chúng được chạy
