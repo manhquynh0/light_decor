@@ -457,10 +457,30 @@ ul {
 }
 
 .header-user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: var(--transition);
+}
+
+.header-user-avatar img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+#headerUserInitials {
+    font-size: 0.75rem;
+    font-weight: 900;
+    color: var(--accent);
 }
 
 .header-user-avatar:hover {
@@ -471,6 +491,22 @@ ul {
 .header-user-details {
     display: flex;
     flex-direction: column;
+    gap: 2px;
+}
+
+#headerUserName {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1.2;
+}
+
+#headerUserRole {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
 }
 
 /* Responsive Header */
@@ -504,6 +540,7 @@ ul {
     }
 
     .site-nav {
+        display: flex;
         position: fixed;
         top: 0;
         left: -100%;
@@ -2360,6 +2397,84 @@ ul {
     font-size: 0.82rem;
     color: rgba(255, 255, 255, 0.45);
     line-height: 1.5;
+}
+
+/* ========== EXTRA MOBILE TWEAKS (PHONES) ========== */
+@media (max-width: 767px) {
+    .container {
+        width: calc(100% - 28px);
+        padding: 0 14px;
+    }
+
+    .section {
+        padding: 40px 0;
+    }
+
+    .hero {
+        min-height: auto;
+        padding: 40px 0;
+    }
+
+    .hero-content-wrapper {
+        display: block;
+        padding: 48px 0;
+    }
+
+    .hero-left,
+    .hero-right {
+        width: 100%;
+    }
+
+    .hero-right .hero-carousel {
+        aspect-ratio: auto;
+        height: 360px;
+    }
+
+    .btn {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .products-grid .prod-card {
+        border-radius: 10px;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+    }
+
+    .site-nav {
+        display: flex;
+    }
+}
+
+@media (max-width: 420px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .logo-oh,
+    .logo-decor {
+        font-size: 1.4rem !important;
+    }
+
+    .nav-link {
+        font-size: 0.95rem;
+    }
+
+    .hero-right .hero-carousel {
+        height: 280px;
+    }
+
+    .header-actions {
+        gap: 6px;
+    }
 }
 
 .footer-stores strong {
@@ -6525,4 +6640,192 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 /* Ensure the submit button in overlay doesn't get messed up */
 .search-form-overlay button:not(.btn-voice-search) {
     flex-shrink: 0;
+}
+
+/* Generic responsive helpers */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.form-row {
+    display: flex;
+    gap: 12px;
+}
+
+@media (max-width: 767px) {
+    .form-row {
+        display: block;
+    }
+
+    input[type="text"], input[type="email"], input[type="password"], input[type="search"], textarea, select {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .product-meta, .prod-body, .inner-content {
+        padding: 12px !important;
+    }
+
+    .breadcrumb {
+        font-size: 0.88rem;
+        overflow: auto;
+        white-space: nowrap;
+    }
+}
+
+/* Admin / Settings responsive */
+@media (max-width: 991px) {
+    .settings-layout {
+        display: block;
+    }
+
+    aside.settings-sidebar {
+        width: 100%;
+        padding: 12px 0 8px 0;
+        border-bottom: 1px solid var(--border);
+        background: transparent;
+    }
+
+    .settings-sidebar .user-card {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .settings-sidebar .settings-nav {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 8px 4px;
+    }
+
+    .settings-sidebar .admin-tab {
+        flex: 0 0 auto;
+        padding: 8px 14px;
+        border-radius: 999px;
+    }
+
+    main.settings-main {
+        padding-top: 16px;
+    }
+
+    .admin-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .admin-stat-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .chart-head {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+
+    .table-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .toolbar-search {
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .toolbar-actions {
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    .data-table-wrap, .table-responsive, .spec-table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .data-table {
+        min-width: 680px;
+    }
+
+    .data-table th, .data-table td {
+        padding: 10px 12px;
+        white-space: nowrap;
+        font-size: 0.9rem;
+    }
+
+    .admin-panel {
+        padding: 0 8px;
+    }
+
+    /* Make admin panels stack nicely */
+    .settings-page .container { padding: 0 12px; }
+}
+
+@media (max-width: 640px) {
+    .admin-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-tab {
+        padding: 8px 12px;
+        font-size: 0.78rem;
+    }
+
+    .data-table th, .data-table td {
+        padding: 10px 10px;
+        font-size: 0.82rem;
+    }
+
+    .data-table th:nth-child(4),
+    .data-table td:nth-child(4),
+    .data-table th:nth-child(5),
+    .data-table td:nth-child(5) {
+        display: none;
+    }
+
+    .chart-area {
+        padding: 16px;
+    }
+
+    .inner-chart {
+        min-height: 260px;
+    }
+}
+
+/* Small devices adjustments */
+@media (max-width: 480px) {
+    .header-main-inner {
+        padding: 12px 8px;
+    }
+
+    .header-actions .icon-action { width: 34px; height: 34px; }
+
+    .site-footer .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
+/* Make admin and product tables scrollable on small screens */
+@media (max-width: 991px) {
+    .data-table-wrap, .table-responsive, .spec-table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    table.data-table, table.spec-table {
+        width: 100%;
+        min-width: 640px;
+        border-collapse: collapse;
+    }
+
+    table.data-table th, table.data-table td, table.spec-table th, table.spec-table td {
+        padding: 10px 8px;
+        white-space: nowrap;
+        font-size: 0.92rem;
+    }
 }

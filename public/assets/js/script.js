@@ -365,10 +365,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ========== FILTER PANEL TOGGLE (mobile) ==========
     const filterToggleBtn = document.getElementById('filterToggle');
+    const mobileFilterBtn = document.getElementById('mobileFilterBtn');
     const filterPanel = document.querySelector('.filter-panel');
-    filterToggleBtn?.addEventListener('click', () => {
+    
+    const toggleFilter = () => {
         filterPanel?.classList.toggle('open');
-    });
+        // If it opens, maybe scroll to it
+        if (filterPanel?.classList.contains('open')) {
+            filterPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
+    filterToggleBtn?.addEventListener('click', toggleFilter);
+    mobileFilterBtn?.addEventListener('click', toggleFilter);
 
 
     // ========== ANIMATE ON SCROLL ==========

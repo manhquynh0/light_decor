@@ -42,23 +42,18 @@ header#site-header.site-header
       // User Info (shown when logged in)
       if(user)
         #headerUserInfo.header-user-info
-          a#headerUserAvatar.header-user-avatar(
-            href = "/account/setting/information"
-            style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);display:flex;align-items:center;justify-content:center;"
-          )
+          a#headerUserAvatar.header-user-avatar(href="/account/setting/information")
             if user.avatar
-              img(src=user.avatar, alt="Avatar" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover; ")
+              img(src=user.avatar, alt="Avatar")
             else 
-              span#headerUserInitials(style="font-size:0.75rem;font-weight:900;color:var(--accent);")
+              span#headerUserInitials
                 = user.fullname || (user.firstname + " " + (user.lastname || ""))
 
-          .header-user-details(style="display:flex;flex-direction:column;gap:2px;")
-            span#headerUserName(style="font-size:0.75rem;font-weight:800;color:var(--accent);line-height:1.2;")
+          .header-user-details
+            span#headerUserName
               = user.fullname || (user.firstname + " " + (user.lastname || ""))
 
-            span#headerUserRole(
-              style="font-size:0.65rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.03em;"
-            )= user.roleName
+            span#headerUserRole= user.roleName
 
       else
         a#headerLoginBtn.icon-action(
