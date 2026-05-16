@@ -48,10 +48,10 @@ block main
               td
                 .action-btns
                   button.action-btn.action-btn-view(
-                    onclick=`openModal('orderDetailModal', '${prefixAdmin}/orders/detail/${item._id}')`
+                    onclick=`openModal('orderDetailModal', '/admin/orders/detail/${item._id}')`
                     title="Xem chi tiết"
                   ) 👁
-                  button.action-btn.action-btn-delete(data-url=`${prefixAdmin}/orders/delete/${item._id}`,
+                  button.action-btn.action-btn-delete(data-url=`/admin/orders/delete/${item._id}`,
                     button-delete) 🗑
 
   // PAGINATION (tách riêng)
@@ -124,11 +124,8 @@ block main
 
               button.btn.btn-outline-dark(
                 type="button"
-                onclick="closeModal('editProductModal')"
+                onclick="closeModal('orderDetailModal')"
               ) Hủy
-  #confirmModal.modal-backdro
-          
-
   #confirmModal.modal-backdrop
     .modal-box
       .modal-header

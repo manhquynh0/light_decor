@@ -1,4 +1,4 @@
-const adminPrefix = window.prefixAdmin || "/admin";
+
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -917,6 +917,23 @@ const showPageAlert = (message, type = "success") => {
         alert.remove();
     }, 4000);
 }
+const persistPageAlert = (message, type = "success") => {
+    sessionStorage.setItem("pageAlert", JSON.stringify({ message, type }));
+}
+const restorePageAlert = () => {
+    const rawAlert = sessionStorage.getItem("pageAlert");
+    if (!rawAlert) return;
+    sessionStorage.removeItem("pageAlert");
+    try {
+        const savedAlert = JSON.parse(rawAlert);
+        if (savedAlert?.message) {
+            showPageAlert(savedAlert.message, savedAlert.type || "success");
+        }
+    } catch (error) {
+        console.error("Không thể khôi phục thông báo:", error);
+    }
+}
+restorePageAlert();
 document.querySelectorAll("[alert-time]").forEach(alert => {
 
     const time = parseInt(alert.getAttribute("alert-time")) || 3000;
@@ -1534,7 +1551,7 @@ if (categoryCreate) {
 
 
 
-            fetch(`${adminPrefix}/categories/add`, {
+            fetch('/admin/categories/add', {
                 method: "POST",
                 body: JSON.stringify(dataFinal),
                 headers: {
@@ -1544,11 +1561,13 @@ if (categoryCreate) {
                 .then(res => res.json())
                 .then(data => {
                     if (data.code == "error") {
+                        persistPageAlert("Thêm thất bại", "error");
                         window.location.reload();
                     }
 
                     if (data.code == "success") {
-                        window.location.href = `${adminPrefix}/categories`;
+                        persistPageAlert("Thêm thành công", "success");
+                        window.location.href = `/admin/categories`;
                     }
 
                 })
@@ -1657,13 +1676,14 @@ if (productCreate) {
             }
 
 
-            fetch(`${adminPrefix}/products/add`, {
+            fetch('/admin/products/add', {
                 method: "POST",
                 body: formData
             })
                 .then(res => res.json())
                 .then(data => {
                     if (data.code == "error") {
+                        persistPageAlert("Thêm thất bại", "error");
                         window.location.reload();
                     }
 
@@ -1737,18 +1757,20 @@ if (userCreate) {
                 formData.append("avatar", avatar)
             }
 
-            fetch(`${adminPrefix}/users/add`, {
+            fetch('/admin/users/add', {
                 method: "POST",
                 body: formData
             })
                 .then(res => res.json())
                 .then(data => {
                     if (data.code == "error") {
+                        persistPageAlert("Thêm thất bại", "error");
                         window.location.reload();
                     }
 
                     if (data.code == "success") {
-                        window.location.href = `${adminPrefix}/users`;
+                        persistPageAlert("Thêm thành công", "success");
+                        window.location.href = `/admin/users`;
                     }
 
                 })
@@ -1783,7 +1805,7 @@ if (roleCreate) {
                 permissions: permissions
             };
             console.log(dataFinal)
-            fetch(`${adminPrefix}/roles/add`, {
+            fetch('/admin/roles/add', {
                 method: "POST",
                 body: JSON.stringify(dataFinal),
                 headers: {
@@ -1793,11 +1815,13 @@ if (roleCreate) {
                 .then(res => res.json())
                 .then(data => {
                     if (data.code == "error") {
+                        persistPageAlert("Thêm thất bại", "error");
                         window.location.reload();
                     }
 
                     if (data.code == "success") {
-                        window.location.href = `${adminPrefix}/roles`;
+                        persistPageAlert("Thêm thành công", "success");
+                        window.location.href = `/admin/roles`;
                     }
 
                 })
@@ -1828,7 +1852,7 @@ if (categoryEdit) {
             }
 
 
-            fetch(`${adminPrefix}/categories/edit/${id}`, {
+            fetch(`/admin/categories/edit/${id}`, {
                 method: "PATCH",
                 body: JSON.stringify(dataFinal),
                 headers: {
@@ -1838,12 +1862,13 @@ if (categoryEdit) {
                 .then(res => res.json())
                 .then(data => {
                     if (data.code == "error") {
-
+                        persistPageAlert("Cập nhật thất bại", "error");
                         window.location.reload();
                     }
 
                     if (data.code == "success") {
                         closeModal('editCategoryModal');
+                        persistPageAlert("Cập nhật thành công", "success");
                         window.location.reload();
                     }
 
@@ -1877,6 +1902,7 @@ document.getElementById("confirmYes")?.addEventListener("click", () => {
         .then(data => {
             if (data.code === "success") {
                 closeConfirmModal();
+                persistPageAlert("Xóa thành công", "success");
                 window.location.reload();
             } else {
                 alert("Xóa thất bại");
@@ -1947,18 +1973,20 @@ if (userEdit) {
                 formData.append("avatar", avatar);
             }
 
-            fetch(`${adminPrefix}/users/edit/${id}`, {
+            fetch(`/admin/users/edit/${id}`, {
                 method: "PATCH",
                 body: formData
             })
                 .then(res => res.json())
                 .then(data => {
                     if (data.code == "error") {
+                        persistPageAlert("Cập nhật thất bại", "error");
                         window.location.reload();
                     }
 
                     if (data.code == "success") {
-                        window.location.href = `${adminPrefix}/users`;
+                        persistPageAlert("Cập nhật thành công", "success");
+                        window.location.href = `/admin/users`;
                     }
 
                 })
@@ -2036,7 +2064,7 @@ if (productEdit) {
                 });
             }
 
-            fetch(`${adminPrefix}/products/edit/${id}`, {
+            fetch(`/admin/products/edit/${id}`, {
                 method: "PATCH",
                 body: formData,
             })
@@ -2044,6 +2072,7 @@ if (productEdit) {
                 .then(data => {
                     if (data.code == "success") {
                         closeModal('editProductModal');
+                        persistPageAlert("Cập nhật thành công", "success");
                         window.location.reload();
                     } else {
                         alert("Cập nhật thất bại: " + (data.message || "Lỗi không xác định"));
@@ -2088,7 +2117,7 @@ if (roleEdit) {
                 permissions: permissions
             };
             console.log(dataFinal)
-            fetch(`${adminPrefix}/roles/edit/${id}`, {
+            fetch(`/admin/roles/edit/${id}`, {
                 method: "PATCH",
                 body: JSON.stringify(dataFinal),
                 headers: {
@@ -2098,11 +2127,13 @@ if (roleEdit) {
                 .then(res => res.json())
                 .then(data => {
                     if (data.code == "error") {
+                        persistPageAlert("Cập nhật thất bại", "error");
                         window.location.reload();
                     }
 
                     if (data.code == "success") {
-                        window.location.href = `${adminPrefix}/roles`;
+                        persistPageAlert("Cập nhật thành công", "success");
+                        window.location.href = `/admin/roles`;
                     }
 
                 })
@@ -3435,7 +3466,7 @@ if (revenueChart) {
             arrayDay: arrayDay
         };
 
-        fetch(`${adminPrefix}/dashboard/revenue-chart`, {
+        fetch(`/admin/dashboard/revenue-chart`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -3605,7 +3636,7 @@ if (orderEdit) {
             orderId: orderId,
             status: status,
         }
-        fetch(`${adminPrefix}/orders/update/${orderId}`, {
+        fetch(`/admin/orders/update/${orderId}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -3615,9 +3646,11 @@ if (orderEdit) {
             .then(response => response.json())
             .then(data => {
                 if (data.code == "success") {
+                    persistPageAlert("Cap nhat don hang thanh cong", "success");
                     window.location.reload()
                 }
                 if (data.code == "error") {
+                    persistPageAlert("Cap nhat don hang that bai", "error");
                     window.location.reload()
                 }
             })
@@ -3837,7 +3870,7 @@ if (orderForm) {
                                 pricePayment,
                                 transferCode
                             );
-
+                        setTimeout()
                             if (isPaid && !isSuccess) {
                                 isSuccess = true;
                                 clearInterval(interval);
@@ -4142,7 +4175,7 @@ function addMessage(role, text) {
 
 function loadHistory() {
     const isAdmin = window.location.pathname.startsWith("/admin");
-    const historyUrl = isAdmin ? `${adminPrefix}/chat/history` : "/chat/history";
+    const historyUrl = isAdmin ? "/admin/chat/history" : "/chat/history";
 
     // Chỉ gửi guestId nếu là guest, nếu user đã đăng nhập thì server lấy từ session
     const params = isUserLoggedIn ? new URLSearchParams() : new URLSearchParams({ guestId: guestId });
@@ -4196,7 +4229,7 @@ async function sendMessage() {
 
         const isAdmin = window.location.pathname.startsWith("/admin");
 
-        const url = isAdmin ? `${adminPrefix}/chat` : "/chat";
+        const url = isAdmin ? "/admin/chat" : "/chat";
 
         // Gửi API
         const response = await fetch(url, {

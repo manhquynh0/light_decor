@@ -1,18 +1,16 @@
 const Product = require("../../models/products.model")
 const Category = require("../../models/category.model")
 const categoryHelper = require("../../helpers/categoryTree.helper")
+const slugify = require("slugify")
 module.exports.index = async (req, res) => {
   const find = {
     deleted: false,
   }
   if (req.query.keyword) {
-    const keyword = req.query.keyword.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-      .replace(/đ/g, "d")
-      .replace(/Đ/g, "D");
-    find.name = {
-      $regex: keyword,
-      $options: "i"
-    }
+    find.$or = [
+      { name: { $regex: req.query.keyword, $options: "i" } },
+      { slug: { $regex: slugify(req.query.keyword, { lower: true }) } }
+    ];
   }
   if (req.query.status) {
     find.status = req.query.status

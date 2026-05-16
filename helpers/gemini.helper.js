@@ -41,7 +41,7 @@ function formatGeminiErrorMessage(message, status) {
     }
 
     if (status === 404) {
-        return "Khong tim thay model AI hoac endpoint Gemini khong hop le.";
+        return "Không tìm thấy model AI hoặc endpoint Gemini không hợp lệ.";
     }
 
     return rawMessage || `HTTP ${status}`;

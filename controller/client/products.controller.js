@@ -3,7 +3,7 @@ const Category = require("../../models/category.model");
 const categoryHelper = require("../../helpers/categoryTree.helper");
 const Review = require("../../models/review.model");
 const Order = require("../../models/order.model");
-
+const slugify = require('slugify');
 module.exports.products = async (req, res) => {
     const find = {
         deleted: false,
@@ -33,12 +33,10 @@ module.exports.products = async (req, res) => {
         find.priceNEW = priceFilter;
     }
     if (req.query.keyword) {
-        find.name = {
-            $regex: req.query.keyword.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                .replace(/đ/g, "d")
-                .replace(/Đ/g, "D"),
-            $options: "i"
-        }
+        find.$or = [
+            { name: { $regex: req.query.keyword, $options: "i" } },
+            { slug: { $regex: slugify(req.query.keyword, { lower: true }) } }
+        ];
     }
 
     // Phân trang

@@ -26,7 +26,7 @@ block main
         option(value="") Tất cả
         option(value="active") Đang hoạt động
         option(value="inactive") Tạm dừng
-    button.btn-admin.btn-admin-primary(onclick=`openModal('addCategoryModal', '${prefixAdmin}/categories/add')`)
+    button.btn-admin.btn-admin-primary(onclick="openModal('addCategoryModal','/admin/categories/add')")
       svg(
         stroke-width="2.5"
         stroke="currentColor"
@@ -72,11 +72,11 @@ block main
               .action-btns
                 if permissions && permissions.includes("order-update")
                   button.action-btn.action-btn-edit(
-                      onclick=`openModal('editCategoryModal', '${prefixAdmin}/categories/edit/${item._id}')`
+                      onclick=`openModal('editCategoryModal', '/admin/categories/edit/${item._id}')`
                   ) ✏
                 if permissions && permissions.includes("delete")
                   button.action-btn.action-btn-delete(
-                      data-url=`${prefixAdmin}/categories/delete/${item._id}`,
+                      data-url=`/admin/categories/delete/${item._id}`,
                       button-delete
                   ) 🗑
     +pagination(pagination, categoryList.length)

@@ -172,7 +172,7 @@ module.exports.index = async (req, res) => {
 
         return handleResponse(data, userId, message, res);
     } catch (error) {
-        res.json({ code: "error", message: "Loi Admin AI: " + error.message });
+        res.json({ code: "error", message: "Lỗi Admin AI: " + error.message });
     }
 };
 
@@ -180,7 +180,7 @@ async function handleResponse(data, userId, message, res) {
     const candidate = data?.candidates?.[0];
 
     if (!candidate?.content?.parts?.length) {
-        throw new Error("Gemini khong tra ve noi dung hop le.");
+        throw new Error("Gemini không trả về nội dung hợp lệ.");
     }
 
     const functionCall = candidate.content.parts.find((part) => part.functionCall);
@@ -266,9 +266,9 @@ async function handleResponse(data, userId, message, res) {
                 Object.assign(product, updateData);
                 await product.save();
 
-                finalMessage = `Da cap nhat san pham **${product.name}**.`;
+                finalMessage = `Đã cập nhật sản phẩm **${product.name}**.`;
             } else {
-                finalMessage = `Khong tim thay san pham "${args.name}".`;
+                finalMessage = `Không tìm thấy sản phẩm "${args.name}".`;
             }
         } else if (name === "update_product_price") {
             const product = await Product.findOne({
@@ -283,9 +283,9 @@ async function handleResponse(data, userId, message, res) {
                 const formattedPrice = Number.isFinite(numericPrice)
                     ? numericPrice.toLocaleString("vi-VN")
                     : args.new_price;
-                finalMessage = `Da cap nhat gia san pham **${product.name}** thanh **${formattedPrice} VND**.`;
+                finalMessage = `Đã cập nhật giá sản phẩm **${product.name}** thành **${formattedPrice} VND**.`;
             } else {
-                finalMessage = `Khong tim thay san pham "${args.name}".`;
+                finalMessage = `Không tìm thấy sản phẩm "${args.name}".`;
             }
         } else if (name === "create_category") {
             let parentId = "";
@@ -307,7 +307,7 @@ async function handleResponse(data, userId, message, res) {
                 status: "active"
             });
             await newCategory.save();
-            finalMessage = `Da tao danh muc: **${args.name}**.`;
+            finalMessage = `Đã tạo danh mục: **${args.name}**.`;
         } else if (name === "delete_product") {
             const product = await Product.findOneAndUpdate(
                 { name: { $regex: args.name, $options: "i" } },
@@ -316,15 +316,15 @@ async function handleResponse(data, userId, message, res) {
             );
 
             if (product) {
-                finalMessage = `Da xoa san pham: **${product.name}**.`;
+                finalMessage = `Đã xóa sản phẩm: **${product.name}**.`;
             } else {
-                finalMessage = `Khong tim thay san pham "${args.name}".`;
+                finalMessage = `Không tìm thấy sản phẩm "${args.name}".`;
             }
         } else {
-            finalMessage = "Gemini goi toi mot chuc nang chua duoc ho tro.";
+            finalMessage = "Gemini gọi tới một chức năng chưa được hỗ trợ.";
         }
     } else {
-        finalMessage = candidate.content.parts[0].text || "Gemini khong tra ve noi dung.";
+        finalMessage = candidate.content.parts[0].text || "Gemini không trả về nội dung.";
     }
 
     await Chat.create([

@@ -47,8 +47,7 @@ module.exports.loginPost = async (req, res) => {
         res.cookie("token", token, {
             maxAge: rememberPassword ? (30 * 24 * 60 * 60 * 1000) : (24 * 60 * 60 * 1000), // luu duoi dang milisenconds
             httpOnly: true,// cookie chi co the truy cap boi may chu web
-            secure: true,
-            sameSite: "lax"
+            sameSite: "strict"
         })
         console.log(req.cookies)
         req.flash("success", "Đăng nhập thành công")
@@ -109,8 +108,7 @@ module.exports.loginGoogle = async (req, res) => {
         res.cookie("token", jwtToken, {
             maxAge: 7 * 24 * 60 * 60 * 1000,
             httpOnly: true,
-            secure: true,
-            sameSite: "lax"
+            sameSite: "strict"
         });
         req.flash("success", "Đăng nhập thành công")
         return res.json({
@@ -327,9 +325,6 @@ module.exports.forgotPasswordPost = async (req, res) => {
         })
         return
     }
-    await ForgotPassword.deleteMany({
-        email: email
-    })
     const otp = generateHelper.generateOTP()
     const newForgotPassword = new ForgotPassword({
         email: email,
@@ -376,8 +371,7 @@ module.exports.otpPasswordPost = async (req, res) => {
     res.cookie("token", token, {
         httpOnly: true,
         secure: true,
-        maxAge: 24 * 60 * 60 * 1000,
-        sameSite: "lax"
+        maxAge: 24 * 60 * 60 * 1000
     })
     req.flash("success", "Mã OTP hợp lệ")
     res.json({

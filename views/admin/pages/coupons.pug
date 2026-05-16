@@ -81,10 +81,10 @@ block main
                   onclick=`toggleCoupon('${item._id}', this)`
                 ) #{item.isActive ? "⏸" : "▶"}
                 button.action-btn.action-btn-edit(
-                  onclick=`openModal('editCouponModal', '${prefixAdmin}/coupons/edit/${item._id}')`
+                  onclick=`openModal('editCouponModal', '/admin/coupons/edit/${item._id}')`
                 ) ✏
                 button.action-btn.action-btn-delete(
-                  data-url=`${prefixAdmin}/coupons/delete/${item._id}`
+                  data-url=`/admin/coupons/delete/${item._id}`
                   button-delete
                 ) 🗑
 
@@ -294,14 +294,14 @@ block main
         e.preventDefault();
         const fd = new FormData(this);
         const data = Object.fromEntries(fd.entries());
-        const res = await fetch(`${prefixAdmin}/coupons/add`, {
+        const res = await fetch('/admin/coupons/add', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
         const result = await res.json();
         if (result.code === 'success') {
-          window.location.href = `${prefixAdmin}/coupons`;
+          window.location.href = '/admin/coupons';
         } else {
           alert(result.message || 'Có lỗi xảy ra!');
         }
@@ -317,14 +317,14 @@ block main
         const data = Object.fromEntries(fd.entries());
         const id = data._id;
         delete data._id;
-        const res = await fetch(`${prefixAdmin}/coupons/edit/${id}`, {
+        const res = await fetch(`/admin/coupons/edit/${id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
         const result = await res.json();
         if (result.code === 'success') {
-          window.location.href = `${prefixAdmin}/coupons`;
+          window.location.href = '/admin/coupons';
         } else {
           alert(result.message || 'Có lỗi xảy ra!');
         }
@@ -333,7 +333,7 @@ block main
 
     // Toggle trạng thái coupon
     async function toggleCoupon(id, btn) {
-      const res = await fetch(`${prefixAdmin}/coupons/toggle/${id}`, { method: 'PATCH' });
+      const res = await fetch(`/admin/coupons/toggle/${id}`, { method: 'PATCH' });
       const result = await res.json();
       if (result.code === 'success') {
         window.location.reload();
