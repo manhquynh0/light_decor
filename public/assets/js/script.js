@@ -367,7 +367,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const filterToggleBtn = document.getElementById('filterToggle');
     const mobileFilterBtn = document.getElementById('mobileFilterBtn');
     const filterPanel = document.querySelector('.filter-panel');
-    
+
     const toggleFilter = () => {
         filterPanel?.classList.toggle('open');
         // If it opens, maybe scroll to it
@@ -3879,7 +3879,7 @@ if (orderForm) {
                                 pricePayment,
                                 transferCode
                             );
-                        setTimeout()
+
                             if (isPaid && !isSuccess) {
                                 isSuccess = true;
                                 clearInterval(interval);
