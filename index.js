@@ -7,7 +7,7 @@ const adminRouter = require("./router/admin/index.router")
 const cookieParser = require("cookie-parser");
 const flash = require("express-flash");
 const session = require("express-session");
-const port = 3636; // sử dụng cổng
+const port = process.env.PORT || 3636;
 const DATABASE = require("./config/database")
 // thiết lập view
 app.set("view engine", "pug");
@@ -35,6 +35,12 @@ app.use(session({
 }))
 app.use(flash());
 //
+const cors = require("cors");
+
+app.use(cors({
+    origin: true,
+    credentials: true
+}));
 app.use('/', clientRouter)
 app.use('/admin', adminRouter)
 //

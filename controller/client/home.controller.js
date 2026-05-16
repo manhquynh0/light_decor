@@ -50,14 +50,14 @@ module.exports.home = async (req, res) => {
             category: { $in: listLivingID },
             deleted: false,
             status: "stock"
-        }).limit(2)
+        }).limit(8)
         const kittchenID = "69fd8e51b0b7bb79c1a43c2c"
         const listKittchenID = await categoryHelper.getAllSubcateId(kittchenID)
         const listKittchenProducts = await Product.find({
             category: { $in: listKittchenID },
             deleted: false,
             status: "stock"
-        }).limit(2)
+        }).limit(8)
         res.render("client/pages/home", {
             title: "Trang chủ",
             products: products || [],

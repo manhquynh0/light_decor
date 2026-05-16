@@ -19,6 +19,20 @@ function normalizeGeminiHistory(history) {
     return normalized;
 }
 
+function normalizeDisplayHistory(history) {
+    const normalized = [...history];
+
+    while (normalized.length > 0 && normalized[0].role !== "user") {
+        normalized.shift();
+    }
+
+    while (normalized.length > 0 && normalized[normalized.length - 1].role !== "model") {
+        normalized.pop();
+    }
+
+    return normalized;
+}
+
 module.exports.index = async (req, res) => {
     try {
         const { message, guestId: clientGuestId } = req.body;
@@ -72,7 +86,7 @@ module.exports.index = async (req, res) => {
             type: "client",
             createdAt: { $gte: oneDayAgo }
         })
-            .sort({ createdAt: -1 })
+            .sort({ createdAt: -1, _id: -1 })
             .limit(10);
 
         const formattedHistory = normalizeGeminiHistory(history.reverse());
@@ -177,10 +191,13 @@ module.exports.getHistory = async (req, res) => {
         }
 
         const history = await Chat.find({ user_id: userId, type: "client" })
-            .sort({ createdAt: -1 })
+            .sort({ createdAt: -1, _id: -1 })
             .limit(20);
 
-        res.json({ code: "success", history: history.reverse() });
+        res.json({
+            code: "success",
+            history: normalizeDisplayHistory(history.reverse())
+        });
     } catch (error) {
         res.json({ code: "error", message: error.message });
     }

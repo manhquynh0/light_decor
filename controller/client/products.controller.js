@@ -34,7 +34,9 @@ module.exports.products = async (req, res) => {
     }
     if (req.query.keyword) {
         find.name = {
-            $regex: req.query.keyword,
+            $regex: req.query.keyword.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                .replace(/đ/g, "d")
+                .replace(/Đ/g, "D"),
             $options: "i"
         }
     }

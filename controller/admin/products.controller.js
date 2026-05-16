@@ -6,7 +6,9 @@ module.exports.index = async (req, res) => {
     deleted: false,
   }
   if (req.query.keyword) {
-    const keyword = req.query.keyword
+    const keyword = req.query.keyword.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d")
+      .replace(/Đ/g, "D");
     find.name = {
       $regex: keyword,
       $options: "i"

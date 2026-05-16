@@ -1261,7 +1261,7 @@ ul {
 }
 
 .cat-card:hover .cat-info em {
-    color: var(--primary);
+    color: var(--accent-light);
 }
 
 .cat-arr {
@@ -6444,4 +6444,85 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     background: rgba(212, 175, 55, 0.12);
     color: var(--accent);
     padding-left: 18px;
+}
+
+/* Voice Search Button */
+.btn-voice-search {
+    background: none !important;
+    border: none !important;
+    color: var(--text-light) !important;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border-radius: 50% !important;
+    outline: none !important;
+    width: 40px !important;
+    height: 40px !important;
+    flex-shrink: 0;
+    margin: 0;
+    position: relative;
+}
+
+.voice-lang-toggle {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    font-size: 9px;
+    font-weight: 800;
+    background: var(--accent);
+    color: var(--primary-dark);
+    padding: 1px 3px;
+    border-radius: 4px;
+    line-height: 1;
+    pointer-events: none;
+    text-transform: uppercase;
+}
+
+.btn-voice-search:hover {
+    color: var(--accent) !important;
+    background: rgba(212, 175, 55, 0.1) !important;
+}
+
+.btn-voice-search.listening {
+    color: #ef4444 !important;
+    background: rgba(239, 68, 68, 0.1) !important;
+}
+
+.btn-voice-search.listening i {
+    /* Animation removed to keep it static */
+}
+
+/* Sidebar Search Adjustments */
+.filter-sidebar-search {
+    position: relative;
+    display: flex !important;
+    align-items: center;
+}
+
+.filter-sidebar-search input {
+    width: 100%;
+    padding-right: 48px !important;
+    /* Space for mic button */
+}
+
+#voiceSearchBtnSide {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+}
+
+/* Header Overlay Search Adjustments */
+.search-form-overlay .btn-voice-search {
+    margin-left: auto;
+    margin-right: 5px;
+}
+
+/* Ensure the submit button in overlay doesn't get messed up */
+.search-form-overlay button:not(.btn-voice-search) {
+    flex-shrink: 0;
 }

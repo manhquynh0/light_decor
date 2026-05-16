@@ -28,7 +28,16 @@ block content
           p.pd-category #{product.category ? product.category.map(c => c.name).join(", ") : ""}
           h1.pd-name #{product.name}
         .pd-stars
-          span.stars ★★★★★
+          if (ratingAvg >= 4.5)
+            span(style="color:var(--accent); font-weight: 600;") ★★★★★
+          else if (ratingAvg >= 4)
+            span(style="color:var(--accent); font-weight: 600;") ★★★★☆
+          else if (ratingAvg >= 3)
+            span(style="color:var(--accent); font-weight: 600;") ★★★☆☆
+          else if (ratingAvg >= 2)
+            span(style="color:var(--accent); font-weight: 600;") ★★☆☆☆
+          else
+            span(style="color:var(--accent); font-weight: 600;") ★☆☆☆☆
           span #{ratingAvg ? ratingAvg.toFixed(1) : 0} (#{listReview.length} đánh giá)
           span(style="color:#2a9d5c;font-weight:600;") · Còn hàng
         .pd-price-wrap
@@ -281,7 +290,7 @@ block content
                 src=item.userId.avatar || "" 
                 )
               div
-                .review-name(style ="color :var(--white)") #{item.userId.name}
+                .review-name(style ="color :var(--white)") #{item.userId.firstname + " " +item.userId.lastname}
                 .review-date(style ="color :var(--text-light)") #{item.createdAtFormat}
             .review-stars 
               if item.rating == 1

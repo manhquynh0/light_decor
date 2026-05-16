@@ -75,7 +75,8 @@ header#site-header.site-header
           )
             path(d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2")
             circle(r="4" cy="7" cx="12")
-       
+        
+  
     a.icon-action.cart-icon(
       aria-label="Giỏ hàng" 
       href="/cart"
@@ -106,6 +107,8 @@ header#site-header.site-header
             placeholder="Nhập từ khóa tìm kiếm..." 
             type="search"
             )
+          button#voiceSearchBtn.btn-voice-search(type="button" aria-label="Tìm kiếm bằng giọng nói")
+            i.fas.fa-microphone
           button(
             aria-label="Tìm" 
             type="submit"

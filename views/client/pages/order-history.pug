@@ -18,7 +18,7 @@ block main
           select.form-control(style="width:200px;cursor:pointer;" filter-status)
             option(value="") Tất cả trạng thái
             option(value="initial") Đang xử lý
-            option(value="shipped") Đã gửi hàng
+            option(value="shippping") Đang vận chuyển
             option(value="delivered") Đã giao hàng
             option(value="cancelled") Đã hủy
         div(style="display:flex;gap:8px;margin-left:auto;")
@@ -28,7 +28,7 @@ block main
             type="text"
             search
             )
-          button.btn.btn-outline-dark(style="padding:12px 20px;" search) Tìm kiếm
+          //- button.btn.btn-outline-dark(style="padding:12px 20px;" search) Tìm kiếm
       // Orders List
       div(style="display:grid;gap:24px;")
       
@@ -55,12 +55,14 @@ block main
 
                   div
                     p.order-meta-label Trạng thái
-                    if item.status == "initial"
-                      span.badge.badge-light Cửa hàng đã nhận đơn
-                    else if item.status == "success"
-                      span.badge.badge-success Đã giao hàng
-                    else if item.status == "cancelled"
-                      span.badge.badge-danger Đã hủy
+                    if(item.status == "initial")
+                      span(style="padding:6px 14px; border-radius:999px; font-size:0.75rem; background:rgba(59, 130, 246, 0.15); color:#2563eb; font-weight:700;") Khởi tạo
+                    else if(item.status == "cancelled")
+                      span(style="padding:6px 14px; border-radius:999px; font-size:0.75rem; background:rgba(239, 68, 68, 0.15); color:#dc2626; font-weight:700;") Đã hủy
+                    else if(item.status == "shipping")
+                      span(style="padding:6px 14px; border-radius:999px; font-size:0.75rem; background:rgba(245, 158, 11, 0.15); color:#d97706; font-weight:700;") Đang giao hàng
+                    else if(item.status == "delivered")
+                      span(style="padding:6px 14px; border-radius:999px; font-size:0.75rem; background:rgba(16, 185, 129, 0.15); color:#059669; font-weight:700;") Đã giao hàng
               each product in item.items
                 .order-items
                   .order-item

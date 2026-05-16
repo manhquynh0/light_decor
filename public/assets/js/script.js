@@ -487,6 +487,133 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+
+
+    // ========== SEARCH OVERLAY ==========
+    const openSearch = document.getElementById('openSearch');
+    const closeSearch = document.getElementById('closeSearch');
+    const searchOverlay = document.getElementById('searchOverlay');
+    const searchInputOverlay = searchOverlay?.querySelector('input');
+
+    openSearch?.addEventListener('click', () => {
+        searchOverlay?.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => searchInputOverlay?.focus(), 300);
+    });
+
+    closeSearch?.addEventListener('click', () => {
+        searchOverlay?.classList.remove('open');
+        document.body.style.overflow = '';
+    });
+
+    // ========== VOICE SEARCH ==========
+    const initVoiceSearch = () => {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            console.warn("Speech Recognition API not supported in this browser.");
+            return;
+        }
+
+        const recognition = new SpeechRecognition();
+        let currentLang = localStorage.getItem('voiceSearchLang') || 'vi-VN';
+        recognition.lang = currentLang;
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        const voiceButtons = document.querySelectorAll('#voiceSearchBtn, #voiceSearchBtnSide');
+
+        const updateToggles = () => {
+            const label = currentLang === 'vi-VN' ? 'VN' : 'EN';
+            document.querySelectorAll('.voice-lang-toggle').forEach(el => {
+                el.textContent = label;
+            });
+        };
+
+        // Long press or context menu to switch language
+        voiceButtons.forEach(btn => {
+            // Add toggle label if not exists
+            if (!btn.querySelector('.voice-lang-toggle')) {
+                const span = document.createElement('span');
+                span.className = 'voice-lang-toggle';
+                span.textContent = currentLang === 'vi-VN' ? 'VN' : 'EN';
+                btn.appendChild(span);
+            }
+
+            btn.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                currentLang = currentLang === 'vi-VN' ? 'en-US' : 'vi-VN';
+                recognition.lang = currentLang;
+                localStorage.setItem('voiceSearchLang', currentLang);
+                updateToggles();
+                if (typeof showPageAlert === 'function') {
+                    showPageAlert(`Đã chuyển sang tiếng ${currentLang === 'vi-VN' ? 'Việt' : 'Anh'}`, "success");
+                }
+            });
+
+            btn.addEventListener('click', (e) => {
+                // If shift key or something? No, let's stick to click
+                if (btn.classList.contains('listening')) {
+                    recognition.stop();
+                    return;
+                }
+
+                // Small hint: double click to switch?
+                // For simplicity, let's just use the current lang
+                voiceButtons.forEach(b => b.classList.add('listening'));
+                recognition.start();
+            });
+        });
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+
+            // Clean up the transcript (remove trailing dots if any)
+            const cleanText = transcript.replace(/\.$/, '');
+
+            // Populate inputs
+            const searchInputs = document.querySelectorAll('#searchInput');
+            searchInputs.forEach(input => {
+                input.value = cleanText;
+                // Trigger input event for realtime search if on products page
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+            });
+
+            // If not on products page, maybe submit the form or redirect
+            const currentPath = window.location.pathname;
+            if (currentPath !== '/products') {
+                // Check if we are in the overlay
+                const searchOverlay = document.getElementById('searchOverlay');
+                if (searchOverlay && searchOverlay.classList.contains('open')) {
+                    // Redirect to products page with keyword
+                    window.location.href = `/products?keyword=${encodeURIComponent(cleanText)}`;
+                }
+            }
+        };
+
+        recognition.onspeechend = () => {
+            recognition.stop();
+            voiceButtons.forEach(b => b.classList.remove('listening'));
+        };
+
+        recognition.onend = () => {
+            voiceButtons.forEach(b => b.classList.remove('listening'));
+        };
+
+        recognition.onerror = (event) => {
+            console.error('Speech recognition error:', event.error);
+            voiceButtons.forEach(b => b.classList.remove('listening'));
+            if (event.error === 'not-allowed') {
+                if (typeof showPageAlert === 'function') {
+                    showPageAlert("Vui lòng cho phép truy cập microphone để sử dụng tính năng này.", "error");
+                } else {
+                    alert("Vui lòng cho phép truy cập microphone.");
+                }
+            }
+        };
+    };
+
+    initVoiceSearch();
+
 }); // end DOMContentLoaded
 
 function switchPanel(panelId) {
@@ -3722,7 +3849,8 @@ if (orderForm) {
                                     body: JSON.stringify({
                                         ...dataFinal,
                                         transferCode,
-                                        status: "paid",
+
+                                        paymentStatus: "paid",
                                         couponCode: getAppliedCoupon()?.code || "",
                                     }),
                                 })
@@ -4009,14 +4137,19 @@ function addMessage(role, text) {
 // ================= LOAD LỊCH SỬ =================
 
 function loadHistory() {
-    if (loadedHistory) return;
-
     const isAdmin = window.location.pathname.startsWith("/admin");
     const historyUrl = isAdmin ? "/admin/chat/history" : "/chat/history";
 
     // Chỉ gửi guestId nếu là guest, nếu user đã đăng nhập thì server lấy từ session
     const params = isUserLoggedIn ? new URLSearchParams() : new URLSearchParams({ guestId: guestId });
-    fetch(historyUrl + "?" + params)
+    params.set("_t", Date.now());
+
+    fetch(historyUrl + "?" + params.toString(), {
+        cache: "no-store",
+        headers: {
+            "Cache-Control": "no-cache"
+        }
+    })
         .then(res => res.json())
         .then(data => {
             // Có lịch sử
@@ -4028,6 +4161,10 @@ function loadHistory() {
                         chat.content
                     );
                 });
+            }
+            else if (data.code === "success") {
+                loadedHistory = true;
+                return;
             }
             // Không có lịch sử
 
@@ -4086,6 +4223,8 @@ async function sendMessage() {
         if (data.code === "success") {
 
             addMessage("ai", data.message);
+            loadedHistory = false;
+            loadHistory();
 
         } else {
             addMessage(
