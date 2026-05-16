@@ -4,7 +4,7 @@ block main
     // SUB: ROLES
     #sub-roles.admin-sub-panel
     .table-toolbar(style="justify-content:flex-end;")
-      button.btn-admin.btn-admin-primary(onclick="openModal('addRoleModal', '/admin/roles/add')")
+      button.btn-admin.btn-admin-primary(onclick=`openModal('addRoleModal', '${prefixAdmin}/roles/add')`)
         svg(
           stroke-width="2.5"
           stroke="currentColor"
@@ -36,9 +36,9 @@ block main
               strong(style="font-size:0.95rem;color:var(--text-dark);") #{item.name}
               p(style="font-size:0.78rem;color:var(--text-light);") #{item.description}
           div(style="display:flex;gap:8px;")
-            button.action-btn.action-btn-edit(onclick=`openModal('editRoleModal', '/admin/roles/edit/${item._id}')`) ✏
+            button.action-btn.action-btn-edit(onclick=`openModal('editRoleModal', '${prefixAdmin}/roles/edit/${item._id}')`) ✏
             button.action-btn.action-btn-delete(
-                  data-url=`/admin/roles/delete/${item._id}`,
+                  data-url=`${prefixAdmin}/roles/delete/${item._id}`,
                   button-delete
                 ) 🗑
       div(style="display:flex;flex-wrap:wrap;gap:6px;")

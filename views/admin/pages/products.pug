@@ -27,7 +27,7 @@ block main
         option(value="") Tất cả
         option(value="stock") Đang bán
         option(value="out stock") Hết hàng
-      button.btn-admin.btn-admin-primary(onclick="openModal('addProductModal', '/admin/products/add')")
+      button.btn-admin.btn-admin-primary(onclick=`openModal('addProductModal', '${prefixAdmin}/products/add')`)
         svg(
           stroke-width="2.5"
           stroke="currentColor"
@@ -76,10 +76,10 @@ block main
             td
               .action-btns
                 if permissions && permissions.includes("order-update")
-                  button.action-btn.action-btn-edit(onclick=`openModal('editProductModal', '/admin/products/edit/${item._id}')`) ✏
+                  button.action-btn.action-btn-edit(onclick=`openModal('editProductModal', '${prefixAdmin}/products/edit/${item._id}')`) ✏
                 if permissions && permissions.includes("delete")
                   button.action-btn.action-btn-delete(
-                    data-url=`/admin/products/delete/${item._id}`,
+                    data-url=`${prefixAdmin}/products/delete/${item._id}`,
                     button-delete
                   ) 🗑
   +pagination(pagination, product.length)

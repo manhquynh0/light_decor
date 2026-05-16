@@ -26,7 +26,7 @@ block main
           select.btn-admin.btn-admin-outline(filter-role)
             each item in roleList
               option(value=item._id) #{item.name}
-        button.btn-admin.btn-admin-primary(onclick="openModal('addUserModal', '/admin/users/add')")
+        button.btn-admin.btn-admin-primary(onclick=`openModal('addUserModal', '${prefixAdmin}/users/add')`)
           svg(
             stroke-width="2.5"
             stroke="currentColor"
@@ -62,9 +62,9 @@ block main
             td #{item.role ? item.role.name : "Chưa có vai trò"}  
             td
               .action-btns
-                button.action-btn.action-btn-edit(onclick=`openModal('editUserModal', '/admin/users/edit/${item._id}')`) ✏
+                button.action-btn.action-btn-edit(onclick=`openModal('editUserModal', '${prefixAdmin}/users/edit/${item._id}')`) ✏
                 button.action-btn.action-btn-delete(
-                  data-url=`/admin/users/delete/${item._id}`,
+                  data-url=`${prefixAdmin}/users/delete/${item._id}`,
                   button-delete
                 ) 🗑
   +pagination(pagination, accountList.length)

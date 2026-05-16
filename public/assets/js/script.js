@@ -1,4 +1,4 @@
-
+const adminPrefix = window.prefixAdmin || "/admin";
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -1008,6 +1008,7 @@ if (loginForm) {
         }
         ])
         .onSuccess((event) => {
+            event.preventDefault();
             const email = event.target.email.value;
             const password = event.target.password.value;
             const rememberPassword = event.target.rememberPassword.checked;
@@ -1127,6 +1128,7 @@ if (registerForm) {
             errorMessage: 'BẠn phải đồng ý với điều khoản và điều kiện!',
         }])
         .onSuccess((event) => {
+            event.preventDefault();
             const firstName = event.target.firstname.value;
             const lastName = event.target.lastname.value;
             const email = event.target.email.value;
@@ -1180,6 +1182,7 @@ if (forgotPasswordForm) {
         },
         ])
         .onSuccess((event) => {
+            event.preventDefault();
             const email = event.target.email.value;
             const dataFinal = {
                 email: email,
@@ -1531,7 +1534,7 @@ if (categoryCreate) {
 
 
 
-            fetch('/admin/categories/add', {
+            fetch(`${adminPrefix}/categories/add`, {
                 method: "POST",
                 body: JSON.stringify(dataFinal),
                 headers: {
@@ -1545,7 +1548,7 @@ if (categoryCreate) {
                     }
 
                     if (data.code == "success") {
-                        window.location.href = `/admin/categories`;
+                        window.location.href = `${adminPrefix}/categories`;
                     }
 
                 })
@@ -1654,7 +1657,7 @@ if (productCreate) {
             }
 
 
-            fetch('/admin/products/add', {
+            fetch(`${adminPrefix}/products/add`, {
                 method: "POST",
                 body: formData
             })
@@ -1734,7 +1737,7 @@ if (userCreate) {
                 formData.append("avatar", avatar)
             }
 
-            fetch('/admin/users/add', {
+            fetch(`${adminPrefix}/users/add`, {
                 method: "POST",
                 body: formData
             })
@@ -1745,7 +1748,7 @@ if (userCreate) {
                     }
 
                     if (data.code == "success") {
-                        window.location.href = `/admin/users`;
+                        window.location.href = `${adminPrefix}/users`;
                     }
 
                 })
@@ -1780,7 +1783,7 @@ if (roleCreate) {
                 permissions: permissions
             };
             console.log(dataFinal)
-            fetch('/admin/roles/add', {
+            fetch(`${adminPrefix}/roles/add`, {
                 method: "POST",
                 body: JSON.stringify(dataFinal),
                 headers: {
@@ -1794,7 +1797,7 @@ if (roleCreate) {
                     }
 
                     if (data.code == "success") {
-                        window.location.href = `/admin/roles`;
+                        window.location.href = `${adminPrefix}/roles`;
                     }
 
                 })
@@ -1825,7 +1828,7 @@ if (categoryEdit) {
             }
 
 
-            fetch(`/admin/categories/edit/${id}`, {
+            fetch(`${adminPrefix}/categories/edit/${id}`, {
                 method: "PATCH",
                 body: JSON.stringify(dataFinal),
                 headers: {
@@ -1944,7 +1947,7 @@ if (userEdit) {
                 formData.append("avatar", avatar);
             }
 
-            fetch(`/admin/users/edit/${id}`, {
+            fetch(`${adminPrefix}/users/edit/${id}`, {
                 method: "PATCH",
                 body: formData
             })
@@ -1955,7 +1958,7 @@ if (userEdit) {
                     }
 
                     if (data.code == "success") {
-                        window.location.href = `/admin/users`;
+                        window.location.href = `${adminPrefix}/users`;
                     }
 
                 })
@@ -2033,7 +2036,7 @@ if (productEdit) {
                 });
             }
 
-            fetch(`/admin/products/edit/${id}`, {
+            fetch(`${adminPrefix}/products/edit/${id}`, {
                 method: "PATCH",
                 body: formData,
             })
@@ -2085,7 +2088,7 @@ if (roleEdit) {
                 permissions: permissions
             };
             console.log(dataFinal)
-            fetch(`/admin/roles/edit/${id}`, {
+            fetch(`${adminPrefix}/roles/edit/${id}`, {
                 method: "PATCH",
                 body: JSON.stringify(dataFinal),
                 headers: {
@@ -2099,7 +2102,7 @@ if (roleEdit) {
                     }
 
                     if (data.code == "success") {
-                        window.location.href = `/admin/roles`;
+                        window.location.href = `${adminPrefix}/roles`;
                     }
 
                 })
@@ -3432,7 +3435,7 @@ if (revenueChart) {
             arrayDay: arrayDay
         };
 
-        fetch(`/admin/dashboard/revenue-chart`, {
+        fetch(`${adminPrefix}/dashboard/revenue-chart`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -3555,6 +3558,7 @@ if (profileForm) {
             errorMessage: 'Số điện thoại không đúng định dạng!',
         },
         ]).onSuccess((event) => {
+            event.preventDefault();
             const firstname = event.target.firstname.value;
             const lastname = event.target.lastname.value;
             const email = event.target.email.value;
@@ -3601,7 +3605,7 @@ if (orderEdit) {
             orderId: orderId,
             status: status,
         }
-        fetch(`/admin/orders/update/${orderId}`, {
+        fetch(`${adminPrefix}/orders/update/${orderId}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -4138,7 +4142,7 @@ function addMessage(role, text) {
 
 function loadHistory() {
     const isAdmin = window.location.pathname.startsWith("/admin");
-    const historyUrl = isAdmin ? "/admin/chat/history" : "/chat/history";
+    const historyUrl = isAdmin ? `${adminPrefix}/chat/history` : "/chat/history";
 
     // Chỉ gửi guestId nếu là guest, nếu user đã đăng nhập thì server lấy từ session
     const params = isUserLoggedIn ? new URLSearchParams() : new URLSearchParams({ guestId: guestId });
@@ -4192,7 +4196,7 @@ async function sendMessage() {
 
         const isAdmin = window.location.pathname.startsWith("/admin");
 
-        const url = isAdmin ? "/admin/chat" : "/chat";
+        const url = isAdmin ? `${adminPrefix}/chat` : "/chat";
 
         // Gửi API
         const response = await fetch(url, {

@@ -10,7 +10,7 @@ block content
     .container
       h1 Quản Lý Cửa Hàng
       nav.breadcrumb
-        a(href="/admin/dashboard") Trang Tổng Quan
+        a(href=`${prefixAdmin}/dashboard`) Trang Tổng Quan
         span ›
         span Cài đặt
 
@@ -33,23 +33,23 @@ block content
             span.user-role-badge.role-admin #{user.roleName}
           .settings-nav
             #adminTabs.admin-tabs
-              button.admin-tab(data-sub="dashboard" onclick="window.location.href='/admin/dashboard'")
+              button.admin-tab(data-sub="dashboard" onclick=`window.location.href='${prefixAdmin}/dashboard'`)
                 | Trang Tổng Quan
-              button.admin-tab(data-sub="orders" onclick="window.location.href='/admin/orders'")
+              button.admin-tab(data-sub="orders" onclick=`window.location.href='${prefixAdmin}/orders'`)
                 | Đơn hàng
-              button.admin-tab(data-sub="products" onclick="window.location.href='/admin/products'")
+              button.admin-tab(data-sub="products" onclick=`window.location.href='${prefixAdmin}/products'`)
                 | Sản phẩm
               if permissions && permissions.includes("permission")
-                button.admin-tab(data-sub="users" onclick="window.location.href='/admin/users'")
+                button.admin-tab(data-sub="users" onclick=`window.location.href='${prefixAdmin}/users'`)
                   | Người dùng
               if permissions && permissions.includes("permission")
-                button.admin-tab(data-sub="roles" onclick="window.location.href='/admin/roles'")
+                button.admin-tab(data-sub="roles" onclick=`window.location.href='${prefixAdmin}/roles'`)
                   | Phân quyền
               if permissions && permissions.includes("category")
-                button.admin-tab(data-sub="categories" onclick="window.location.href='/admin/categories'")
+                button.admin-tab(data-sub="categories" onclick=`window.location.href='${prefixAdmin}/categories'`)
                   | Danh mục
               if permissions && permissions.includes("coupon")
-                button.admin-tab(data-sub="coupons" onclick="window.location.href='/admin/coupons'")
+                button.admin-tab(data-sub="coupons" onclick=`window.location.href='${prefixAdmin}/coupons'`)
                   | Mã Giảm Giá
         
         main.settings-main

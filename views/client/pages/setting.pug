@@ -58,7 +58,7 @@ block content
             if permissions && permissions.includes("admin")
               #adminNavGroup.settings-nav-group
                 .settings-nav-label Quản trị
-                button#nav-admin.settings-nav-item(onclick="window.location.href='/admin/dashboard'")
+                button#nav-admin.settings-nav-item(onclick=`window.location.href='${prefixAdmin}/dashboard'`)
                   svg(stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16")
                     rect(height="7" width="7" y="3" x="3")
                     rect(height="7" width="7" y="3" x="14")
