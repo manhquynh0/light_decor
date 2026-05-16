@@ -42,7 +42,7 @@ module.exports.home = async (req, res) => {
             category: { $in: listLuxuryID },
             deleted: false,
             status: "stock"
-        }).limit(8)
+        }).limit(3)
 
         const livingID = "69fc3c5c9d07cbe3f31df987"
         const listLivingID = await categoryHelper.getAllSubcateId(livingID)
@@ -50,14 +50,14 @@ module.exports.home = async (req, res) => {
             category: { $in: listLivingID },
             deleted: false,
             status: "stock"
-        }).limit(8)
+        }).limit(3)
         const kittchenID = "69fd8e51b0b7bb79c1a43c2c"
         const listKittchenID = await categoryHelper.getAllSubcateId(kittchenID)
         const listKittchenProducts = await Product.find({
             category: { $in: listKittchenID },
             deleted: false,
             status: "stock"
-        }).limit(8)
+        }).limit(3)
         res.render("client/pages/home", {
             title: "Trang chủ",
             products: products || [],
